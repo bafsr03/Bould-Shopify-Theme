@@ -1,0 +1,20 @@
+<div class="bould-marquee" aria-hidden="true">
+  <div class="bould-marquee__track">
+    {% assign items = "Shopify Plus Partner,3D Commerce,Virtual Try-On,Conversion Optimization,Custom Development,Headless Commerce,Immersive Experiences,Revenue Growth,Brand Elevation,Shopify Plus Partner,3D Commerce,Virtual Try-On,Conversion Optimization,Custom Development,Headless Commerce,Immersive Experiences,Revenue Growth,Brand Elevation" | split: "," %}
+    {% for item in items %}
+      <span class="bould-marquee__item">
+        {{- item -}}
+        <span class="bould-marquee__dot"></span>
+      </span>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bould — Marquee",
+  "tag": "section",
+  "settings": [],
+  "presets": [{ "name": "Bould — Marquee" }]
+}
+{% endschema %}

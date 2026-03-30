@@ -1,0 +1,69 @@
+<section class="bould-capabilities" aria-label="Our Capabilities">
+  <div class="bould-capabilities__inner">
+    <div class="bould-capabilities__text">
+      <p class="bould-section-label bould-reveal">{{ section.settings.label | default: 'Our Stack' }}</p>
+      <h2 class="bould-section-title" style="margin-top: 2rem; margin-bottom: 2.4rem;">
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'Powered by' }}</span></span>
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line2 | default: 'the best' }}</span></span>
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line3 | default: 'in commerce.' }}</span></span>
+      </h2>
+      <p class="bould-section-sub bould-reveal" style="max-width: 44ch; align-self: auto; margin-bottom: 4rem;">
+        {{- section.settings.body | default: "We combine Shopify's most powerful tools with cutting-edge 3D, AR, and AI to create digital commerce experiences that are impossible to ignore." -}}
+      </p>
+
+      <div class="bould-capabilities__tech" data-bould-stagger>
+        {% for block in section.blocks %}
+          {% if block.type == 'tech' %}
+            <div class="bould-tech-pill" {{ block.shopify_attributes }}>
+              <div class="bould-tech-pill__icon">{{ block.settings.icon | default: '⚡' }}</div>
+              <span class="bould-tech-pill__name">{{ block.settings.name }}</span>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="bould-capabilities__visual bould-reveal-right">
+      <div class="bould-capabilities__visual-inner">B</div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Capabilities",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Section label", "default": "Our Stack" },
+    { "type": "text", "id": "title_line1", "label": "Title — line 1", "default": "Powered by" },
+    { "type": "text", "id": "title_line2", "label": "Title — line 2", "default": "the best" },
+    { "type": "text", "id": "title_line3", "label": "Title — line 3", "default": "in commerce." },
+    { "type": "textarea", "id": "body", "label": "Body text" }
+  ],
+  "blocks": [
+    {
+      "type": "tech",
+      "name": "Technology",
+      "settings": [
+        { "type": "text", "id": "icon", "label": "Emoji icon", "default": "⚡" },
+        { "type": "text", "id": "name", "label": "Technology name", "default": "Shopify Plus" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Capabilities",
+      "blocks": [
+        { "type": "tech", "settings": { "icon": "🛍️", "name": "Shopify Plus" } },
+        { "type": "tech", "settings": { "icon": "📦", "name": "Three.js / WebGL" } },
+        { "type": "tech", "settings": { "icon": "👓", "name": "AR / Virtual Try-On" } },
+        { "type": "tech", "settings": { "icon": "⚡", "name": "Hydrogen Headless" } },
+        { "type": "tech", "settings": { "icon": "🎨", "name": "Figma → Code" } },
+        { "type": "tech", "settings": { "icon": "🤖", "name": "AI Personalization" } },
+        { "type": "tech", "settings": { "icon": "📊", "name": "CRO & Analytics" } },
+        { "type": "tech", "settings": { "icon": "🌐", "name": "Multilingual / B2B" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

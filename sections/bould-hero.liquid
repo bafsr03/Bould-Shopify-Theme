@@ -1,0 +1,194 @@
+{{ 'bould.css' | asset_url | stylesheet_tag }}
+
+{% comment %} GSAP — load before animations.js {% endcomment %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+{% comment %} Custom cursor + grain {% endcomment %}
+<div class="bould-cursor" aria-hidden="true">
+  <div class="bould-cursor__dot"></div>
+  <div class="bould-cursor__ring"></div>
+</div>
+<div class="bould-grain" aria-hidden="true"></div>
+
+<section class="bould-hero" id="bould-hero">
+  {% comment %} Background grid {% endcomment %}
+  <div class="bould-hero__bg-grid" aria-hidden="true"></div>
+
+  {% comment %} Three.js canvas — B model renders here {% endcomment %}
+  <canvas
+    id="bould-hero-canvas"
+    class="bould-hero__canvas"
+    aria-hidden="true"
+    data-obj-url="{% if section.settings.obj_url != blank %}{{ section.settings.obj_url }}{% else %}{{ 'bbould.obj' | asset_url }}{% endif %}"
+  ></canvas>
+
+  {% comment %} Text content {% endcomment %}
+  <div class="bould-hero__content">
+    <span class="bould-hero__eyebrow">
+      {{- section.settings.eyebrow | default: 'Retail Technology Company' -}}
+    </span>
+
+    <h1 class="bould-hero__headline">
+      <span class="line">
+        <span class="line-inner">{{ section.settings.headline_line1 | default: 'We Build' }}</span>
+      </span>
+      <span class="line">
+        <span class="line-inner">{{ section.settings.headline_line2 | default: 'The Future' }}</span>
+      </span>
+      <span class="line line--accent">
+        <span class="line-inner">{{ section.settings.headline_line3 | default: 'Of Commerce.' }}</span>
+      </span>
+    </h1>
+
+    <p class="bould-hero__body">
+      {{- section.settings.body | default: 'High-performance Shopify stores. Immersive 3D experiences. Virtual try-on technology. End-to-end digital commerce for brands that refuse to settle.' -}}
+    </p>
+
+    <div class="bould-hero__actions">
+      <a href="{{ section.settings.cta_primary_url | default: '#contact' }}" class="bould-btn bould-btn--primary">
+        {{- section.settings.cta_primary | default: 'Start a Project' -}}
+      </a>
+      <a href="{{ section.settings.cta_secondary_url | default: '#work' }}" class="bould-btn bould-btn--ghost">
+        {{- section.settings.cta_secondary | default: 'View Our Work' -}}
+        <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  {% comment %} Scroll indicator {% endcomment %}
+  <div class="bould-hero__scroll" aria-hidden="true">
+    <div class="bould-hero__scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+
+  {% comment %} Quick stats bottom-right {% endcomment %}
+  <div class="bould-hero__stats" aria-hidden="true">
+    {% for block in section.blocks %}
+      {% if block.type == 'stat' %}
+        <div class="bould-hero__stat">
+          <span class="bould-hero__stat-num">{{ block.settings.number }}</span>
+          <span class="bould-hero__stat-label">{{ block.settings.label }}</span>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% comment %} Sticky header class on scroll {% endcomment %}
+<script>
+(function() {
+  var hw = document.querySelector('.header-wrapper');
+  if (!hw) return;
+  window.addEventListener('scroll', function() {
+    hw.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+})();
+</script>
+
+{% comment %} Three.js scene (ES module) {% endcomment %}
+<script type="module" src="{{ 'bould-scene.js' | asset_url }}"></script>
+
+{% comment %} GSAP animations (defer until GSAP is ready) {% endcomment %}
+<script src="{{ 'bould-animations.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Bould — Hero",
+  "tag": "div",
+  "class": "bould-page-wrap",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Retail Technology Company"
+    },
+    {
+      "type": "text",
+      "id": "headline_line1",
+      "label": "Headline — line 1",
+      "default": "We Build"
+    },
+    {
+      "type": "text",
+      "id": "headline_line2",
+      "label": "Headline — line 2",
+      "default": "The Future"
+    },
+    {
+      "type": "text",
+      "id": "headline_line3",
+      "label": "Headline — line 3 (accent color)",
+      "default": "Of Commerce."
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body copy",
+      "default": "High-performance Shopify stores. Immersive 3D experiences. Virtual try-on technology. End-to-end digital commerce for brands that refuse to settle."
+    },
+    {
+      "type": "text",
+      "id": "cta_primary",
+      "label": "Primary CTA label",
+      "default": "Start a Project"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "Primary CTA link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary",
+      "label": "Secondary CTA label",
+      "default": "View Our Work"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_url",
+      "label": "Secondary CTA link"
+    },
+    {
+      "type": "url",
+      "id": "obj_url",
+      "label": "3D B object URL (.obj file from Shopify Files)",
+      "info": "Upload your B.obj to Shopify Admin → Content → Files, then paste the URL here. Leave blank to use the built-in 3D B."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Hero stat",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "3+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Brands Launched"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Hero",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "5+", "label": "Brands Launched" } },
+        { "type": "stat", "settings": { "number": "300%", "label": "Avg Revenue Growth" } },
+        { "type": "stat", "settings": { "number": "3D", "label": "Commerce Pioneers" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

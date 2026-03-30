@@ -1,0 +1,70 @@
+<section class="bould-cta" id="contact" aria-label="Contact">
+  <span class="bould-cta__eyebrow bould-reveal">{{ section.settings.eyebrow | default: "Let's Work Together" }}</span>
+
+  <h2 class="bould-cta__title">
+    <span>{{ section.settings.title_line1 | default: 'Ready to' }}</span>
+    <span class="bould-cta__title--accent">{{ section.settings.title_line2 | default: 'Build?' }}</span>
+  </h2>
+
+  <p class="bould-cta__sub bould-reveal">
+    {{- section.settings.body | default: "Tell us about your project. We'll respond within 24 hours with a plan to make it happen." -}}
+  </p>
+
+  {% if section.settings.show_form %}
+    <form class="bould-cta__form" action="{{ section.settings.form_action | default: '/contact#ContactForm' }}" method="post">
+      <input
+        type="email"
+        name="contact[email]"
+        class="bould-cta__input"
+        placeholder="{{ section.settings.input_placeholder | default: 'your@email.com' }}"
+        required
+        autocomplete="email"
+      >
+      <button type="submit" class="bould-btn bould-btn--primary">
+        {{- section.settings.submit_label | default: 'Get in Touch' -}}
+      </button>
+    </form>
+  {% else %}
+    <div class="bould-hero__actions" style="justify-content: center; opacity:1; transform:none;">
+      <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary">
+        {{- section.settings.cta_label | default: 'Start a Project' -}}
+      </a>
+      {% if section.settings.secondary_label != blank %}
+        <a href="{{ section.settings.secondary_url | default: 'mailto:hello@bould.co' }}" class="bould-btn bould-btn--ghost">
+          {{ section.settings.secondary_label }}
+          <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Bould — CTA",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Let's Work Together" },
+    { "type": "text", "id": "title_line1", "label": "Title — line 1", "default": "Ready to" },
+    { "type": "text", "id": "title_line2", "label": "Title — line 2 (accent)", "default": "Build?" },
+    { "type": "textarea", "id": "body", "label": "Body" },
+    {
+      "type": "checkbox",
+      "id": "show_form",
+      "label": "Show email capture form",
+      "default": false,
+      "info": "When off, shows button links instead."
+    },
+    { "type": "text", "id": "input_placeholder", "label": "Input placeholder", "default": "your@email.com" },
+    { "type": "text", "id": "submit_label", "label": "Submit button label", "default": "Get in Touch" },
+    { "type": "url", "id": "form_action", "label": "Form action URL" },
+    { "type": "text", "id": "cta_label", "label": "Primary button label", "default": "Start a Project" },
+    { "type": "url", "id": "cta_url", "label": "Primary button URL" },
+    { "type": "text", "id": "secondary_label", "label": "Secondary button label", "default": "Email Us" },
+    { "type": "url", "id": "secondary_url", "label": "Secondary button URL" }
+  ],
+  "presets": [{ "name": "Bould — CTA" }]
+}
+{% endschema %}

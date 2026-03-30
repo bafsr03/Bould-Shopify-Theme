@@ -1,0 +1,76 @@
+<section class="bould-services" id="services" aria-label="Our Services">
+  <div class="bould-section-header">
+    <div>
+      <p class="bould-section-label bould-reveal">{{ section.settings.label | default: 'What We Build' }}</p>
+      <h2 class="bould-section-title">
+        <span class="bould-line-reveal">
+          <span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'End-to-end' }}</span>
+        </span>
+        <span class="bould-line-reveal">
+          <span class="bould-line-reveal-inner">{{ section.settings.title_line2 | default: 'digital commerce' }}</span>
+        </span>
+        <span class="bould-line-reveal">
+          <span class="bould-line-reveal-inner">{{ section.settings.title_line3 | default: 'excellence.' }}</span>
+        </span>
+      </h2>
+    </div>
+    <p class="bould-section-sub bould-reveal">
+      {{- section.settings.subtitle | default: 'From concept to conversion — we design, build and scale the commerce experiences your customers love.' -}}
+    </p>
+  </div>
+
+  <ul class="bould-services__list" role="list">
+    {% for block in section.blocks %}
+      <li class="bould-service-item" {{ block.shopify_attributes }}>
+        <span class="bould-service-item__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+        <div class="bould-service-item__content">
+          <span class="bould-service-item__name">{{ block.settings.name }}</span>
+          {% if block.settings.description != blank %}
+            <p class="bould-service-item__desc">{{ block.settings.description }}</p>
+          {% endif %}
+        </div>
+        <div class="bould-service-item__arrow" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 13L13 3M13 3H5M13 3V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Services",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Section label", "default": "What We Build" },
+    { "type": "text", "id": "title_line1", "label": "Title — line 1", "default": "End-to-end" },
+    { "type": "text", "id": "title_line2", "label": "Title — line 2", "default": "digital commerce" },
+    { "type": "text", "id": "title_line3", "label": "Title — line 3", "default": "excellence." },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "From concept to conversion — we design, build and scale the commerce experiences your customers love." }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Service name", "default": "Conversion-Optimized Websites" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Data-driven Shopify storefronts engineered to convert visitors into loyal customers." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Services",
+      "blocks": [
+        { "type": "service", "settings": { "name": "Conversion-Optimized Websites", "description": "Data-driven Shopify storefronts engineered to convert visitors into loyal customers at every touchpoint." } },
+        { "type": "service", "settings": { "name": "Custom Development", "description": "Bespoke Shopify apps, integrations, and back-end systems built to scale with your brand." } },
+        { "type": "service", "settings": { "name": "Immersive 3D Stores", "description": "Fully interactive 3D shopping environments that drop customers inside your brand world." } },
+        { "type": "service", "settings": { "name": "Virtual Try-On Technology", "description": "AR-powered try-on experiences that reduce returns and increase purchase confidence." } },
+        { "type": "service", "settings": { "name": "Shopify Plus Integration", "description": "Seamless migrations, B2B builds, and enterprise Shopify Plus implementations at speed." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

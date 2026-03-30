@@ -1,0 +1,60 @@
+<section class="bould-stats" aria-label="Key metrics">
+  <div class="bould-stats__grid">
+    <p class="bould-stats__headline">
+      {{ section.settings.headline | default: 'Results that speak.' }}<br>
+      <em>{{ section.settings.headline_dim | default: 'Numbers that prove it.' }}</em>
+    </p>
+
+    {% for block in section.blocks %}
+      {% if block.type == 'stat' %}
+        <div class="bould-stat" {{ block.shopify_attributes }}>
+          <span
+            class="bould-stat__num"
+            {% if block.settings.animated %}
+              data-count="{{ block.settings.count_value }}"
+              data-suffix="{{ block.settings.suffix }}"
+              data-prefix="{{ block.settings.prefix }}"
+            {% endif %}
+          >{{ block.settings.number }}</span>
+          <span class="bould-stat__label">{{ block.settings.label }}</span>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Stats",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "headline", "label": "Headline", "default": "Results that speak." },
+    { "type": "text", "id": "headline_dim", "label": "Headline (dimmed part)", "default": "Numbers that prove it." }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Display number", "default": "150+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Brands Launched" },
+        { "type": "checkbox", "id": "animated", "label": "Animate count-up", "default": true },
+        { "type": "text", "id": "count_value", "label": "Count-up target", "default": "150", "info": "Numeric value for animation" },
+        { "type": "text", "id": "suffix", "label": "Suffix", "default": "+" },
+        { "type": "text", "id": "prefix", "label": "Prefix" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Stats",
+      "blocks": [
+        { "type": "stat", "settings": { "number": "5+", "label": "Brands Launched", "animated": true, "count_value": "150", "suffix": "+" } },
+        { "type": "stat", "settings": { "number": "300%", "label": "Avg Revenue Growth", "animated": true, "count_value": "300", "suffix": "%" } },
+        { "type": "stat", "settings": { "number": "$50M+", "label": "Revenue Generated", "animated": true, "count_value": "50", "suffix": "M+", "prefix": "$" } },
+        { "type": "stat", "settings": { "number": "98%", "label": "Client Retention", "animated": true, "count_value": "98", "suffix": "%" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

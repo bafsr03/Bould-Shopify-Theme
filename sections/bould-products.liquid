@@ -1,0 +1,217 @@
+{%- liquid
+  assign src_collection = collections[section.settings.collection]
+  if src_collection == empty or src_collection == nil
+    assign src_collection = collections.all
+  endif
+  assign product_limit = section.settings.product_limit | default: 8
+  assign cta_label = section.settings.cta_label | default: 'Find My Perfect Size'
+-%}
+
+<section class="bould-products" id="bould-collection" aria-label="{{ section.settings.label | default: 'The Collection' }}">
+
+  <div class="bould-products__header">
+    <div class="bould-products__header-left">
+      <p class="bould-section-label bould-reveal">{{ section.settings.label | default: 'The Collection' }}</p>
+      <h2 class="bould-section-title" style="margin-top: 1.6rem;">
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'Explore the' }}</span></span>
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line2 | default: 'full range.' }}</span></span>
+      </h2>
+    </div>
+    {% if src_collection != empty %}
+      <a href="{{ src_collection.url }}" class="bould-btn bould-btn--ghost bould-reveal">
+        {{ section.settings.view_all_label | default: 'View All' }}
+        <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="bould-products__track" id="bould-products-track-{{ section.id }}">
+
+    {% if src_collection != empty and src_collection.products.size > 0 %}
+      {%- for product in src_collection.products limit: product_limit -%}
+
+        {%- assign media_main = product.featured_image -%}
+        {%- assign media_alt = nil -%}
+        {%- if product.images.size > 1 -%}
+          {%- assign media_alt = product.images[1] -%}
+        {%- endif -%}
+
+        <div class="bould-product-card" data-product-url="{{ product.url }}">
+
+          {%- comment -%} IMAGE + OVERLAY {%- endcomment -%}
+          <div class="bould-product-card__media">
+
+            {%- if media_main -%}
+              {{- media_main | image_url: width: 600 | image_tag:
+                  class: 'bould-img-main',
+                  loading: 'lazy',
+                  alt: media_main.alt | default: product.title | escape
+              -}}
+              {%- if media_alt -%}
+                {{- media_alt | image_url: width: 600 | image_tag:
+                    class: 'bould-img-alt',
+                    loading: 'lazy',
+                    alt: media_alt.alt | default: product.title | escape
+                -}}
+              {%- endif -%}
+            {%- else -%}
+              <div class="bould-product-card__media-placeholder">
+                {{- product.title | upcase | slice: 0 -}}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%} Badge {%- endcomment -%}
+            {%- if product.compare_at_price > product.price -%}
+              <span class="bould-product-card__badge">Sale</span>
+            {%- elsif product.tags contains 'new' or product.tags contains 'New' -%}
+              <span class="bould-product-card__badge">New</span>
+            {%- endif -%}
+
+            {%- comment -%} Hover overlay {%- endcomment -%}
+            <div class="bould-product-card__overlay">
+              <span class="bould-product-card__overlay-price">
+                {%- if product.compare_at_price > product.price -%}
+                  <s style="opacity:0.5;">{{ product.compare_at_price | money }}</s>&nbsp;
+                {%- endif -%}
+                {{ product.price | money }}
+              </span>
+              <a href="{{ product.url }}" class="bould-product-card__overlay-btn" aria-label="{{ cta_label }} — {{ product.title }}">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M7 1C4 1 1 3.5 1 7s3 6 6 6 6-2.5 6-6-3-6-6-6Zm0 9a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="currentColor" opacity=".6"/>
+                  <circle cx="7" cy="7" r="1.5" fill="currentColor"/>
+                </svg>
+                {{- cta_label -}}
+              </a>
+            </div>
+          </div>
+
+          {%- comment -%} INFO below image {%- endcomment -%}
+          <div class="bould-product-card__info">
+            {%- if product.vendor != blank -%}
+              <span class="bould-product-card__vendor">{{ product.vendor }}</span>
+            {%- elsif product.type != blank -%}
+              <span class="bould-product-card__vendor">{{ product.type }}</span>
+            {%- endif -%}
+            <h3 class="bould-product-card__title">
+              <a href="{{ product.url }}">{{ product.title }}</a>
+            </h3>
+            <div class="bould-product-card__pricing">
+              <span class="bould-product-card__price">{{ product.price | money }}</span>
+              {%- if product.compare_at_price > product.price -%}
+                <span class="bould-product-card__price-compare">{{ product.compare_at_price | money }}</span>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+
+      {%- endfor -%}
+
+    {%- else -%}
+      {%- comment -%} Editor placeholder cards {%- endcomment -%}
+      {%- for i in (1..6) -%}
+        <div class="bould-product-card">
+          <div class="bould-product-card__media">
+            <div class="bould-product-card__media-placeholder">B</div>
+            <div class="bould-product-card__overlay">
+              <span class="bould-product-card__overlay-price">$00.00</span>
+              <span class="bould-product-card__overlay-btn" style="opacity:0.5;pointer-events:none;">{{ cta_label }}</span>
+            </div>
+          </div>
+          <div class="bould-product-card__info">
+            <span class="bould-product-card__vendor">Your Brand</span>
+            <h3 class="bould-product-card__title">Product Name</h3>
+            <div class="bould-product-card__pricing">
+              <span class="bould-product-card__price">$00.00</span>
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+
+  </div>
+
+  {%- comment -%} Scroll progress + arrows {%- endcomment -%}
+  <div class="bould-products__progress">
+    <div class="bould-products__progress-track">
+      <div class="bould-products__progress-bar" id="bould-products-bar-{{ section.id }}"></div>
+    </div>
+    <div class="bould-products__progress-nav">
+      <button class="bould-products__arrow" aria-label="Previous" data-dir="-1" data-track="bould-products-track-{{ section.id }}">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="bould-products__arrow" aria-label="Next" data-dir="1" data-track="bould-products-track-{{ section.id }}">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+</section>
+
+<script>
+(function() {
+  var trackId = 'bould-products-track-{{ section.id }}';
+  var barId   = 'bould-products-bar-{{ section.id }}';
+  var track   = document.getElementById(trackId);
+  var bar     = document.getElementById(barId);
+  if (!track || !bar) return;
+
+  /* Progress bar */
+  function updateBar() {
+    var max = track.scrollWidth - track.clientWidth;
+    bar.style.width = max > 0 ? ((track.scrollLeft / max) * 100) + '%' : '100%';
+  }
+  track.addEventListener('scroll', updateBar, { passive: true });
+  updateBar();
+
+  /* Arrow navigation */
+  document.querySelectorAll('.bould-products__arrow[data-track="' + trackId + '"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      track.scrollBy({ left: parseInt(btn.dataset.dir) * 310, behavior: 'smooth' });
+    });
+  });
+
+  /* Drag-to-scroll */
+  var dragging = false, startX = 0, scrollStart = 0;
+  track.addEventListener('mousedown', function(e) {
+    dragging = true; startX = e.pageX; scrollStart = track.scrollLeft;
+    track.style.userSelect = 'none';
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    track.scrollLeft = scrollStart - (e.pageX - startX);
+  });
+  window.addEventListener('mouseup', function() { dragging = false; track.style.userSelect = ''; });
+
+  /* Card click — navigate to product */
+  track.querySelectorAll('.bould-product-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) return;
+      var url = card.dataset.productUrl;
+      if (url) window.location.href = url;
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Bould — Products",
+  "tag": "section",
+  "settings": [
+    { "type": "text",       "id": "label",          "label": "Section label",         "default": "The Collection" },
+    { "type": "text",       "id": "title_line1",     "label": "Title — line 1",        "default": "Explore the" },
+    { "type": "text",       "id": "title_line2",     "label": "Title — line 2",        "default": "full range." },
+    { "type": "collection", "id": "collection",      "label": "Collection",            "info": "Leave blank to show all products." },
+    { "type": "range",      "id": "product_limit",   "label": "Products to show",      "min": 4, "max": 16, "step": 1, "default": 8 },
+    { "type": "text",       "id": "cta_label",       "label": "Hover CTA text",        "default": "Find My Perfect Size" },
+    { "type": "text",       "id": "view_all_label",  "label": "View all link label",   "default": "View All" }
+  ],
+  "presets": [{ "name": "Bould — Products" }]
+}
+{% endschema %}

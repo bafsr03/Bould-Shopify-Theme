@@ -1,0 +1,111 @@
+<section class="bould-work" id="work" aria-label="Selected Work">
+  <div class="bould-section-header">
+    <div>
+      <p class="bould-section-label bould-reveal">{{ section.settings.label | default: 'Selected Work' }}</p>
+      <h2 class="bould-section-title">
+        <span class="bould-line-reveal">
+          <span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: "Brands we've" }}</span>
+        </span>
+        <span class="bould-line-reveal">
+          <span class="bould-line-reveal-inner">{{ section.settings.title_line2 | default: 'helped grow.' }}</span>
+        </span>
+      </h2>
+    </div>
+    {% if section.settings.cta_label != blank %}
+      <a href="{{ section.settings.cta_url | default: '#' }}" class="bould-btn bould-btn--ghost bould-reveal">
+        {{ section.settings.cta_label }}
+        <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="bould-work__grid" aria-label="Case studies">
+    {% for block in section.blocks %}
+      {%- assign card_idx = forloop.index0 | modulo: 6 -%}
+      {%- if card_idx == 0 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1A1A2E 0%,#0D1B42 100%)' -%}
+      {%- elsif card_idx == 1 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#0D1117 0%,#1C2B1A 100%)' -%}
+      {%- elsif card_idx == 2 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1C1C1E 0%,#2D1A0E 100%)' -%}
+      {%- elsif card_idx == 3 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#0A1628 0%,#1A0A28 100%)' -%}
+      {%- elsif card_idx == 4 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#12181B 0%,#0A2018 100%)' -%}
+      {%- else -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1A0A0A 0%,#2A1818 100%)' -%}
+      {%- endif -%}
+      <article
+        class="bould-work-card"
+        {{ block.shopify_attributes }}
+        {% if block.settings.url != blank %}
+          onclick="window.location='{{ block.settings.url }}'"
+          role="link"
+          tabindex="0"
+        {% endif %}
+      >
+        <div class="bould-work-card__media">
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 1200 | image_tag:
+              loading: 'lazy',
+              style: 'width:100%;height:100%;object-fit:cover;transition:transform 0.7s cubic-bezier(0.16,1,0.3,1)'
+            }}
+          {% else %}
+            <div class="bould-work-card__bg" style="background: {{ bg_gradient }};">
+              {{ block.settings.name | upcase | slice: 0 }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="bould-work-card__overlay">
+          <span class="bould-work-card__tag">{{ block.settings.category | default: 'Shopify Plus' }}</span>
+          <h3 class="bould-work-card__name">{{ block.settings.name | default: 'Brand Name' }}</h3>
+        </div>
+
+        <span class="bould-work-card__year">{{ block.settings.year | default: '2025' }}</span>
+
+        <div class="bould-work-card__cta" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3 15L15 3M15 3H6M15 3V12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Work",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Section label", "default": "Selected Work" },
+    { "type": "text", "id": "title_line1", "label": "Title — line 1", "default": "Brands we've" },
+    { "type": "text", "id": "title_line2", "label": "Title — line 2", "default": "helped grow." },
+    { "type": "text", "id": "cta_label", "label": "CTA label", "default": "View All Projects" },
+    { "type": "url", "id": "cta_url", "label": "CTA link" }
+  ],
+  "blocks": [
+    {
+      "type": "case_study",
+      "name": "Case Study",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Project image" },
+        { "type": "text", "id": "name", "label": "Brand name", "default": "Brand Name" },
+        { "type": "text", "id": "category", "label": "Category", "default": "Shopify Plus" },
+        { "type": "text", "id": "year", "label": "Year", "default": "2025" },
+        { "type": "url", "id": "url", "label": "Project link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Work",
+      "blocks": [
+        { "type": "case_study", "settings": { "name": "Joon Distribution", "category": "3D Store + Shopify Plus", "year": "2025" } },
+        { "type": "case_study", "settings": { "name": "Dummiez", "category": "Virtual Try-On", "year": "2025" } },
+        { "type": "case_study", "settings": { "name": "brand 3", "category": "Custom Development", "year": "2024" } },
+        { "type": "case_study", "settings": { "name": "brand 4", "category": "AR Try-On + Shopify", "year": "2024" } },
+        { "type": "case_study", "settings": { "name": "brand 5", "category": "Headless Commerce", "year": "2024" } },
+        { "type": "case_study", "settings": { "name": "brand 6", "category": "Shopify Plus Migration", "year": "2023" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

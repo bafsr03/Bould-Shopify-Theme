@@ -1,0 +1,125 @@
+<section class="bould-page-hero" aria-label="Work">
+  <div class="bould-page-hero__inner">
+    <p class="bould-section-label bould-reveal">{{ section.settings.eyebrow | default: 'Work' }}</p>
+    <h1 class="bould-page-hero__title">
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'Projects that' }}</span></span>
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner bould-accent">{{ section.settings.title_line2 | default: 'move the needle.' }}</span></span>
+    </h1>
+    <p class="bould-page-hero__sub bould-reveal">{{ section.settings.intro | default: 'A growing portfolio of brands we have helped design, build, and scale — from first launch to full acceleration.' }}</p>
+  </div>
+</section>
+
+<section class="bould-work bould-work--page" id="work-grid" aria-label="Case studies">
+  <div class="bould-work__grid">
+    {% if section.blocks.size > 0 %}
+      {% for block in section.blocks %}
+        {% if block.type == 'project' %}
+          {%- assign card_idx = forloop.index0 | modulo: 6 -%}
+          {%- if card_idx == 0 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1A1A2E 0%,#0D1B42 100%)' -%}
+          {%- elsif card_idx == 1 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#0D1117 0%,#1C2B1A 100%)' -%}
+          {%- elsif card_idx == 2 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1C1C1E 0%,#2D1A0E 100%)' -%}
+          {%- elsif card_idx == 3 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#0A1628 0%,#1A0A28 100%)' -%}
+          {%- elsif card_idx == 4 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#12181B 0%,#0A2018 100%)' -%}
+          {%- else -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1A0A0A 0%,#2A1818 100%)' -%}
+          {%- endif -%}
+          <article
+            class="bould-work-card"
+            {{ block.shopify_attributes }}
+            {% if block.settings.url != blank %}
+              onclick="window.location='{{ block.settings.url }}'"
+              role="link"
+              tabindex="0"
+            {% endif %}
+          >
+            <div class="bould-work-card__media">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1200 | image_tag:
+                  loading: 'lazy',
+                  style: 'width:100%;height:100%;object-fit:cover;transition:transform 0.7s cubic-bezier(0.16,1,0.3,1)'
+                }}
+              {% else %}
+                <div class="bould-work-card__bg" style="background: {{ bg_gradient }};"></div>
+              {% endif %}
+            </div>
+            <div class="bould-work-card__body">
+              <div class="bould-work-card__meta">
+                {% if block.settings.type != blank %}
+                  <span class="bould-work-card__type">{{ block.settings.type }}</span>
+                {% endif %}
+                {% if block.settings.year != blank %}
+                  <span class="bould-work-card__year">{{ block.settings.year }}</span>
+                {% endif %}
+              </div>
+              <h2 class="bould-work-card__title">{{ block.settings.title }}</h2>
+              {% if block.settings.result != blank %}
+                <p class="bould-work-card__result">{{ block.settings.result }}</p>
+              {% endif %}
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {%- comment -%} Placeholder state {%- endcomment -%}
+      {% for i in (1..3) %}
+        {%- assign bg_i = i | modulo: 3 -%}
+        {%- if bg_i == 0 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1A1A2E 0%,#0D1B42 100%)' -%}
+        {%- elsif bg_i == 1 -%}{%- assign bg_gradient = 'linear-gradient(135deg,#0D1117 0%,#1C2B1A 100%)' -%}
+        {%- else -%}{%- assign bg_gradient = 'linear-gradient(135deg,#1C1C1E 0%,#2D1A0E 100%)' -%}
+        {%- endif -%}
+        <article class="bould-work-card">
+          <div class="bould-work-card__media">
+            <div class="bould-work-card__bg" style="background: {{ bg_gradient }};"></div>
+          </div>
+          <div class="bould-work-card__body">
+            <div class="bould-work-card__meta">
+              <span class="bould-work-card__type">3D Store</span>
+              <span class="bould-work-card__year">2025</span>
+            </div>
+            <h2 class="bould-work-card__title">Coming soon</h2>
+          </div>
+        </article>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="bould-page-cta" aria-label="Work with us">
+  <div class="bould-page-cta__inner">
+    <p class="bould-page-cta__label bould-reveal">{{ section.settings.cta_label | default: "Your brand could be next." }}</p>
+    <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary bould-reveal">
+      {{ section.settings.cta_btn | default: 'Start a Project' }}
+      <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Work",
+  "tag": "section",
+  "settings": [
+    { "type": "text",    "id": "eyebrow",    "label": "Eyebrow",       "default": "Work" },
+    { "type": "text",    "id": "title_line1","label": "Title line 1",  "default": "Projects that" },
+    { "type": "text",    "id": "title_line2","label": "Title line 2",  "default": "move the needle." },
+    { "type": "textarea","id": "intro",      "label": "Intro paragraph" },
+    { "type": "text",    "id": "cta_label",  "label": "CTA heading",   "default": "Your brand could be next." },
+    { "type": "url",     "id": "cta_url",    "label": "CTA link" },
+    { "type": "text",    "id": "cta_btn",    "label": "CTA button",    "default": "Start a Project" }
+  ],
+  "blocks": [
+    {
+      "type": "project",
+      "name": "Project",
+      "settings": [
+        { "type": "text",         "id": "title",  "label": "Brand / project name" },
+        { "type": "text",         "id": "type",   "label": "Type",   "info": "e.g. 3D Store, Virtual Try-On" },
+        { "type": "text",         "id": "year",   "label": "Year" },
+        { "type": "text",         "id": "result", "label": "Key result", "info": "e.g. +42% conversion rate" },
+        { "type": "image_picker", "id": "image",  "label": "Cover image" },
+        { "type": "url",          "id": "url",    "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Bould — Work" }]
+}
+{% endschema %}

@@ -1,0 +1,104 @@
+<section class="bould-page-hero" aria-label="Signal">
+  <div class="bould-page-hero__inner">
+    <p class="bould-section-label bould-reveal">{{ section.settings.eyebrow | default: 'Signal' }}</p>
+    <h1 class="bould-page-hero__title">
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'Ideas from the' }}</span></span>
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner bould-accent">{{ section.settings.title_line2 | default: 'edge of commerce.' }}</span></span>
+    </h1>
+    <p class="bould-page-hero__sub bould-reveal">{{ section.settings.intro | default: 'Thinking, research, and perspectives on the future of retail — from the team building it.' }}</p>
+  </div>
+</section>
+
+<section class="bould-signal" aria-label="Articles">
+  {% assign has_blocks = false %}
+  {% for block in section.blocks %}
+    {% if block.type == 'article' %}{% assign has_blocks = true %}{% endif %}
+  {% endfor %}
+
+  {% if has_blocks %}
+    {%- assign featured = section.blocks | where: 'type', 'article' | first -%}
+    {% if featured %}
+      <article class="bould-signal-featured bould-reveal" {{ featured.shopify_attributes }}
+        {% if featured.settings.url != blank %}onclick="window.location='{{ featured.settings.url }}'" role="link" tabindex="0"{% endif %}>
+        <div class="bould-signal-featured__media">
+          {% if featured.settings.image != blank %}
+            {{ featured.settings.image | image_url: width: 1400 | image_tag: loading: 'eager', style: 'width:100%;height:100%;object-fit:cover;' }}
+          {% else %}
+            <div class="bould-signal-featured__placeholder"></div>
+          {% endif %}
+        </div>
+        <div class="bould-signal-featured__body">
+          {% if featured.settings.category != blank %}
+            <span class="bould-tag">{{ featured.settings.category }}</span>
+          {% endif %}
+          <h2 class="bould-signal-featured__title">{{ featured.settings.title | default: 'Featured article title' }}</h2>
+          {% if featured.settings.excerpt != blank %}
+            <p class="bould-signal-featured__excerpt">{{ featured.settings.excerpt }}</p>
+          {% endif %}
+          <span class="bould-signal-featured__meta">{{ featured.settings.date }}{% if featured.settings.read_time != blank %} · {{ featured.settings.read_time }} read{% endif %}</span>
+        </div>
+      </article>
+    {% endif %}
+
+    <div class="bould-signal-grid">
+      {% for block in section.blocks %}
+        {% if block.type == 'article' and forloop.index > 1 %}
+          <article class="bould-signal-card bould-reveal" {{ block.shopify_attributes }}
+            {% if block.settings.url != blank %}onclick="window.location='{{ block.settings.url }}'" role="link" tabindex="0"{% endif %}>
+            <div class="bould-signal-card__media">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', style: 'width:100%;height:100%;object-fit:cover;' }}
+              {% else %}
+                <div class="bould-signal-card__placeholder"></div>
+              {% endif %}
+            </div>
+            <div class="bould-signal-card__body">
+              {% if block.settings.category != blank %}
+                <span class="bould-tag">{{ block.settings.category }}</span>
+              {% endif %}
+              <h3 class="bould-signal-card__title">{{ block.settings.title }}</h3>
+              <span class="bould-signal-card__meta">{{ block.settings.date }}{% if block.settings.read_time != blank %} · {{ block.settings.read_time }} read{% endif %}</span>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  {% else %}
+    {%- comment -%} Empty state {%- endcomment -%}
+    <div class="bould-signal-empty">
+      <p class="bould-section-label">Coming soon</p>
+      <p class="bould-signal-empty__text">{{ section.settings.empty_text | default: 'We are working on our first posts. Check back soon.' }}</p>
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Signal",
+  "tag": "section",
+  "settings": [
+    { "type": "text",    "id": "eyebrow",    "label": "Eyebrow",        "default": "Signal" },
+    { "type": "text",    "id": "title_line1","label": "Title line 1",   "default": "Ideas from the" },
+    { "type": "text",    "id": "title_line2","label": "Title line 2",   "default": "edge of commerce." },
+    { "type": "textarea","id": "intro",      "label": "Intro paragraph" },
+    { "type": "textarea","id": "empty_text", "label": "Empty state text","default": "We are working on our first posts. Check back soon." }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Article",
+      "settings": [
+        { "type": "text",         "id": "title",     "label": "Title" },
+        { "type": "textarea",     "id": "excerpt",   "label": "Excerpt" },
+        { "type": "text",         "id": "category",  "label": "Category",  "info": "e.g. 3D Commerce, Strategy" },
+        { "type": "text",         "id": "date",      "label": "Date",      "info": "e.g. Mar 2026" },
+        { "type": "text",         "id": "read_time", "label": "Read time", "info": "e.g. 4 min" },
+        { "type": "image_picker", "id": "image",     "label": "Cover image" },
+        { "type": "url",          "id": "url",       "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Bould — Signal" }]
+}
+{% endschema %}

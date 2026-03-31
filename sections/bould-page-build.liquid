@@ -1,0 +1,127 @@
+<section class="bould-page-hero" aria-label="Build">
+  <div class="bould-page-hero__inner">
+    <p class="bould-section-label bould-reveal">{{ section.settings.eyebrow | default: 'Build' }}</p>
+    <h1 class="bould-page-hero__title">
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'Everything your' }}</span></span>
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner bould-accent">{{ section.settings.title_line2 | default: 'store needs to win.' }}</span></span>
+    </h1>
+    <p class="bould-page-hero__sub bould-reveal">{{ section.settings.intro | default: 'From immersive 3D storefronts to virtual try-on and conversion-tuned Shopify builds — we cover every layer of the commerce stack.' }}</p>
+  </div>
+</section>
+
+<section class="bould-build-services" aria-label="Services">
+  <ul class="bould-services__list" role="list">
+    {% for block in section.blocks %}
+      {% if block.type == 'service' %}
+        <li class="bould-service-item" {{ block.shopify_attributes }}>
+          <span class="bould-service-item__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <div class="bould-service-item__content">
+            <span class="bould-service-item__name">{{ block.settings.name }}</span>
+            {% if block.settings.description != blank %}
+              <p class="bould-service-item__desc">{{ block.settings.description }}</p>
+            {% endif %}
+            {% if block.settings.tags != blank %}
+              <div class="bould-service-item__tags">
+                {% assign tag_list = block.settings.tags | split: ',' %}
+                {% for tag in tag_list %}
+                  <span class="bould-tag">{{ tag | strip }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="bould-service-item__arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13L13 3M13 3H5M13 3V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="bould-build-process" aria-label="Our process">
+  <div class="bould-section-header">
+    <div>
+      <p class="bould-section-label bould-reveal">{{ section.settings.process_label | default: 'The Process' }}</p>
+      <h2 class="bould-section-title">
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.process_title | default: 'How we bring' }}</span></span>
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.process_title2 | default: 'projects to life.' }}</span></span>
+      </h2>
+    </div>
+  </div>
+  <ol class="bould-process" role="list">
+    {% for block in section.blocks %}
+      {% if block.type == 'step' %}
+        <li class="bould-process__step bould-reveal" {{ block.shopify_attributes }}>
+          <span class="bould-process__num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <div class="bould-process__body">
+            <h3 class="bould-process__name">{{ block.settings.name }}</h3>
+            <p class="bould-process__desc">{{ block.settings.description }}</p>
+          </div>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ol>
+</section>
+
+<section class="bould-page-cta" aria-label="Start a project">
+  <div class="bould-page-cta__inner">
+    <p class="bould-page-cta__label bould-reveal">{{ section.settings.cta_label | default: "Let's build something." }}</p>
+    <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary bould-reveal">
+      {{ section.settings.cta_btn | default: 'Start a Project' }}
+      <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Build",
+  "tag": "section",
+  "settings": [
+    { "type": "text",    "id": "eyebrow",        "label": "Eyebrow",              "default": "Build" },
+    { "type": "text",    "id": "title_line1",    "label": "Title line 1",         "default": "Everything your" },
+    { "type": "text",    "id": "title_line2",    "label": "Title line 2",         "default": "store needs to win." },
+    { "type": "textarea","id": "intro",          "label": "Intro paragraph" },
+    { "type": "text",    "id": "process_label",  "label": "Process section label","default": "The Process" },
+    { "type": "text",    "id": "process_title",  "label": "Process title line 1", "default": "How we bring" },
+    { "type": "text",    "id": "process_title2", "label": "Process title line 2", "default": "projects to life." },
+    { "type": "text",    "id": "cta_label",      "label": "CTA heading",          "default": "Let's build something." },
+    { "type": "url",     "id": "cta_url",        "label": "CTA link" },
+    { "type": "text",    "id": "cta_btn",        "label": "CTA button text",      "default": "Start a Project" }
+  ],
+  "blocks": [
+    {
+      "type": "service",
+      "name": "Service",
+      "settings": [
+        { "type": "text",     "id": "name",        "label": "Service name" },
+        { "type": "textarea", "id": "description", "label": "Description" },
+        { "type": "text",     "id": "tags",        "label": "Tags (comma-separated)", "info": "e.g. Shopify, 3D, AR" }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Process step",
+      "settings": [
+        { "type": "text",     "id": "name",        "label": "Step name" },
+        { "type": "textarea", "id": "description", "label": "Description" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Build",
+      "blocks": [
+        { "type": "service", "settings": { "name": "3D Storefronts", "description": "Immersive, interactive 3D product experiences built directly into your Shopify store. Let customers explore every detail before they buy.", "tags": "Three.js, WebGL, Shopify" } },
+        { "type": "service", "settings": { "name": "Virtual Try-On", "description": "AR-powered try-on technology that drops products into the real world — dramatically reducing returns and boosting confidence at checkout.", "tags": "AR, Computer Vision, Mobile" } },
+        { "type": "service", "settings": { "name": "Shopify Development", "description": "Conversion-tuned Shopify stores built from scratch or redesigned for performance. Custom themes, apps, and integrations.", "tags": "Shopify, Liquid, Performance" } },
+        { "type": "service", "settings": { "name": "eCommerce Strategy", "description": "From positioning to post-purchase flows — we design the full customer journey with retention and lifetime value in mind.", "tags": "Strategy, CRO, Analytics" } },
+        { "type": "step", "settings": { "name": "Discovery", "description": "We dig into your brand, customers, and competitive landscape. Every project starts with a clear brief and a shared vision." } },
+        { "type": "step", "settings": { "name": "Design", "description": "High-fidelity prototypes, 3D asset pipelines, and experience design — all reviewed and approved before a single line of production code." } },
+        { "type": "step", "settings": { "name": "Build", "description": "We develop, test, and optimise in tight sprints. Transparent progress, no surprises, shipped on time." } },
+        { "type": "step", "settings": { "name": "Launch & Grow", "description": "Post-launch support, analytics review, and continuous improvement. We stay in the picture after go-live." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -25,7 +25,7 @@
 
     {%- comment -%} Brand col {%- endcomment -%}
     <div class="bould-footer__brand">
-      <span class="bould-footer__logo">BOULD</span>
+      <img src="{{ 'bould.svg' | asset_url }}" alt="Bould" class="bould-footer__logo-img" width="120" height="32" loading="lazy">
       <p class="bould-footer__tagline">
         {{ section.settings.tagline | default: 'Retail tech. 3D stores. Virtual try-on.' }}
       </p>
@@ -114,7 +114,7 @@
     { "type": "text",    "id": "eyebrow",        "label": "Eyebrow text",     "default": "Let's build together" },
     { "type": "text",    "id": "headline_line1",  "label": "Headline line 1",  "default": "Ready to go" },
     { "type": "text",    "id": "headline_line2",  "label": "Headline line 2",  "default": "3D?" },
-    { "type": "url",     "id": "cta_url",         "label": "CTA link",         "default": "/pages/contact" },
+    { "type": "url",     "id": "cta_url",         "label": "CTA link" },
     { "type": "text",    "id": "cta_label",       "label": "CTA button label", "default": "Book a Demo" },
     { "type": "text",    "id": "tagline",         "label": "Brand tagline",    "default": "Retail tech. 3D stores. Virtual try-on." }
   ],

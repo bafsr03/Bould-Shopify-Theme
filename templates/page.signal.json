@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "bould-page-signal",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

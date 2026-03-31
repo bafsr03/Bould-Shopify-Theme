@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "bould-page-studio",
+      "blocks": {
+        "v1": { "type": "value", "settings": { "name": "Bold by default", "description": "We don't do safe. Every project we take on gets our full creative and technical attention — the kind that leaves a mark." } },
+        "v2": { "type": "value", "settings": { "name": "Technology first", "description": "3D, AR, try-on, real-time rendering — we build at the edge of what's possible in commerce today." } },
+        "v3": { "type": "value", "settings": { "name": "Results-obsessed", "description": "Great design means nothing without conversion. We measure everything and iterate until the numbers move." } }
+      },
+      "block_order": ["v1", "v2", "v3"],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,89 @@
+<section class="bould-page-hero" aria-label="Studio">
+  <div class="bould-page-hero__inner">
+    <p class="bould-section-label bould-reveal">{{ section.settings.eyebrow | default: 'Studio' }}</p>
+    <h1 class="bould-page-hero__title">
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.title_line1 | default: 'We make brands' }}</span></span>
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner bould-accent">{{ section.settings.title_line2 | default: 'impossible to ignore.' }}</span></span>
+    </h1>
+    <p class="bould-page-hero__sub bould-reveal">{{ section.settings.intro | default: 'Bould is a retail technology studio. We build 3D storefronts, virtual try-on experiences, and high-performance eCommerce — for brands that demand more.' }}</p>
+  </div>
+</section>
+
+<section class="bould-studio-mission" aria-label="Mission">
+  <div class="bould-studio-mission__inner">
+    <div class="bould-studio-mission__label">
+      <p class="bould-section-label bould-reveal">{{ section.settings.mission_label | default: 'Our Mission' }}</p>
+    </div>
+    <div class="bould-studio-mission__text bould-reveal">
+      <p>{{ section.settings.mission_text | default: 'Commerce is changing — and most brands are being left behind. We exist to close that gap. Bould partners with forward-thinking brands to design and build digital experiences that convert, retain, and inspire.' }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="bould-studio-values" aria-label="Values">
+  <div class="bould-studio-values__header">
+    <p class="bould-section-label bould-reveal">{{ section.settings.values_label | default: 'How We Work' }}</p>
+  </div>
+  <ul class="bould-studio-values__list" role="list">
+    {% for block in section.blocks %}
+      {% if block.type == 'value' %}
+        <li class="bould-studio-value bould-reveal" {{ block.shopify_attributes }}>
+          <span class="bould-studio-value__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <div class="bould-studio-value__body">
+            <h3 class="bould-studio-value__name">{{ block.settings.name }}</h3>
+            <p class="bould-studio-value__desc">{{ block.settings.description }}</p>
+          </div>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="bould-page-cta" aria-label="Start a project">
+  <div class="bould-page-cta__inner">
+    <p class="bould-page-cta__label bould-reveal">{{ section.settings.cta_label | default: "Ready to build?" }}</p>
+    <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary bould-reveal">
+      {{ section.settings.cta_btn | default: 'Start a Project' }}
+      <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bould — Studio",
+  "tag": "section",
+  "settings": [
+    { "type": "text",    "id": "eyebrow",       "label": "Eyebrow",         "default": "Studio" },
+    { "type": "text",    "id": "title_line1",   "label": "Title line 1",    "default": "We make brands" },
+    { "type": "text",    "id": "title_line2",   "label": "Title line 2",    "default": "impossible to ignore." },
+    { "type": "textarea","id": "intro",         "label": "Intro paragraph" },
+    { "type": "text",    "id": "mission_label", "label": "Mission label",   "default": "Our Mission" },
+    { "type": "textarea","id": "mission_text",  "label": "Mission text" },
+    { "type": "text",    "id": "values_label",  "label": "Values label",    "default": "How We Work" },
+    { "type": "text",    "id": "cta_label",     "label": "CTA heading",     "default": "Ready to build?" },
+    { "type": "url",     "id": "cta_url",       "label": "CTA link" },
+    { "type": "text",    "id": "cta_btn",       "label": "CTA button text", "default": "Start a Project" }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value",
+      "settings": [
+        { "type": "text",     "id": "name",        "label": "Name" },
+        { "type": "textarea", "id": "description", "label": "Description" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Studio",
+      "blocks": [
+        { "type": "value", "settings": { "name": "Bold by default", "description": "We don't do safe. Every project we take on gets our full creative and technical attention — the kind that leaves a mark." } },
+        { "type": "value", "settings": { "name": "Technology first", "description": "3D, AR, try-on, real-time rendering — we build at the edge of what's possible in commerce today." } },
+        { "type": "value", "settings": { "name": "Results-obsessed", "description": "Great design means nothing without conversion. We measure everything and iterate until the numbers move." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

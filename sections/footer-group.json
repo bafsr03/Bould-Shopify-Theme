@@ -1,37 +1,27 @@
 {
-  "name": "t:sections.footer.name",
+  "name": "Footer",
   "type": "footer",
   "sections": {
-    "footer": {
-      "type": "footer",
+    "bould-footer": {
+      "type": "bould-footer",
       "blocks": {
-        "brand-information": {
-          "type": "brand_information",
+        "nav-company": {
+          "type": "nav_col",
           "settings": {
-            "show_social": true
+            "heading": "Company",
+            "menu": "main-menu"
           }
         }
       },
-      "block_order": [
-        "brand-information"
-      ],
+      "block_order": ["nav-company"],
       "settings": {
-        "color_scheme": "scheme-1",
-        "newsletter_enable": false,
-        "newsletter_heading": "Subscribe to our emails",
-        "enable_follow_on_shop": false,
-        "show_social": false,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "payment_enable": true,
-        "show_policy": true,
-        "margin_top": 0,
-        "padding_top": 56,
-        "padding_bottom": 52
+        "eyebrow": "Let's build together",
+        "headline_line1": "Ready to go",
+        "headline_line2": "3D?",
+        "cta_label": "Book a Demo",
+        "tagline": "Retail tech. 3D stores. Virtual try-on."
       }
     }
   },
-  "order": [
-    "footer"
-  ]
+  "order": ["bould-footer"]
 }

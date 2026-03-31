@@ -1,16 +1,3 @@
-{{ 'bould.css' | asset_url | stylesheet_tag }}
-
-{% comment %} GSAP — load before animations.js {% endcomment %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
-{% comment %} Custom cursor + grain {% endcomment %}
-<div class="bould-cursor" aria-hidden="true">
-  <div class="bould-cursor__dot"></div>
-  <div class="bould-cursor__ring"></div>
-</div>
-<div class="bould-grain" aria-hidden="true"></div>
-
 <section class="bould-hero" id="bould-hero">
   {% comment %} Background grid {% endcomment %}
   <div class="bould-hero__bg-grid" aria-hidden="true"></div>
@@ -90,9 +77,6 @@
 
 {% comment %} Three.js scene (ES module) {% endcomment %}
 <script type="module" src="{{ 'bould-scene.js' | asset_url }}"></script>
-
-{% comment %} GSAP animations (defer until GSAP is ready) {% endcomment %}
-<script src="{{ 'bould-animations.js' | asset_url }}" defer></script>
 
 {% schema %}
 {

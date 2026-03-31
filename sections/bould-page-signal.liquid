@@ -1,4 +1,6 @@
 <section class="bould-page-hero" aria-label="Signal">
+  <div class="bould-hero__bg-grid" aria-hidden="true"></div>
+  <span class="bould-page-hero__ghost" aria-hidden="true">{{ section.settings.eyebrow | default: 'Signal' | upcase }}</span>
   <div class="bould-page-hero__inner">
     <p class="bould-section-label bould-reveal">{{ section.settings.eyebrow | default: 'Signal' }}</p>
     <h1 class="bould-page-hero__title">
@@ -6,6 +8,10 @@
       <span class="bould-line-reveal"><span class="bould-line-reveal-inner bould-accent">{{ section.settings.title_line2 | default: 'edge of commerce.' }}</span></span>
     </h1>
     <p class="bould-page-hero__sub bould-reveal">{{ section.settings.intro | default: 'Thinking, research, and perspectives on the future of retail — from the team building it.' }}</p>
+    <div class="bould-page-hero__scroll bould-reveal" aria-hidden="true">
+      <div class="bould-hero__scroll-line"></div>
+      <span>Scroll</span>
+    </div>
   </div>
 </section>
 
@@ -77,6 +83,7 @@
 {
   "name": "Bould — Signal",
   "tag": "section",
+  "class": "bould-page-wrap",
   "settings": [
     { "type": "text",    "id": "eyebrow",    "label": "Eyebrow",        "default": "Signal" },
     { "type": "text",    "id": "title_line1","label": "Title line 1",   "default": "Ideas from the" },

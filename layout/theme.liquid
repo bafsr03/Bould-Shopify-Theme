@@ -42,6 +42,11 @@
 
     {{ content_for_header }}
 
+    {{ 'bould.css' | asset_url | stylesheet_tag }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="{{ 'bould-animations.js' | asset_url }}" defer></script>
+
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
       assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
@@ -300,6 +305,8 @@
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+    <div class="bould-cursor" aria-hidden="true"><div class="bould-cursor__dot"></div><div class="bould-cursor__ring"></div></div>
+    <div class="bould-grain" aria-hidden="true"></div>
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

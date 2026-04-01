@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "bould_hero": {
@@ -25,7 +34,11 @@
           }
         }
       },
-      "block_order": ["stat_1", "stat_2", "stat_3"],
+      "block_order": [
+        "stat_1",
+        "stat_2",
+        "stat_3"
+      ],
       "settings": {
         "eyebrow": "Retail Technology Company",
         "headline_line1": "We Build",
@@ -33,7 +46,10 @@
         "headline_line3": "Of Commerce.",
         "body": "High-performance Shopify stores. Immersive 3D experiences. Virtual try-on technology. End-to-end digital commerce for brands that refuse to settle.",
         "cta_primary": "Start a Project",
-        "cta_secondary": "View Our Work"
+        "cta_primary_url": "",
+        "cta_secondary": "View Our Work",
+        "cta_secondary_url": "",
+        "obj_url": ""
       }
     },
     "bould_marquee": {
@@ -43,36 +59,132 @@
     "bould_services": {
       "type": "bould-services",
       "blocks": {
-        "svc_1": { "type": "service", "settings": { "name": "Conversion-Optimized Websites", "description": "Data-driven Shopify storefronts engineered to convert visitors into loyal customers at every touchpoint." } },
-        "svc_2": { "type": "service", "settings": { "name": "Custom Development", "description": "Bespoke Shopify apps, integrations, and back-end systems built to scale with your brand." } },
-        "svc_3": { "type": "service", "settings": { "name": "Immersive 3D Stores", "description": "Fully interactive 3D shopping environments that drop customers inside your brand world." } },
-        "svc_4": { "type": "service", "settings": { "name": "Virtual Try-On Technology", "description": "AR-powered try-on that reduces returns and dramatically increases purchase confidence." } },
-        "svc_5": { "type": "service", "settings": { "name": "Shopify Plus Integration", "description": "Seamless migrations, B2B builds, and enterprise Shopify Plus implementations at speed." } }
+        "svc_1": {
+          "type": "service",
+          "settings": {
+            "name": "Conversion-Optimized Websites",
+            "description": "Data-driven Shopify storefronts engineered to convert visitors into loyal customers at every touchpoint."
+          }
+        },
+        "svc_2": {
+          "type": "service",
+          "settings": {
+            "name": "Custom Development",
+            "description": "Bespoke Shopify apps, integrations, and back-end systems built to scale with your brand."
+          }
+        },
+        "svc_3": {
+          "type": "service",
+          "settings": {
+            "name": "Immersive 3D Stores",
+            "description": "Fully interactive 3D shopping environments that drop customers inside your brand world."
+          }
+        },
+        "svc_4": {
+          "type": "service",
+          "settings": {
+            "name": "Virtual Try-On Technology",
+            "description": "AR-powered try-on that reduces returns and dramatically increases purchase confidence."
+          }
+        },
+        "svc_5": {
+          "type": "service",
+          "settings": {
+            "name": "Shopify Plus Integration",
+            "description": "Seamless migrations, B2B builds, and enterprise Shopify Plus implementations at speed."
+          }
+        }
       },
-      "block_order": ["svc_1", "svc_2", "svc_3", "svc_4", "svc_5"],
+      "block_order": [
+        "svc_1",
+        "svc_2",
+        "svc_3",
+        "svc_4",
+        "svc_5"
+      ],
       "settings": {
         "label": "What We Build",
         "title_line1": "End-to-end",
         "title_line2": "digital commerce",
-        "title_line3": "excellence."
+        "title_line3": "excellence.",
+        "subtitle": "From concept to conversion — we design, build and scale the commerce experiences your customers love."
       }
     },
     "bould_work": {
       "type": "bould-work",
       "blocks": {
-        "work_1": { "type": "case_study", "settings": { "name": "Joon Distribution", "category": "3D Store + Shopify Plus", "year": "2025" } },
-        "work_2": { "type": "case_study", "settings": { "name": "Dummiez", "category": "3D Store + Shopify Plus", "year": "2025" } },
-        "work_3": { "type": "case_study", "settings": { "name": "Brand 1", "category": "Custom Development", "year": "2024" } },
-        "work_4": { "type": "case_study", "settings": { "name": "Brand 2", "category": "AR Try-On + Shopify", "year": "2024" } },
-        "work_5": { "type": "case_study", "settings": { "name": "Brand 3", "category": "Headless Commerce", "year": "2024" } },
-        "work_6": { "type": "case_study", "settings": { "name": "Brand 4", "category": "Shopify Plus Migration", "year": "2023" } }
+        "work_1": {
+          "type": "case_study",
+          "settings": {
+            "name": "Joon Distribution",
+            "category": "3D Store + Shopify Plus",
+            "year": "2025",
+            "url": ""
+          }
+        },
+        "work_2": {
+          "type": "case_study",
+          "settings": {
+            "name": "Dummiez",
+            "category": "3D Store + Shopify Plus",
+            "year": "2025",
+            "url": ""
+          }
+        },
+        "work_3": {
+          "type": "case_study",
+          "settings": {
+            "name": "Avion",
+            "category": "Custom Development",
+            "year": "2024",
+            "url": ""
+          }
+        },
+        "work_4": {
+          "type": "case_study",
+          "disabled": true,
+          "settings": {
+            "name": "Brand 2",
+            "category": "AR Try-On + Shopify",
+            "year": "2024",
+            "url": ""
+          }
+        },
+        "work_5": {
+          "type": "case_study",
+          "disabled": true,
+          "settings": {
+            "name": "Brand 3",
+            "category": "Headless Commerce",
+            "year": "2024",
+            "url": ""
+          }
+        },
+        "work_6": {
+          "type": "case_study",
+          "disabled": true,
+          "settings": {
+            "name": "Brand 4",
+            "category": "Shopify Plus Migration",
+            "year": "2023",
+            "url": ""
+          }
+        }
       },
-      "block_order": ["work_1", "work_2", "work_3", "work_4", "work_5", "work_6"],
+      "block_order": [
+        "work_1",
+        "work_2",
+        "work_3",
+        "work_4",
+        "work_5",
+        "work_6"
+      ],
       "settings": {
         "label": "Selected Work",
         "title_line1": "Brands we've",
         "title_line2": "helped grow.",
-        "cta_label": "View All Projects"
+        "cta_label": "View All Projects",
+        "cta_url": ""
       }
     },
     "bould_products": {
@@ -81,6 +193,7 @@
         "label": "The Collection",
         "title_line1": "Explore the",
         "title_line2": "full range.",
+        "collection": "",
         "product_limit": 8,
         "cta_label": "Find My Perfect Size",
         "view_all_label": "View All Products"
@@ -89,32 +202,135 @@
     "bould_capabilities": {
       "type": "bould-capabilities",
       "blocks": {
-        "t1": { "type": "tech", "settings": { "icon": "🛍️", "name": "Shopify Plus" } },
-        "t2": { "type": "tech", "settings": { "icon": "📦", "name": "Three.js / WebGL" } },
-        "t3": { "type": "tech", "settings": { "icon": "👓", "name": "AR / Virtual Try-On" } },
-        "t4": { "type": "tech", "settings": { "icon": "⚡", "name": "Hydrogen Headless" } },
-        "t5": { "type": "tech", "settings": { "icon": "🎨", "name": "Figma → Code" } },
-        "t6": { "type": "tech", "settings": { "icon": "🤖", "name": "AI Personalization" } },
-        "t7": { "type": "tech", "settings": { "icon": "📊", "name": "CRO & Analytics" } },
-        "t8": { "type": "tech", "settings": { "icon": "🌐", "name": "Multilingual / B2B" } }
+        "t1": {
+          "type": "tech",
+          "settings": {
+            "icon": "🛍️",
+            "name": "Shopify Plus"
+          }
+        },
+        "t2": {
+          "type": "tech",
+          "settings": {
+            "icon": "📦",
+            "name": "Three.js / WebGL"
+          }
+        },
+        "t3": {
+          "type": "tech",
+          "settings": {
+            "icon": "👓",
+            "name": "AR / Virtual Try-On"
+          }
+        },
+        "t4": {
+          "type": "tech",
+          "settings": {
+            "icon": "⚡",
+            "name": "Hydrogen Headless"
+          }
+        },
+        "t5": {
+          "type": "tech",
+          "settings": {
+            "icon": "🎨",
+            "name": "Figma → Code"
+          }
+        },
+        "t6": {
+          "type": "tech",
+          "settings": {
+            "icon": "🤖",
+            "name": "AI Personalization"
+          }
+        },
+        "t7": {
+          "type": "tech",
+          "settings": {
+            "icon": "📊",
+            "name": "CRO & Analytics"
+          }
+        },
+        "t8": {
+          "type": "tech",
+          "settings": {
+            "icon": "🌐",
+            "name": "Multilingual / B2B"
+          }
+        }
       },
-      "block_order": ["t1","t2","t3","t4","t5","t6","t7","t8"],
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
       "settings": {
         "label": "Our Stack",
         "title_line1": "Powered by",
         "title_line2": "the best",
-        "title_line3": "in commerce."
+        "title_line3": "in commerce.",
+        "body": ""
       }
     },
     "bould_stats": {
       "type": "bould-stats",
       "blocks": {
-        "s1": { "type": "stat", "settings": { "number": "5+", "label": "Brands Launched", "animated": true, "count_value": "5", "suffix": "+" } },
-        "s2": { "type": "stat", "settings": { "number": "40%+", "label": "Avg Conversion Lift", "animated": true, "count_value": "40", "suffix": "%+" } },
-        "s3": { "type": "stat", "settings": { "number": "2x", "label": "Avg Add-to-Cart Rate", "animated": false } },
-        "s4": { "type": "stat", "settings": { "number": "98%", "label": "Client Retention", "animated": true, "count_value": "98", "suffix": "%" } }
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "number": "5+",
+            "label": "Brands Launched",
+            "animated": true,
+            "count_value": "5",
+            "suffix": "+",
+            "prefix": ""
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "number": "40%+",
+            "label": "Avg Conversion Lift",
+            "animated": true,
+            "count_value": "40",
+            "suffix": "%+",
+            "prefix": ""
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "number": "2x",
+            "label": "Avg Add-to-Cart Rate",
+            "animated": false,
+            "count_value": "150",
+            "suffix": "+",
+            "prefix": ""
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "number": "98%",
+            "label": "Client Retention",
+            "animated": true,
+            "count_value": "98",
+            "suffix": "%",
+            "prefix": ""
+          }
+        }
       },
-      "block_order": ["s1","s2","s3","s4"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
       "settings": {
         "headline": "Results that speak.",
         "headline_dim": "Numbers that prove it."
@@ -128,8 +344,13 @@
         "title_line2": "Build?",
         "body": "Tell us about your project. We'll respond within 24 hours with a plan to make it happen.",
         "show_form": false,
+        "input_placeholder": "your@email.com",
+        "submit_label": "Get in Touch",
+        "form_action": "",
         "cta_label": "Start a Project",
-        "secondary_label": "Email Us"
+        "cta_url": "",
+        "secondary_label": "Email Us",
+        "secondary_url": ""
       }
     }
   },

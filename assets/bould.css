@@ -35,35 +35,39 @@ body:has(.bould-page-hero) {
   background-color: var(--b-black) !important;
 }
 
-/* Make the Spotlight header transparent + light-colored on all Bould pages */
-body:has(.bould-hero) .header-wrapper,
-body:has(.bould-page-hero) .header-wrapper {
-  background: transparent;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+/* ── Global dark header for all Bould pages ── */
+.header-wrapper {
+  background: rgba(8, 8, 8, 0.96) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+  backdrop-filter: blur(12px);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-body:has(.bould-hero) .header,
-body:has(.bould-page-hero) .header {
+.header {
   --color-foreground: 240, 237, 232;
-  /* var(--b-white) in RGB */
   --color-background: 8, 8, 8;
 }
 
-body:has(.bould-hero) .header__heading-link,
-body:has(.bould-hero) .header-wrapper a,
-body:has(.bould-hero) .header__icon svg,
-body:has(.bould-page-hero) .header__heading-link,
-body:has(.bould-page-hero) .header-wrapper a,
-body:has(.bould-page-hero) .header__icon svg {
-  color: var(--b-white);
-  stroke: var(--b-white);
+.header__heading-link,
+.header-wrapper a,
+.header__icon svg {
+  color: var(--b-white) !important;
+  stroke: var(--b-white) !important;
 }
 
-/* Sticky: add solid bg once user scrolls */
-body:has(.bould-hero) .header-wrapper.scrolled,
-body:has(.bould-page-hero) .header-wrapper.scrolled {
-  background: rgba(8, 8, 8, 0.92) !important;
-  backdrop-filter: blur(12px);
+/* Hero pages: fully transparent until scroll */
+body:has(.bould-hero) .header-wrapper,
+body:has(.bould-page-hero) .header-wrapper {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: none;
+}
+
+/* Scrolled state: dark blur on all pages */
+.header-wrapper.scrolled {
+  background: rgba(8, 8, 8, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(14px) !important;
 }
 
 /* Footer dark treatment */
@@ -2097,20 +2101,25 @@ body:has(.bould-page-hero) .footer-section * {
    MOBILE NAV DRAWER — Bould override
 ══════════════════════════════════════ */
 
-/* Backdrop scrim */
-.js menu-drawer>details[open]>summary::before {
-  background: rgba(4, 0, 12, 0.7) !important;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+/* Backdrop scrim — covers right side when drawer is open */
+header-drawer details[open] > summary::before,
+.js header-drawer details[open] > summary::before {
+  background: rgba(4, 0, 12, 0.85) !important;
+  backdrop-filter: blur(10px) saturate(0.6) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(0.6) !important;
 }
 
-/* Drawer panel */
-.menu-drawer {
-  background: rgba(8, 0, 20, 0.82) !important;
+/* Drawer panel — force dark over any color scheme */
+.menu-drawer,
+#menu-drawer {
+  background: rgba(8, 0, 20, 0.94) !important;
   backdrop-filter: blur(28px) saturate(1.6) !important;
   -webkit-backdrop-filter: blur(28px) saturate(1.6) !important;
   border-right: 1px solid rgba(139, 92, 246, 0.18) !important;
   filter: none !important;
+  --color-background: 8, 0, 20 !important;
+  --color-foreground: 240, 237, 232 !important;
+  --gradient-background: transparent !important;
 }
 
 /* Grain layer */

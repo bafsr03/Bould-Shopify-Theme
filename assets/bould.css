@@ -1576,7 +1576,7 @@ body:has(.bould-page-hero) .footer-section * {
   align-items: start;
 }
 .bould-header-logo-svg {
-  height: 20px;
+  height: 16px;
   width: auto;
   display: block;
   filter: brightness(0) invert(1);

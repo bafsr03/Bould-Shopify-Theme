@@ -212,4 +212,14 @@
     );
   }
 
+  /* ── Sticky header: add .scrolled when page scrolls past ~60px ── */
+  const headerWrapper = document.querySelector('.header-wrapper');
+  if (headerWrapper) {
+    const onScroll = () => {
+      headerWrapper.classList.toggle('scrolled', window.scrollY > 60);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // apply on load in case page is already scrolled
+  }
+
 })();

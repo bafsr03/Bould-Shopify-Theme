@@ -10,9 +10,10 @@
         "st1": { "type": "step", "settings": { "name": "Discovery", "description": "We dig into your brand, customers, and competitive landscape. Every project starts with a clear brief and a shared vision." } },
         "st2": { "type": "step", "settings": { "name": "Design", "description": "High-fidelity prototypes, 3D asset pipelines, and experience design — all reviewed and approved before a single line of production code." } },
         "st3": { "type": "step", "settings": { "name": "Build", "description": "We develop, test, and optimise in tight sprints. Transparent progress, no surprises, shipped on time." } },
-        "st4": { "type": "step", "settings": { "name": "Launch & Grow", "description": "Post-launch support, analytics review, and continuous improvement. We stay in the picture after go-live." } }
+        "st4": { "type": "step", "settings": { "name": "Launch & Grow", "description": "Post-launch support, analytics review, and continuous improvement. We stay in the picture after go-live." } },
+        "theme1": { "type": "theme_card", "settings": { "name": "Ghosts Vintage", "badge": "Live", "description": "A bold vintage fashion store built on Shopify Horizon — dark aesthetics, editorial layouts, and high-contrast typography.", "tags": "Shopify, Horizon, Fashion, Vintage", "asset_image": "bould-preview-ghosts-vintage.png", "preview_url": "/pages/ghosts-vintage" } }
       },
-      "block_order": ["svc1", "svc2", "svc3", "svc4", "st1", "st2", "st3", "st4"],
+      "block_order": ["svc1", "svc2", "svc3", "svc4", "st1", "st2", "st3", "st4", "theme1"],
       "settings": {}
     }
   },

@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "bould-theme-preview",
+      "settings": {
+        "theme_name": "Ghosts Vintage",
+        "description": "A bold vintage fashion store built on Shopify Horizon — dark aesthetics, editorial layouts, and high-contrast typography.",
+        "tags": "Shopify, Horizon, Fashion, Vintage",
+        "view_mode": "screenshot",
+        "asset_screenshot": "bould-preview-ghosts-vintage.png",
+        "display_url": "ghost-vintage-6371.myshopify.com",
+        "back_label": "Back to Build"
+      }
+    }
+  },
+  "order": ["main"]
+}

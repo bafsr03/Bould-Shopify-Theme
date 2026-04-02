@@ -9,8 +9,9 @@
   assign cta_label   = section.settings.cta_label     | default: "Let's build something."
   assign cta_btn     = section.settings.cta_btn       | default: 'Start a Project'
 
-  assign services = section.blocks | where: 'type', 'service'
-  assign steps    = section.blocks | where: 'type', 'step'
+  assign services     = section.blocks | where: 'type', 'service'
+  assign steps        = section.blocks | where: 'type', 'step'
+  assign theme_cards  = section.blocks | where: 'type', 'theme_card'
 -%}
 
 {%- comment -%} ── PAGE HERO ── {%- endcomment -%}
@@ -83,6 +84,77 @@
 </div>
 {%- endif -%}
 
+{%- comment -%} ── PRE-BUILT THEMES ── {%- endcomment -%}
+{%- if theme_cards.size > 0 -%}
+<div class="bould-build-portfolio">
+  <div class="bould-section-header">
+    <div>
+      <p class="bould-section-label bould-reveal">{{ section.settings.portfolio_label | default: 'Pre-built Themes' }}</p>
+      <h2 class="bould-section-title">
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ section.settings.portfolio_title1 | default: 'Ready to launch' }}</span></span>
+        <span class="bould-line-reveal"><span class="bould-line-reveal-inner bould-accent">{{ section.settings.portfolio_title2 | default: 'themes & stores.' }}</span></span>
+      </h2>
+    </div>
+  </div>
+  <div class="bould-theme-grid">
+    {%- for block in theme_cards -%}
+      {%- assign card_url = block.settings.preview_url | default: '#' -%}
+      <div class="bould-theme-card bould-reveal" {{ block.shopify_attributes }}>
+        <a href="{{ card_url }}" class="bould-theme-card__preview" aria-label="Preview {{ block.settings.name }}">
+          {%- if block.settings.image != blank -%}
+            <img src="{{ block.settings.image | image_url: width: 900 }}"
+                 alt="{{ block.settings.name }} theme preview"
+                 loading="lazy"
+                 width="900"
+                 class="bould-theme-card__img">
+          {%- elsif block.settings.asset_image != blank -%}
+            <img src="{{ block.settings.asset_image | asset_url }}"
+                 alt="{{ block.settings.name }} theme preview"
+                 loading="lazy"
+                 class="bould-theme-card__img">
+          {%- else -%}
+            <div class="bould-theme-card__placeholder">
+              <span>{{ block.settings.name | slice: 0, 1 | upcase }}</span>
+            </div>
+          {%- endif -%}
+          <div class="bould-theme-card__overlay" aria-hidden="true">
+            <span class="bould-theme-card__preview-label">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              View Theme
+            </span>
+          </div>
+        </a>
+        <div class="bould-theme-card__body">
+          <div class="bould-theme-card__meta">
+            <h3 class="bould-theme-card__name">{{ block.settings.name }}</h3>
+            {%- if block.settings.badge != blank -%}
+              <span class="bould-theme-card__badge">{{ block.settings.badge }}</span>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.description != blank -%}
+            <p class="bould-theme-card__desc">{{ block.settings.description }}</p>
+          {%- endif -%}
+          {%- if block.settings.tags != blank -%}
+            <div class="bould-theme-card__tags">
+              {%- assign tag_list = block.settings.tags | split: ',' -%}
+              {%- for tag in tag_list -%}
+                <span class="bould-tag">{{ tag | strip }}</span>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          <a href="{{ card_url }}" class="bould-btn bould-btn--ghost bould-btn--sm">
+            View Theme
+            <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+{%- endif -%}
+
 {%- comment -%} ── CTA ── {%- endcomment -%}
 <div class="bould-page-cta">
   <div class="bould-page-cta__inner">
@@ -113,7 +185,11 @@
     { "type": "text",    "id": "process_title2", "label": "Process title line 2", "default": "projects to life." },
     { "type": "text",    "id": "cta_label",      "label": "CTA heading",          "default": "Let's build something." },
     { "type": "url",     "id": "cta_url",        "label": "CTA link" },
-    { "type": "text",    "id": "cta_btn",        "label": "CTA button text",      "default": "Start a Project" }
+    { "type": "text",    "id": "cta_btn",        "label": "CTA button text",      "default": "Start a Project" },
+    { "type": "header",  "content": "Pre-built Themes Section" },
+    { "type": "text",    "id": "portfolio_label",  "label": "Section eyebrow",    "default": "Pre-built Themes" },
+    { "type": "text",    "id": "portfolio_title1", "label": "Title line 1",       "default": "Ready to launch" },
+    { "type": "text",    "id": "portfolio_title2", "label": "Title line 2",       "default": "themes & stores." }
   ],
   "blocks": [
     {
@@ -131,6 +207,20 @@
       "settings": [
         { "type": "text",     "id": "name",        "label": "Step name" },
         { "type": "textarea", "id": "description", "label": "Description" }
+      ]
+    },
+    {
+      "type": "theme_card",
+      "name": "Theme Card",
+      "settings": [
+        { "type": "text",         "id": "name",          "label": "Theme name",                         "default": "Theme Name" },
+        { "type": "text",         "id": "badge",         "label": "Badge (e.g. New, Featured)" },
+        { "type": "textarea",     "id": "description",   "label": "Short description" },
+        { "type": "text",         "id": "tags",          "label": "Tags (comma-separated)" },
+        { "type": "image_picker", "id": "image",         "label": "Preview screenshot (Shopify Media)" },
+        { "type": "text",         "id": "asset_image",   "label": "Preview image filename (Assets folder)" },
+        { "type": "url",          "id": "preview_url",   "label": "Preview page URL (internal)" },
+        { "type": "url",          "id": "store_url",     "label": "Live store URL (external)" }
       ]
     }
   ],

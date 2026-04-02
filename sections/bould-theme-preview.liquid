@@ -1,0 +1,146 @@
+{%- liquid
+  assign theme_name   = section.settings.theme_name  | default: page.title
+  assign description  = section.settings.description
+  assign tags         = section.settings.tags
+  assign store_url    = section.settings.store_url
+  assign display_url  = section.settings.display_url | default: store_url
+  assign back_url     = section.settings.back_url    | default: '/pages/build'
+  assign back_label   = section.settings.back_label  | default: 'Back to Build'
+  assign view_mode    = section.settings.view_mode   | default: 'screenshot'
+-%}
+
+<div class="bould-theme-preview-wrap">
+
+  {%- comment -%} ── NAV ── {%- endcomment -%}
+  <nav class="bould-theme-preview-nav" aria-label="Breadcrumb">
+    <a href="{{ back_url }}" class="bould-preview-back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M13 8H3M3 8L8 3M3 8L8 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {{ back_label }}
+    </a>
+  </nav>
+
+  {%- comment -%} ── HEADER ── {%- endcomment -%}
+  <header class="bould-theme-preview-header">
+    <div class="bould-preview-meta">
+      <p class="bould-section-label bould-reveal">Theme Preview</p>
+      <h1 class="bould-preview-title bould-reveal">{{ theme_name }}</h1>
+      {%- if description != blank -%}
+        <p class="bould-preview-desc bould-reveal">{{ description }}</p>
+      {%- endif -%}
+      {%- if tags != blank -%}
+        <div class="bould-preview-tags bould-reveal">
+          {%- assign tag_list = tags | split: ',' -%}
+          {%- for tag in tag_list -%}
+            <span class="bould-tag">{{ tag | strip }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      <div class="bould-preview-actions bould-reveal">
+        {%- if store_url != blank -%}
+          <a href="{{ store_url }}" target="_blank" rel="noopener noreferrer" class="bould-btn bould-btn--primary">
+            Visit Store
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M2 12L12 2M12 2H5M12 2V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+        <a href="{{ back_url }}" class="bould-btn bould-btn--ghost">
+          {{ back_label }}
+        </a>
+      </div>
+    </div>
+  </header>
+
+  {%- comment -%} ── BROWSER MOCKUP ── {%- endcomment -%}
+  <div class="bould-browser-mockup bould-reveal">
+    <div class="bould-browser-bar" aria-hidden="true">
+      <div class="bould-browser-dots">
+        <span class="bould-browser-dot bould-browser-dot--red"></span>
+        <span class="bould-browser-dot bould-browser-dot--amber"></span>
+        <span class="bould-browser-dot bould-browser-dot--green"></span>
+      </div>
+      <div class="bould-browser-url">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:6px;flex-shrink:0">
+          <rect x="1" y="4" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M4 4V3a2 2 0 0 1 4 0v1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        {%- if display_url != blank -%}
+          {{ display_url | remove: 'https://' | remove: 'http://' | truncate: 60 }}
+        {%- else -%}
+          {{ theme_name | downcase | replace: ' ', '-' }}.myshopify.com
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="bould-browser-content {%- if view_mode == 'iframe' %} bould-browser-content--iframe{%- endif -%}">
+      {%- if view_mode == 'iframe' and store_url != blank -%}
+        <iframe
+          src="{{ store_url }}"
+          title="{{ theme_name }} store preview"
+          class="bould-browser-iframe"
+          loading="lazy"
+          allowfullscreen>
+        </iframe>
+      {%- elsif section.settings.screenshot != blank -%}
+        <img src="{{ section.settings.screenshot | image_url: width: 1600 }}"
+             alt="{{ theme_name }} store screenshot"
+             loading="lazy"
+             width="1600">
+      {%- elsif section.settings.asset_screenshot != blank -%}
+        <img src="{{ section.settings.asset_screenshot | asset_url }}"
+             alt="{{ theme_name }} store screenshot"
+             loading="lazy">
+      {%- else -%}
+        <div class="bould-browser-empty">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <rect x="4" y="8" width="32" height="24" rx="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 14h32" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="9" cy="11" r="1.5" fill="currentColor"/>
+            <circle cx="14" cy="11" r="1.5" fill="currentColor"/>
+            <circle cx="19" cy="11" r="1.5" fill="currentColor"/>
+          </svg>
+          <p>Add a screenshot in the theme editor to preview.</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "Bould — Theme Preview",
+  "tag": "div",
+  "class": "bould-page-wrap",
+  "settings": [
+    { "type": "text",         "id": "theme_name",       "label": "Theme name",                       "info": "Defaults to page title if blank" },
+    { "type": "textarea",     "id": "description",      "label": "Description" },
+    { "type": "text",         "id": "tags",             "label": "Tags (comma-separated)" },
+    { "type": "header",       "content": "View Mode" },
+    {
+      "type": "select",
+      "id": "view_mode",
+      "label": "View mode",
+      "options": [
+        { "value": "screenshot", "label": "Screenshot" },
+        { "value": "iframe",     "label": "Live iframe (store must allow framing)" }
+      ],
+      "default": "screenshot"
+    },
+    { "type": "header",       "content": "Screenshot" },
+    { "type": "image_picker", "id": "screenshot",       "label": "Screenshot (Shopify Media)" },
+    { "type": "text",         "id": "asset_screenshot", "label": "Screenshot filename (assets/ folder)", "info": "e.g. bould-preview-ghosts-vintage.png" },
+    { "type": "header",       "content": "Store Info" },
+    { "type": "url",          "id": "store_url",        "label": "Store URL",                        "info": "Used for the Visit Store button and iframe source" },
+    { "type": "text",         "id": "display_url",      "label": "URL shown in browser bar",         "info": "e.g. ghost-vintage-6371.myshopify.com" },
+    { "type": "header",       "content": "Navigation" },
+    { "type": "url",          "id": "back_url",         "label": "Back button URL" },
+    { "type": "text",         "id": "back_label",       "label": "Back button label",                "default": "Back to Build" }
+  ],
+  "presets": [
+    { "name": "Bould — Theme Preview" }
+  ]
+}
+{% endschema %}

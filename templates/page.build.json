@@ -11,9 +11,10 @@
         "st2": { "type": "step", "settings": { "name": "Design", "description": "High-fidelity prototypes, 3D asset pipelines, and experience design — all reviewed and approved before a single line of production code." } },
         "st3": { "type": "step", "settings": { "name": "Build", "description": "We develop, test, and optimise in tight sprints. Transparent progress, no surprises, shipped on time." } },
         "st4": { "type": "step", "settings": { "name": "Launch & Grow", "description": "Post-launch support, analytics review, and continuous improvement. We stay in the picture after go-live." } },
-        "theme1": { "type": "theme_card", "settings": { "name": "Ghosts Vintage", "badge": "Live", "description": "A bold vintage fashion store built on Shopify Horizon — dark aesthetics, editorial layouts, and high-contrast typography.", "tags": "Shopify, Horizon, Fashion, Vintage", "asset_image": "bould-preview-ghosts-vintage.png", "preview_url": "/pages/ghosts-vintage" } }
+        "theme1": { "type": "theme_card", "settings": { "name": "Ghosts Vintage", "badge": "Archive", "description": "A bold vintage fashion store built on Shopify Horizon — dark aesthetics, editorial layouts, and high-contrast typography.", "tags": "Shopify, Horizon, Fashion, Vintage", "asset_image": "bould-preview-ghosts-vintage.png", "preview_url": "/pages/ghosts-vintage" } },
+        "theme2": { "type": "theme_card", "settings": { "name": "Charlie Pike Tobacco", "badge": "Live", "description": "A refined tobacco & glass shop in Seattle. Warm amber tones, product-first layouts, and a strong sense of place.", "tags": "Shopify, Horizon, Retail, Tobacco", "asset_image": "bould-preview-charlie-pike.png", "preview_url": "/pages/charlie-pike" } }
       },
-      "block_order": ["svc1", "svc2", "svc3", "svc4", "st1", "st2", "st3", "st4", "theme1"],
+      "block_order": ["svc1", "svc2", "svc3", "svc4", "st1", "st2", "st3", "st4", "theme1", "theme2"],
       "settings": {}
     }
   },

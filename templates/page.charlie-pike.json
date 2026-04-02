@@ -1,10 +1,10 @@
 {
   "sections": {
     "main": {
-      "type": "bould-gv-homepage",
+      "type": "bould-cpt-homepage",
       "settings": {
         "back_label": "Back to Build",
-        "next_version_url": "/pages/charlie-pike"
+        "prev_version_url": "/pages/ghosts-vintage"
       }
     }
   },

@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "bould-gv-homepage",
+      "settings": {
+        "back_label": "Back to Build"
+      }
+    }
+  },
+  "order": ["main"]
+}

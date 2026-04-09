@@ -180,10 +180,15 @@ body:has(.bould-page-hero) .footer-section * {
 
 .bould-hero__canvas {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  right: 0;
+  top: 0;
+  width: 52%;
   height: 100%;
   z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 18%);
+  mask-image: linear-gradient(to right, transparent 0%, black 18%);
 }
 
 .bould-hero__bg-grid {
@@ -2005,7 +2010,10 @@ body:has(.bould-page-hero) .footer-section * {
   }
 
   .bould-hero__canvas {
-    opacity: 0.4;
+    width: 100%;
+    opacity: 0.35;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .bould-section-header {

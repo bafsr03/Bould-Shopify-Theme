@@ -37,7 +37,8 @@ class BouldScene {
     this._revealTimer     = null;
 
     /* Set after OBJ/font is loaded */
-    this._baseScale = 1;
+    this._baseScale    = 1;
+    this._entranceMat  = null; // shared material, used for opacity fade-in
 
     this._resize       = this._onResize.bind(this);
     this._mouseMove    = this._onMouseMove.bind(this);
@@ -150,7 +151,10 @@ class BouldScene {
       metalness: 0.96,
       roughness: 0.08,
       envMapIntensity: 2.2,
+      transparent: true,
+      opacity: 0, // fades in during entrance animation
     });
+    this._entranceMat = mat;
 
     root.traverse((child) => {
       if (child.isMesh) {
@@ -257,7 +261,10 @@ class BouldScene {
           metalness: 0.96,
           roughness: 0.08,
           envMapIntensity: 2.2,
+          transparent: true,
+          opacity: 0,
         });
+        this._entranceMat = mat;
 
         this.bMesh       = new THREE.Mesh(geo, mat);
         this._baseScale  = 1;
@@ -365,20 +372,23 @@ class BouldScene {
 
     /* Logo mesh */
     if (this.bMesh) {
-      const ep      = this._easeOutElastic(this.entranceProgress); // elastic scale
-      const epSlide = this._easeOutQuart(this.entranceProgress);   // smooth slide
+      const epFade  = this._easeOutQuart(this.entranceProgress);  // smooth 0→1 for fade + scale
+      const epScale = this._easeOutQuart(Math.min(this.entranceProgress * 1.2, 1)); // slightly faster scale
 
-      /* Entrance: slide in from right + decaying spin */
-      const slideX    = (1 - epSlide) * 5.5;
-      const spinBonus = (1 - epSlide) * Math.PI * 1.4;
-
-      this.bMesh.rotation.y = t * 0.28 + this.target.x * 0.35 + spinBonus;
+      /* Continuous idle rotation + mouse tilt — no entrance slide or spin bonus */
+      this.bMesh.rotation.y = t * 0.28 + this.target.x * 0.35;
       this.bMesh.rotation.x = this.target.y * 0.2;
-      this.bMesh.position.x = slideX;
+      this.bMesh.position.x = 0;
       this.bMesh.position.y = Math.sin(t * 0.6) * 0.12 - this.scrollProgress * 0.7;
 
-      /* Scale springs up with elastic overshoot */
-      this.bMesh.scale.setScalar(this._baseScale * Math.max(0, ep));
+      /* Gentle scale from 80% → 100% while fading in */
+      const scaleVal = this._baseScale * (0.8 + 0.2 * epScale);
+      this.bMesh.scale.setScalar(Math.max(0, scaleVal) * Math.min(epScale + 0.001, 1));
+
+      /* Opacity fade-in */
+      if (this._entranceMat) {
+        this._entranceMat.opacity = Math.min(1, epFade);
+      }
     }
 
     /* Key light slow orbit */

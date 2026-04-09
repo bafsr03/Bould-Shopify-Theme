@@ -1,107 +1,96 @@
 /**
  * BOULD 3D Scene — Three.js hero
- * Loads the brand logo as a GLB/GLTF or OBJ (auto-detected by extension),
- * or generates a "B" via TextGeometry as a final fallback.
- *
- * - Particles + canvas are visible immediately on page load.
- * - The 3D logo springs in when the user first scrolls, OR after 1.5 s (whichever is first).
- * - Scroll progress drives a vertical parallax while the hero is in view.
+ * - Three-layer starfield background (subtle space aesthetic)
+ * - 3D logo loaded from GLB/OBJ, fades in
+ * - Click the logo → vertex-noise distortion morph, snaps back
  */
 /*
  * esm.sh is used instead of cdn.jsdelivr.net because Three.js addon modules
- * (GLTFLoader, OBJLoader, FontLoader, etc.) use bare import specifiers
- * ("import { ... } from 'three'") which browsers reject without an import map.
- * esm.sh rewrites all bare imports to full URLs automatically.
+ * use bare import specifiers ("import { ... } from 'three'") that browsers
+ * reject without an import map. esm.sh rewrites them automatically.
  */
 import * as THREE from 'https://esm.sh/three@0.161.0';
-import { FontLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'https://esm.sh/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
-import { OBJLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
-import { GLTFLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+import { FontLoader }    from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry }  from 'https://esm.sh/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
+import { OBJLoader }     from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
+import { GLTFLoader }    from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'https://esm.sh/three@0.161.0/examples/jsm/environments/RoomEnvironment.js';
 
 class BouldScene {
   constructor(canvasEl, objUrl) {
-    this.canvas   = canvasEl;
-    this.objUrl   = objUrl || null;
-    this.mouse    = { x: 0, y: 0 };
-    this.target   = { x: 0, y: 0 };
-    this.bMesh    = null;
-    this.raf      = null;
-    this.alive    = true;
+    this.canvas  = canvasEl;
+    this.objUrl  = objUrl || null;
+    this.mouse   = { x: 0, y: 0 };
+    this.target  = { x: 0, y: 0 };
+    this.bMesh   = null;
+    this.raf     = null;
+    this.alive   = true;
 
-    /* Entrance + scroll state */
-    this.revealed         = false; // true once entrance animation starts
-    this.entranceProgress = 0;     // 0 → 1 drives spring-in
-    this.scrollProgress   = 0;     // 0 → 1 through hero (parallax)
+    /* Entrance + scroll */
+    this.revealed         = false;
+    this.entranceProgress = 0;
+    this.scrollProgress   = 0;
     this._revealTimer     = null;
 
-    /* Set after OBJ/font is loaded */
-    this._baseScale    = 1;
-    this._entranceMat  = null; // shared material, used for opacity fade-in
+    /* Model */
+    this._baseScale   = 1;
+    this._entranceMat = null;
+
+    /* Distortion */
+    this._distortPhase    = 0;   // 0=idle  1=growing  2=shrinking
+    this._distortProgress = 0;   // 0 → 1 (grow) → 0 (shrink)
+    this._distortSeed     = 0;   // randomised per click
+    this._distortOrigPos  = [];  // [{ geo, orig:Float32Array }]
+    this._distortMeshes   = [];
+
+    /* Raycaster for hover/click */
+    this._raycaster = new THREE.Raycaster();
 
     this._resize       = this._onResize.bind(this);
     this._mouseMove    = this._onMouseMove.bind(this);
     this._scrollReveal = this._onScrollReveal.bind(this);
+    this._onClick      = this._onCanvasClick.bind(this);
 
     this._init();
   }
 
   /* ─── Init ─────────────────────────────────────────────────────────── */
   _init() {
-    /* Use a rAF to read canvas dimensions after layout (avoids 0×0 on load) */
     requestAnimationFrame(() => {
-      const w = this.canvas.clientWidth  || Math.round(window.innerWidth  * 0.52);
+      const w = this.canvas.clientWidth  || window.innerWidth;
       const h = this.canvas.clientHeight || window.innerHeight;
 
-      /* Renderer */
-      this.renderer = new THREE.WebGLRenderer({
-        canvas: this.canvas,
-        antialias: true,
-        alpha: true,
-      });
+      this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: true });
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       this.renderer.setSize(w, h, false);
-      this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      this.renderer.toneMapping         = THREE.ACESFilmicToneMapping;
       this.renderer.toneMappingExposure = 1.4;
-      this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+      this.renderer.outputColorSpace    = THREE.SRGBColorSpace;
 
-      /* Scene & camera */
       this.scene  = new THREE.Scene();
       this.camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
       this.camera.position.set(0, 0, 6);
 
-      /* Room environment for metal reflections */
-      const pmrem  = new THREE.PMREMGenerator(this.renderer);
+      const pmrem = new THREE.PMREMGenerator(this.renderer);
       pmrem.compileEquirectangularShader();
-      const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      this.scene.environment = envTex;
+      this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
       pmrem.dispose();
 
       this._setupLights();
-      this._createParticles();
+      this._createStarfield();
 
-      /* Load logo — auto-detect GLB/GLTF vs OBJ by extension */
-      if (this.objUrl) {
-        this._loadModel();
-      } else {
-        this._loadFont();
-      }
+      if (this.objUrl) { this._loadModel(); } else { this._loadFont(); }
 
-      /* Events */
       window.addEventListener('mousemove', this._mouseMove,    { passive: true });
       window.addEventListener('resize',    this._resize,       { passive: true });
       window.addEventListener('scroll',    this._scrollReveal, { passive: true });
+      this.canvas.addEventListener('click', this._onClick);
 
-      /* Auto-reveal: if user hasn't scrolled after 1.5 s, start the entrance anyway */
       this._revealTimer = setTimeout(() => this._triggerReveal(), 1500);
-
-      /* Start loop */
       this._loop();
     });
   }
 
-  /* Shared reveal trigger — called on first scroll OR by the timer */
   _triggerReveal() {
     if (this.revealed) return;
     this.revealed = true;
@@ -111,56 +100,77 @@ class BouldScene {
   /* ─── Lights ────────────────────────────────────────────────────────── */
   _setupLights() {
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
     const key = new THREE.PointLight(0xA78BFA, 150, 30);
     key.position.set(4, 4, 4);
     this.scene.add(key);
-
-    const fill = new THREE.PointLight(0x4C1D95, 100, 25);
-    fill.position.set(-5, 1, 2);
-    this.scene.add(fill);
-
-    const rim = new THREE.PointLight(0x6366F1, 80, 20);
-    rim.position.set(0, -4, -3);
-    this.scene.add(rim);
-
-    const accent = new THREE.PointLight(0xEC4899, 40, 15);
-    accent.position.set(2, -2, 4);
-    this.scene.add(accent);
-
+    this.scene.add(Object.assign(new THREE.PointLight(0x4C1D95, 100, 25), { position: new THREE.Vector3(-5, 1, 2) }));
+    this.scene.add(Object.assign(new THREE.PointLight(0x6366F1,  80, 20), { position: new THREE.Vector3( 0,-4,-3) }));
+    this.scene.add(Object.assign(new THREE.PointLight(0xEC4899,  40, 15), { position: new THREE.Vector3( 2,-2, 4) }));
     this.keyLight = key;
   }
 
-  /* ─── Model Loader (auto-detects GLB/GLTF vs OBJ) ──────────────────── */
+  /* ─── Starfield ─────────────────────────────────────────────────────── */
+  _createStarfield() {
+    const mob = window.innerWidth < 768;
+
+    /* Helper: random positions in a flat slab spanning the full canvas */
+    const makeGeo = (n, xSpread, ySpread, zMin, zMax) => {
+      const pos = new Float32Array(n * 3);
+      for (let i = 0; i < n; i++) {
+        pos[i * 3]     = (Math.random() - 0.5) * xSpread;
+        pos[i * 3 + 1] = (Math.random() - 0.5) * ySpread;
+        pos[i * 3 + 2] = zMin + Math.random() * (zMax - zMin);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      return g;
+    };
+
+    /* Layer 1 — tiny bright white stars, full canvas spread */
+    this.stars1 = new THREE.Points(
+      makeGeo(mob ? 900 : 2800, 28, 16, -6, -1),
+      new THREE.PointsMaterial({ size: 0.011, color: 0xffffff, transparent: true, opacity: 0.45, sizeAttenuation: true })
+    );
+    this.scene.add(this.stars1);
+
+    /* Layer 2 — medium purple stars, brand color */
+    this.stars2 = new THREE.Points(
+      makeGeo(mob ? 280 : 850, 26, 14, -5, -0.5),
+      new THREE.PointsMaterial({ size: 0.022, color: 0x8B5CF6, transparent: true, opacity: 0.30, sizeAttenuation: true })
+    );
+    this.scene.add(this.stars2);
+
+    /* Layer 3 — sparse soft-glow large dots for depth */
+    this.stars3 = new THREE.Points(
+      makeGeo(mob ? 55 : 160, 24, 12, -5, -1),
+      new THREE.PointsMaterial({ size: 0.055, color: 0xC4B5FD, transparent: true, opacity: 0.14, sizeAttenuation: true })
+    );
+    this.scene.add(this.stars3);
+  }
+
+  /* ─── Model loaders ─────────────────────────────────────────────────── */
   _loadModel() {
     const url = this.objUrl;
     const ext = url.split('?')[0].toLowerCase();
-    if (ext.endsWith('.glb') || ext.endsWith('.gltf')) {
-      this._loadGLTF(url);
-    } else {
-      this._loadOBJ(url);
-    }
+    if (ext.endsWith('.glb') || ext.endsWith('.gltf')) { this._loadGLTF(url); }
+    else { this._loadOBJ(url); }
   }
 
-  /* ─── Shared mesh finaliser ─────────────────────────────────────────── */
   _finaliseModel(root) {
     if (!this.alive) return;
 
     const mat = new THREE.MeshStandardMaterial({
-      color: 0xCCCCCC,
-      metalness: 0.96,
-      roughness: 0.08,
-      envMapIntensity: 2.2,
-      transparent: true,
-      opacity: 0, // fades in during entrance animation
+      color: 0xCCCCCC, metalness: 0.96, roughness: 0.08,
+      envMapIntensity: 2.2, transparent: true, opacity: 0,
     });
     this._entranceMat = mat;
+    this._distortMeshes = [];
 
     root.traverse((child) => {
       if (child.isMesh) {
         child.material = mat;
-        child.castShadow    = false;
-        child.receiveShadow = false;
+        child.castShadow = child.receiveShadow = false;
+        this._distortMeshes.push(child);
       }
     });
 
@@ -170,168 +180,143 @@ class BouldScene {
     const maxDim = Math.max(size.x, size.y, size.z);
 
     if (!maxDim || !isFinite(maxDim)) {
-      console.warn('[BouldScene] Model has no renderable geometry — falling back to font');
-      this._loadFont();
-      return;
+      console.warn('[BouldScene] No renderable geometry — falling back to font');
+      this._loadFont(); return;
     }
 
     root.position.copy(center).negate();
     root.scale.setScalar(1);
-
-    this._baseScale = 2 / maxDim;
-    this._baseScale = Math.min(Math.max(this._baseScale, 0.01), 20);
+    this._baseScale = Math.min(Math.max(2 / maxDim, 0.01), 20);
 
     this.bMesh = new THREE.Group();
     this.bMesh.add(root);
-    this.bMesh.scale.setScalar(0); // entrance animation will scale up
     this.scene.add(this.bMesh);
-    console.log('[BouldScene] Model added to scene, baseScale:', this._baseScale);
+    this._storeOrigPositions();
+    console.log('[BouldScene] Model ready, baseScale:', this._baseScale);
   }
 
-  /* ─── GLB / GLTF Loader ─────────────────────────────────────────────── */
   _loadGLTF(url) {
-    console.log('[BouldScene] Loading GLB/GLTF from:', url);
-    const loader = new GLTFLoader();
-    loader.load(
+    console.log('[BouldScene] Loading GLB:', url);
+    new GLTFLoader().load(
       url,
-      (gltf) => {
-        if (!this.alive) return;
-        console.log('[BouldScene] GLTF loaded ✓');
-        this._finaliseModel(gltf.scene);
-      },
-      (xhr) => {
-        if (xhr.total) {
-          console.log('[BouldScene] GLTF', Math.round(xhr.loaded / xhr.total * 100) + '% loaded');
-        }
-      },
-      (err) => {
-        console.warn('[BouldScene] GLTF load failed, falling back to font "B":', err);
-        this._loadFont();
-      }
+      (g) => { if (!this.alive) return; console.log('[BouldScene] GLTF ✓'); this._finaliseModel(g.scene); },
+      (x) => { if (x.total) console.log('[BouldScene] GLTF', Math.round(x.loaded / x.total * 100) + '%'); },
+      (e) => { console.warn('[BouldScene] GLTF failed:', e); this._loadFont(); }
     );
   }
 
-  /* ─── OBJ Loader ────────────────────────────────────────────────────── */
   _loadOBJ(url) {
-    console.log('[BouldScene] Loading OBJ from:', url);
-    const loader = new OBJLoader();
-    loader.load(
+    console.log('[BouldScene] Loading OBJ:', url);
+    new OBJLoader().load(
       url,
-      (obj) => {
-        if (!this.alive) return;
-        console.log('[BouldScene] OBJ loaded ✓');
-        this._finaliseModel(obj);
-      },
-      (xhr) => {
-        if (xhr.total) {
-          console.log('[BouldScene] OBJ', Math.round(xhr.loaded / xhr.total * 100) + '% loaded');
-        }
-      },
-      (err) => {
-        console.warn('[BouldScene] OBJ load failed, falling back to font "B":', err);
-        this._loadFont();
-      }
+      (o) => { if (!this.alive) return; console.log('[BouldScene] OBJ ✓'); this._finaliseModel(o); },
+      (x) => { if (x.total) console.log('[BouldScene] OBJ', Math.round(x.loaded / x.total * 100) + '%'); },
+      (e) => { console.warn('[BouldScene] OBJ failed:', e); this._loadFont(); }
     );
   }
 
-  /* ─── Font Fallback ─────────────────────────────────────────────────── */
   _loadFont() {
-    console.log('[BouldScene] Loading font fallback…');
-    const loader = new FontLoader();
-    loader.load(
+    console.log('[BouldScene] Font fallback…');
+    new FontLoader().load(
       'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/fonts/helvetiker_bold.typeface.json',
       (font) => {
         if (!this.alive) return;
-
         const geo = new TextGeometry('B', {
-          font,
-          size: 2,
-          depth: 0.45,
-          curveSegments: 48,
-          bevelEnabled: true,
-          bevelThickness: 0.055,
-          bevelSize: 0.04,
-          bevelSegments: 12,
+          font, size: 2, depth: 0.45, curveSegments: 48,
+          bevelEnabled: true, bevelThickness: 0.055, bevelSize: 0.04, bevelSegments: 12,
         });
-        geo.computeBoundingBox();
-        geo.center();
-
+        geo.computeBoundingBox(); geo.center();
         const mat = new THREE.MeshStandardMaterial({
-          color: 0xCCCCCC,
-          metalness: 0.96,
-          roughness: 0.08,
-          envMapIntensity: 2.2,
-          transparent: true,
-          opacity: 0,
+          color: 0xCCCCCC, metalness: 0.96, roughness: 0.08,
+          envMapIntensity: 2.2, transparent: true, opacity: 0,
         });
         this._entranceMat = mat;
-
-        this.bMesh       = new THREE.Mesh(geo, mat);
-        this._baseScale  = 1;
-        this.bMesh.scale.setScalar(0); // entrance animation scales up
+        this.bMesh = new THREE.Mesh(geo, mat);
+        this._baseScale = 1;
+        this._distortMeshes = [this.bMesh];
         this.scene.add(this.bMesh);
-        console.log('[BouldScene] Font "B" added to scene');
+        this._storeOrigPositions();
+        console.log('[BouldScene] Font "B" ready');
       },
       undefined,
-      (err) => console.warn('[BouldScene] Font load failed:', err)
+      (e) => console.warn('[BouldScene] Font failed:', e)
     );
   }
 
-  /* ─── Particles ─────────────────────────────────────────────────────── */
-  _createParticles() {
-    const count = window.innerWidth < 768 ? 600 : 1800;
-    const pos   = new Float32Array(count * 3);
+  /* ─── Vertex distortion ─────────────────────────────────────────────── */
+  _storeOrigPositions() {
+    this._distortOrigPos = [];
+    for (const mesh of this._distortMeshes) {
+      const attr = mesh.geometry.attributes.position;
+      if (attr) this._distortOrigPos.push({ geo: mesh.geometry, orig: attr.array.slice() });
+    }
+  }
 
-    for (let i = 0; i < count; i++) {
-      const r     = 3.5 + Math.random() * 5;
-      const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.acos(2 * Math.random() - 1);
-      pos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.6;
-      pos[i * 3 + 2] = r * Math.cos(phi) * 0.5;
+  _startDistortion() {
+    if (this._distortPhase !== 0) return;
+    this._distortPhase    = 1;
+    this._distortProgress = 0;
+    this._distortSeed     = Math.random() * 100; // randomise shape per click
+    this.canvas.style.cursor = 'default';
+  }
+
+  /* Layered deterministic noise — no time dependency so shape is consistent per click */
+  _noise(x, y, z) {
+    return (
+      Math.sin(x * 2.8 + 1.3) * Math.cos(y * 3.1 + 0.7) * Math.sin(z * 2.0 + 2.1) * 0.50 +
+      Math.sin(x * 5.1 + 0.4) * Math.cos(y * 4.7 + 1.5) * Math.cos(z * 5.3 + 0.9) * 0.30 +
+      Math.sin(x * 8.3 + 2.2) * Math.sin(y * 7.9 + 0.3) * Math.cos(z * 9.1 + 1.7) * 0.20
+    );
+  }
+
+  _updateDistortion() {
+    if (this._distortPhase === 0 || !this._distortOrigPos.length) return;
+
+    /* Speed: ~0.7s to peak, ~1.1s to return */
+    const GROW   = 0.033;
+    const SHRINK = 0.021;
+    const MAX_D  = 0.26; // max displacement in world units (subtle)
+
+    if (this._distortPhase === 1) {
+      this._distortProgress += GROW;
+      if (this._distortProgress >= 1) { this._distortProgress = 1; this._distortPhase = 2; }
+    } else {
+      this._distortProgress -= SHRINK;
+      if (this._distortProgress <= 0) { this._distortProgress = 0; this._distortPhase = 0; }
     }
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    /* Smooth ease-in-out curve on the progress */
+    const p = this._distortProgress;
+    const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    const strength = MAX_D * eased;
+    const s = this._distortSeed;
 
-    this.particles = new THREE.Points(geo, new THREE.PointsMaterial({
-      size: 0.018, color: 0x8B5CF6,
-      transparent: true, opacity: 0.65, sizeAttenuation: true,
-    }));
-    this.scene.add(this.particles);
-
-    const geo2 = geo.clone();
-    this.particles2 = new THREE.Points(geo2, new THREE.PointsMaterial({
-      size: 0.008, color: 0xC4B5FD,
-      transparent: true, opacity: 0.3, sizeAttenuation: true,
-    }));
-    this.particles2.rotation.y = Math.PI / 3;
-    this.scene.add(this.particles2);
-  }
-
-  /* ─── Easing ────────────────────────────────────────────────────────── */
-  _easeOutElastic(t) {
-    if (t <= 0) return 0;
-    if (t >= 1) return 1;
-    const c4 = (2 * Math.PI) / 3;
-    return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
-  }
-
-  _easeOutQuart(t) {
-    return 1 - Math.pow(1 - t, 4);
-  }
-
-  /* ─── Scroll ────────────────────────────────────────────────────────── */
-  _onScrollReveal() {
-    /* Trigger entrance on first scroll */
-    if (!this.revealed && window.scrollY > 0) {
-      this._triggerReveal();
+    for (const { geo, orig } of this._distortOrigPos) {
+      const attr  = geo.attributes.position;
+      const arr   = attr.array;
+      const count = orig.length / 3;
+      for (let i = 0; i < count; i++) {
+        const ox = orig[i * 3];
+        const oy = orig[i * 3 + 1];
+        const oz = orig[i * 3 + 2];
+        arr[i * 3]     = ox + this._noise(ox + s,       oy + 1.0 + s, oz + 2.0)     * strength;
+        arr[i * 3 + 1] = oy + this._noise(ox + 3.0 + s, oy + 0.5,     oz + 1.5 + s) * strength;
+        arr[i * 3 + 2] = oz + this._noise(ox + 1.5,     oy + 2.0 + s, oz + s)       * strength;
+      }
+      attr.needsUpdate = true;
+      geo.computeBoundingSphere();
     }
+  }
 
-    /* Track scroll progress through the hero for parallax */
-    const hero = document.querySelector('.bould-hero');
-    if (hero) {
-      this.scrollProgress = Math.max(0, Math.min(window.scrollY / hero.offsetHeight, 1));
+  /* ─── Click ─────────────────────────────────────────────────────────── */
+  _onCanvasClick(e) {
+    if (!this.bMesh || !this.renderer) return;
+    const r = this.canvas.getBoundingClientRect();
+    const x =  ((e.clientX - r.left) / r.width)  * 2 - 1;
+    const y = -((e.clientY - r.top)  / r.height) * 2 + 1;
+    this._raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
+    if (this._raycaster.intersectObject(this.bMesh, true).length > 0) {
+      this._startDistortion();
     }
   }
 
@@ -339,66 +324,82 @@ class BouldScene {
   _onMouseMove(e) {
     this.mouse.x =  (e.clientX / window.innerWidth)  * 2 - 1;
     this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    /* Pointer cursor when hovering the model */
+    if (this.bMesh && this.camera) {
+      this._raycaster.setFromCamera(new THREE.Vector2(this.mouse.x, this.mouse.y), this.camera);
+      this.canvas.style.cursor =
+        this._raycaster.intersectObject(this.bMesh, true).length > 0 ? 'pointer' : 'default';
+    }
   }
 
   _onResize() {
     if (!this.renderer) return;
-    const w = this.canvas.clientWidth;
-    const h = this.canvas.clientHeight;
+    const w = this.canvas.clientWidth, h = this.canvas.clientHeight;
     if (!w || !h) return;
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(w, h, false);
   }
 
+  _onScrollReveal() {
+    if (!this.revealed && window.scrollY > 0) this._triggerReveal();
+    const hero = document.querySelector('.bould-hero');
+    if (hero) this.scrollProgress = Math.max(0, Math.min(window.scrollY / hero.offsetHeight, 1));
+  }
+
+  /* ─── Easing ────────────────────────────────────────────────────────── */
+  _easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
   /* ─── Render loop ───────────────────────────────────────────────────── */
   _loop() {
     if (!this.alive) return;
     this.raf = requestAnimationFrame(() => this._loop());
-
-    /* Skip until renderer is ready */
     if (!this.renderer) return;
 
     const t = Date.now() * 0.001;
 
-    /* Smooth mouse lag */
     this.target.x += (this.mouse.x - this.target.x) * 0.04;
     this.target.y += (this.mouse.y - this.target.y) * 0.04;
 
-    /* Advance entrance (60 fps → ~1.4 s to complete) */
     if (this.revealed && this.entranceProgress < 1) {
       this.entranceProgress = Math.min(this.entranceProgress + 0.012, 1);
     }
 
-    /* Logo mesh */
+    /* Logo */
     if (this.bMesh) {
-      const epFade = this._easeOutQuart(this.entranceProgress); // smooth 0→1
-
-      /* Continuous idle rotation + mouse tilt */
+      const ep = this._easeOutQuart(this.entranceProgress);
       this.bMesh.rotation.y = t * 0.28 + this.target.x * 0.35;
       this.bMesh.rotation.x = this.target.y * 0.2;
-      /* Offset to right half of the full-width canvas */
       this.bMesh.position.x = 2.2;
       this.bMesh.position.y = Math.sin(t * 0.6) * 0.12 - this.scrollProgress * 0.7;
-
-      /* Full size always — pure fade-in only */
       this.bMesh.scale.setScalar(this._baseScale);
-
-      /* Opacity fade-in */
-      if (this._entranceMat) {
-        this._entranceMat.opacity = Math.min(1, epFade);
-      }
+      if (this._entranceMat) this._entranceMat.opacity = Math.min(1, ep);
     }
 
-    /* Key light slow orbit */
+    /* Distortion */
+    this._updateDistortion();
+
+    /* Key light orbit */
     if (this.keyLight) {
       this.keyLight.position.x = Math.sin(t * 0.4) * 5;
       this.keyLight.position.z = Math.cos(t * 0.4) * 4;
     }
 
-    /* Particle counter-rotation */
-    if (this.particles)  { this.particles.rotation.y  = t * 0.04;  this.particles.rotation.x  = t * 0.015; }
-    if (this.particles2) { this.particles2.rotation.y = -t * 0.03; this.particles2.rotation.z = t * 0.01; }
+    /* Stars — very slow drift + subtle twinkle via opacity pulse */
+    if (this.stars1) {
+      this.stars1.rotation.y = t * 0.0025;
+      this.stars1.rotation.x = t * 0.0010;
+      this.stars1.material.opacity = 0.45 + Math.sin(t * 0.5) * 0.04;
+    }
+    if (this.stars2) {
+      this.stars2.rotation.y = -t * 0.0032;
+      this.stars2.rotation.z =  t * 0.0015;
+      this.stars2.material.opacity = 0.30 + Math.sin(t * 0.9 + 1.2) * 0.05;
+    }
+    if (this.stars3) {
+      this.stars3.rotation.y = t * 0.0040;
+      this.stars3.material.opacity = 0.14 + Math.sin(t * 0.4 + 2.5) * 0.06;
+    }
 
     this.renderer.render(this.scene, this.camera);
   }
@@ -411,6 +412,7 @@ class BouldScene {
     window.removeEventListener('mousemove', this._mouseMove);
     window.removeEventListener('resize',    this._resize);
     window.removeEventListener('scroll',    this._scrollReveal);
+    this.canvas.removeEventListener('click', this._onClick);
     if (this.renderer) this.renderer.dispose();
   }
 }
@@ -419,8 +421,7 @@ class BouldScene {
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('bould-hero-canvas');
   if (!canvas) return;
-
   const objUrl = canvas.dataset.objUrl || null;
-  console.log('[BouldScene] canvas found, objUrl:', objUrl || '(none — using font fallback)');
+  console.log('[BouldScene] canvas found, objUrl:', objUrl || '(none — font fallback)');
   window.__bouldScene = new BouldScene(canvas, objUrl);
 });

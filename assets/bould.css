@@ -180,15 +180,67 @@ body:has(.bould-page-hero) .footer-section * {
 
 .bould-hero__canvas {
   position: absolute;
-  right: 0;
+  left: 0;
   top: 0;
-  width: 52%;
+  width: 100%;
   height: 100%;
   z-index: 1;
-  pointer-events: none;
+  /* Clicks enabled so the particle system is interactive */
+  pointer-events: auto;
   opacity: 1;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 18%);
-  mask-image: linear-gradient(to right, transparent 0%, black 18%);
+  /* Particles bleed into text area; logo fully visible on the right */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 30%, black 55%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 30%, black 55%);
+}
+
+/* ── Interaction hint badge ───────────────────────────────────────── */
+.bould-hero__interact-hint {
+  position: absolute;
+  right: 8vw;
+  bottom: 9rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 100px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(8, 8, 8, 0.55);
+  backdrop-filter: blur(10px);
+  color: var(--b-purple3);
+  font-family: var(--b-font);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: bould-hint-appear 0.6s var(--b-ease) 4s both;
+}
+
+.bould-hero__interact-hint.is-hidden {
+  animation: bould-hint-fade-out 0.4s var(--b-ease) forwards;
+}
+
+@keyframes bould-hint-appear {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bould-hint-fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-4px); }
+}
+
+/* Subtle pulse on the hint icon */
+.bould-hero__interact-hint svg {
+  animation: bould-hint-pulse 2s ease-in-out infinite;
+}
+
+@keyframes bould-hint-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.15); }
 }
 
 .bould-hero__bg-grid {
@@ -2011,9 +2063,35 @@ body:has(.bould-page-hero) .footer-section * {
 
   .bould-hero__canvas {
     width: 100%;
+    height: 100%;
+    /* Slightly transparent behind text, but stays on TOP and keeps pointer-events */
     opacity: 0.35;
+    /* No mask on mobile — full-bleed particle field */
     -webkit-mask-image: none;
     mask-image: none;
+    /* Keep canvas interactive on mobile — taps reach it */
+    z-index: 2;
+    pointer-events: auto;
+  }
+
+  /* Text content sits above canvas on mobile */
+  .bould-hero__content {
+    z-index: 3;
+    pointer-events: none;   /* let taps pass through to canvas */
+  }
+
+  /* Buttons inside content need to remain tappable */
+  .bould-hero__content a,
+  .bould-hero__content button {
+    pointer-events: auto;
+  }
+
+  .bould-hero__interact-hint {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 6rem;
+    white-space: nowrap;
   }
 
   .bould-section-header {

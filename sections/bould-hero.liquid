@@ -2,13 +2,24 @@
   {% comment %} Background grid {% endcomment %}
   <div class="bould-hero__bg-grid" aria-hidden="true"></div>
 
-  {% comment %} Three.js canvas — B model renders here {% endcomment %}
+  {% comment %} Three.js canvas — 3 GLB models morph between each other on click {% endcomment %}
   <canvas
     id="bould-hero-canvas"
     class="bould-hero__canvas"
-    aria-hidden="true"
-    data-obj-url="{% if section.settings.obj_url != blank %}{{ section.settings.obj_url }}{% else %}{{ 'bbould.obj' | asset_url }}{% endif %}"
+    aria-label="Interactive 3D particle morpher — click to cycle between shapes"
+    data-model-1="{% if section.settings.obj_url_1 != blank %}{{ section.settings.obj_url_1 }}{% else %}{{ 'bbould.obj' | asset_url }}{% endif %}"
+    data-model-2="{{ section.settings.obj_url_2 }}"
+    data-model-3="{{ section.settings.obj_url_3 }}"
   ></canvas>
+
+  {% comment %} Interaction hint — fades in after 4 s, dismissed on first click {% endcomment %}
+  <div class="bould-hero__interact-hint" id="bould-interact-hint" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M7 12h10M12 7l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span>Click to morph</span>
+  </div>
 
   {% comment %} Text content {% endcomment %}
   <div class="bould-hero__content">
@@ -72,6 +83,37 @@
   window.addEventListener('scroll', function() {
     hw.classList.toggle('scrolled', window.scrollY > 60);
   }, { passive: true });
+})();
+
+/* Dismiss the "Click to morph" hint on first real interact (not drag) */
+(function() {
+  var hint   = document.getElementById('bould-interact-hint');
+  var canvas = document.getElementById('bould-hero-canvas');
+  if (!hint || !canvas) return;
+
+  var downX = 0;
+  var DRAG_THRESHOLD = 5; // px — same as DRAG_PX in bould-scene.js
+
+  canvas.addEventListener('mousedown',  function(e) { downX = e.clientX; });
+  canvas.addEventListener('touchstart', function(e) {
+    if (e.touches.length) downX = e.touches[0].clientX;
+  }, { passive: true });
+
+  function onUp(e) {
+    var upX = e.changedTouches
+      ? (e.changedTouches[0] && e.changedTouches[0].clientX)
+      : e.clientX;
+    /* Ignore drags — only react to true taps/clicks */
+    if (Math.abs((upX || downX) - downX) > DRAG_THRESHOLD) return;
+
+    /* Permanently dismiss the badge after first real interaction */
+    hint.classList.add('is-hidden');
+    window.removeEventListener('mouseup', onUp);
+    canvas.removeEventListener('touchend', onUp);
+  }
+
+  window.addEventListener('mouseup', onUp);
+  canvas.addEventListener('touchend', onUp, { passive: true });
 })();
 </script>
 
@@ -138,9 +180,21 @@
     },
     {
       "type": "text",
-      "id": "obj_url",
-      "label": "3D logo URL (.obj file from Shopify Files)",
-      "info": "Upload your .obj to Shopify Admin → Content → Files, copy the CDN URL (starts with https://cdn.shopify.com/...) and paste it here."
+      "id": "obj_url_1",
+      "label": "3D Model 1 URL (.glb / .obj) — Shape A",
+      "info": "Upload to Shopify Admin → Content → Files. Copy the CDN URL. This is the first shape in the morph cycle."
+    },
+    {
+      "type": "text",
+      "id": "obj_url_2",
+      "label": "3D Model 2 URL (.glb / .obj) — Shape B",
+      "info": "Second shape in the cycle. Leave blank to use a fallback 'B' character."
+    },
+    {
+      "type": "text",
+      "id": "obj_url_3",
+      "label": "3D Model 3 URL (.glb / .obj) — Shape C",
+      "info": "Third shape in the cycle. Leave blank to use a fallback 'U' character."
     }
   ],
   "blocks": [

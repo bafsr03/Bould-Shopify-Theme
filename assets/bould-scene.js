@@ -26,10 +26,9 @@
  */
 
 import * as THREE         from 'https://esm.sh/three@0.161.0';
-import { FontLoader }     from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry }   from 'https://esm.sh/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
 import { OBJLoader }      from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
 import { GLTFLoader }     from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader }    from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/DRACOLoader.js';
 import { RoomEnvironment }from 'https://esm.sh/three@0.161.0/examples/jsm/environments/RoomEnvironment.js';
 
 /* ─── Easing ──────────────────────────────────────────────────────────────── */
@@ -57,18 +56,17 @@ const PALETTES = [
 ];
 
 /* ─── Physics / animation tuning ─────────────────────────────────────────── */
-const N_DESKTOP     = 10000;
-const N_MOBILE      = 5000;
-const MAX_ROT_Y     = Math.PI * 0.48;   // ±86° — never full 360
+const N_DESKTOP     = 20000;
+const N_MOBILE      = 8000;
+const MAX_ROT_Y     = Math.PI * 0.15;   // ±27° — keep it centered, no extreme left/right swing
 const MAX_ROT_X     = Math.PI * 0.065;  // ±12° X tilt
 const DRAG_PX       = 5;               // pixels to distinguish drag from tap
 const HOME_K_INTRO  = 0.90;            // spring stiffness during intro convergence
-const HOME_K_MORPH  = 7.5;            // spring stiffness during shape morph
-const VEL_DRAG_MORPH= 0.87;           // velocity damping during morph (creates trails)
-const VEL_DRAG_IDLE = 0.94;           // damping at idle (kills residual jitter)
-const REPULSE_R2    = 0.55;           // squared radius of hover-repulsion bubble
-const REPULSE_MAG   = 1.8;
-const SNAP_DIST     = 0.022;          // max distance to call shape "complete"
+const HOME_K_MORPH  = 0.5;            // deeply gentle stiffness for a slow, smooth linear morph
+const VEL_DRAG_IDLE = 0.85;           // heavy damping at idle removes all jelly-like bouncing
+const REPULSE_R2    = 0.35;           // subtle hover deform radius
+const REPULSE_MAG   = 0.4;            // extremely subtle deform force
+const SNAP_DIST     = 0.035;          // max distance to call shape "complete"
 const MORPH_SPEED   = 0.30;          // how fast colour blends (lower = smoother)
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -141,7 +139,6 @@ class BouldScene {
     this._points       = null;
     this._pointsAccent = null;
     this._pointsGlow   = null;
-    this._hintRing     = null;
 
     /* Bound event handlers */
     this._onResize    = this._handleResize.bind(this);
@@ -179,15 +176,14 @@ class BouldScene {
       pmrem.dispose();
 
       this._buildStarfield();
-      this._buildHintRing();
 
       /* Determine N now so all three shapes share the same count */
       this._N = window.innerWidth < 768 ? N_MOBILE : N_DESKTOP;
 
-      /* Load all three models (or font fallback if URL missing) */
+      /* Load all three models (or primitive fallback if URL missing) */
       for (let i = 0; i < 3; i++) {
         if (this.urls[i]) this._loadModelForSlot(i, this.urls[i]);
-        else               this._loadFontForSlot(i);
+        else               this._loadFallbackShapeForSlot(i);
       }
 
       /* Events */
@@ -220,42 +216,31 @@ class BouldScene {
   _loadModelForSlot(slot, url) {
     const ext = url.split('?')[0].toLowerCase();
     const onLoad = root => { if (this.alive) this._extractShape(slot, root); };
-    const onFail = e  => { console.warn(`[BouldScene] slot ${slot} fail:`, e); this._loadFontForSlot(slot); };
+    const onFail = e  => { console.warn(`[BouldScene] slot ${slot} fail:`, e); this._loadFallbackShapeForSlot(slot); };
 
     if (ext.endsWith('.glb') || ext.endsWith('.gltf')) {
       console.log(`[BouldScene] GLB slot ${slot}:`, url);
-      new GLTFLoader().load(url, g => onLoad(g.scene), null, onFail);
+      const draco = new DRACOLoader();
+      draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+      const loader = new GLTFLoader();
+      loader.setDRACOLoader(draco);
+      loader.load(url, g => onLoad(g.scene), null, onFail);
     } else {
       console.log(`[BouldScene] OBJ slot ${slot}:`, url);
       new OBJLoader().load(url, onLoad, null, onFail);
     }
   }
 
-  _loadFontForSlot(slot) {
-    console.log(`[BouldScene] Font fallback slot ${slot}`);
-    /* Each fallback slot uses a slightly different character for visual variety */
-    const chars = ['B', 'O', 'U'];
-    new FontLoader().load(
-      'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/fonts/helvetiker_bold.typeface.json',
-      font => {
-        if (!this.alive) return;
-        const geo = new TextGeometry(chars[slot] || 'B', {
-          font, size: 2, depth: 0.4, curveSegments: 32,
-          bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.03, bevelSegments: 8,
-        });
-        geo.computeBoundingBox(); geo.center();
-        this._extractShape(slot, new THREE.Mesh(geo, new THREE.MeshBasicMaterial()));
-      },
-      undefined,
-      e => {
-        console.warn(`[BouldScene] Font slot ${slot} fail:`, e);
-        /* Emergency: reuse slot 0 positions if already loaded */
-        if (slot > 0 && this._homes[0]) {
-          this._homes[slot] = this._homes[0].slice();
-          this._markSlotLoaded(slot);
-        }
-      }
-    );
+  _loadFallbackShapeForSlot(slot) {
+    console.log(`[BouldScene] Primitive fallback slot ${slot}`);
+    /* Use distinct primitives so fallbacks look different */
+    let geo;
+    if (slot === 0)      geo = new THREE.SphereGeometry(1.6, 64, 64);
+    else if (slot === 1) geo = new THREE.TorusGeometry(1.3, 0.4, 32, 64);
+    else                 geo = new THREE.IcosahedronGeometry(1.8, 8);
+    
+    geo.computeBoundingBox(); geo.center();
+    this._extractShape(slot, new THREE.Mesh(geo, new THREE.MeshBasicMaterial()));
   }
 
   /* ════════════════════════════════════════════════════════════
@@ -270,7 +255,8 @@ class BouldScene {
     const dum = new THREE.Object3D();
     dum.add(root); dum.updateWorldMatrix(false, true);
     root.traverse(child => {
-      if (!child.isMesh) return;
+      const isGeom = child.isMesh || child.isPoints || child.isLine || child.isLineSegments;
+      if (!isGeom) return;
       const attr = child.geometry.attributes.position;
       if (!attr) return;
       for (let i = 0; i < attr.count; i++) {
@@ -283,10 +269,11 @@ class BouldScene {
     const total = rxA.length;
     if (total < 3) {
       console.warn(`[BouldScene] No vertices in slot ${slot}`);
-      if (slot > 0 && this._homes[0]) {
-        this._homes[slot] = this._homes[0].slice();
-        this._markSlotLoaded(slot);
-      }
+      /* Instead of copying homes0, fallback to a procedural cloud to avoid morphing to yourself forever */
+      const pos = new Float32Array(N * 3);
+      for (let i = 0; i < N * 3; i++) pos[i] = (Math.random() - 0.5) * 4.0;
+      this._homes[slot] = pos;
+      this._markSlotLoaded(slot);
       return;
     }
     console.log(`[BouldScene] Slot ${slot} vertices:`, total);
@@ -393,8 +380,6 @@ class BouldScene {
     this._group.position.x = ox;
     this.scene.add(this._group);
 
-    if (this._hintRing) this._hintRing.position.set(ox, 0, 0.1);
-
     console.log('[BouldScene] Three objects built, N =', N);
   }
 
@@ -444,9 +429,11 @@ class BouldScene {
     this._state       = 'morphing';
     this._stateAge    = 0;
 
-    /* Kill residual velocity — spring takes over */
-    const vel = this._vel;
-    for (let i = 0; i < vel.length; i++) vel[i] *= 0.06;
+    /* Zero out all velocity so particles don't burst/scatter. They will just smoothly glide to the next shape. */
+    const N = this._N, vel = this._vel;
+    for (let i = 0; i < N * 3; i++) {
+      vel[i] = 0;
+    }
 
     console.log(`[BouldScene] Morphing ${this._curShape} → ${this._targetShape}`);
   }
@@ -533,46 +520,28 @@ class BouldScene {
       }
     }
 
-    if (state === 'morphing' && this._stateAge > 0.35) {
-      /* Check convergence toward target shape */
-      const homeT = this._homes[this._targetShape];
-      let maxD    = 0;
-      const probe = Math.min(150, N);
-      for (let i = 0; i < probe; i++) {
-        const i3 = i * 3;
-        const d  = Math.abs(cur[i3] - homeT[i3]) + Math.abs(cur[i3+1] - homeT[i3+1]);
-        if (d > maxD) maxD = d;
-      }
-      if (maxD < SNAP_DIST) {
-        /* Snap + settle */
-        for (let i = 0; i < N * 3; i++) { cur[i] = homeT[i]; vel[i] = 0; }
-        this._curShape    = this._targetShape;
-        this._state       = 'idle';
-        this._stateAge    = 0;
-        this._points.geometry.attributes.position.needsUpdate     = true;
-        this._pointsGlow.geometry.attributes.position.needsUpdate = true;
+    if (state === 'morphing') {
+      const forceSnap = this._stateAge > 2.5; /* guarantee we never get stuck */
+      if (this._stateAge > 0.35) {
+        /* Check convergence toward target shape */
+        const homeT = this._homes[this._targetShape];
+        let maxD    = 0;
+        const probe = Math.min(150, N);
+        for (let i = 0; i < probe; i++) {
+          const i3 = i * 3;
+          const d  = Math.abs(cur[i3] - homeT[i3]) + Math.abs(cur[i3+1] - homeT[i3+1]);
+          if (d > maxD) maxD = d;
+        }
+        if (maxD < 0.12 || forceSnap) {
+          /* Seamless handoff to idle state instead of aggressively snapping */
+          this._curShape    = this._targetShape;
+          this._state       = 'idle';
+          this._stateAge    = 0;
+        }
       }
     }
 
-    /* ── Colour blend between current and target palette ─── */
-    const fromPal  = PALETTES[this._curShape];
-    const toPal    = PALETTES[this._targetShape];
-    const morphing = state === 'morphing';
-    const ct       = this._colT;
-
-    /* Drive colT: 0=curShape palette, 1=targetShape palette */
-    const targetCT = morphing ? 1 : 0;
-    this._colT += (targetCT - ct) * Math.min(dt * MORPH_SPEED * 12, 1);
-
-    const blend = this._colT;
-    this._points.material.color.lerpColors(fromPal.main,   toPal.main,   blend);
-    this._pointsAccent.material.color.lerpColors(fromPal.accent, toPal.accent, blend);
-    this._pointsGlow.material.color.lerpColors(fromPal.glow,   toPal.glow,   blend);
-
-    /* When morph completes, reset colT for next cycle */
-    if (state === 'idle' && this._curShape === this._targetShape) {
-      this._colT = 0;
-    }
+    /* Colour blend removed per user request: everything remains PALETTES[0] */
 
     /* Skip per-particle work if truly idle (no forces active) */
     if (state === 'idle') {
@@ -590,10 +559,11 @@ class BouldScene {
           const f = (REPULSE_R2 - rd2) * REPULSE_MAG;
           vel[i3]     += rdx * f * dt;
           vel[i3 + 1] += rdy * f * dt;
-          /* Soft restore spring when repulsion moves particle from home */
-          vel[i3]     += (home[i3]     - cur[i3])     * 2.0 * dt;
-          vel[i3 + 1] += (home[i3 + 1] - cur[i3 + 1]) * 2.0 * dt;
         }
+        /* Continuous soft restore spring so particles return after hover leaves */
+        vel[i3]     += (home[i3]     - cur[i3])     * 4.0 * dt;
+        vel[i3 + 1] += (home[i3 + 1] - cur[i3 + 1]) * 4.0 * dt;
+        vel[i3 + 2] += (home[i3 + 2] - cur[i3 + 2]) * 4.0 * dt;
         vel[i3]     *= VEL_DRAG_IDLE;
         vel[i3 + 1] *= VEL_DRAG_IDLE;
         vel[i3 + 2] *= VEL_DRAG_IDLE;
@@ -607,13 +577,16 @@ class BouldScene {
       return;
     }
 
-    /* ── Home spring (intro + morph) ────────────────────────────── */
     const doHome = state === 'intro' || state === 'morphing';
     const homeK  = state === 'intro'
       ? HOME_K_INTRO * Math.min(this._stateAge / 1.5, 1.0)
-      : HOME_K_MORPH * Math.min(this._stateAge * 2.0, 1.0);
+      : HOME_K_MORPH * Math.min(this._stateAge * 1.5, 1.0);
 
-    const drag   = state === 'morphing' ? VEL_DRAG_MORPH : 0.90;
+    /* Constant, extremely heavy drag guarantees zero bouncing. Particles just slide perfectly to their target. */
+    const drag   = state === 'morphing' 
+      ? 0.78 
+      : (state === 'intro' ? 0.90 : VEL_DRAG_IDLE);
+      
     const home   = state === 'morphing' ? this._homes[this._targetShape] : this._homes[0];
 
     /* Cursor repulsion also active during intro for nice effect */
@@ -672,7 +645,7 @@ class BouldScene {
   }
 
   /* ════════════════════════════════════════════════════════════
-     STARFIELD + HINT RING
+     STARFIELD
   ════════════════════════════════════════════════════════════ */
   _buildStarfield() {
     const mob = window.innerWidth < 768;
@@ -693,28 +666,6 @@ class BouldScene {
     this.stars2 = mkL(mob?280:800,   28,16, -8,-1.5, 0.018, 0x8B5CF6, 0.18);
     this.stars3 = mkL(mob?60:160,    26,14, -8,-2,   0.044, 0xC4B5FD, 0.09);
     this.scene.add(this.stars1, this.stars2, this.stars3);
-  }
-
-  _buildHintRing() {
-    const geo = new THREE.RingGeometry(0.48, 0.55, 72);
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0x8B5CF6, transparent: true, opacity: 0, side: THREE.DoubleSide,
-    });
-    this._hintRing = new THREE.Mesh(geo, mat);
-    this._hintRing.visible = false;
-    this.scene.add(this._hintRing);
-  }
-
-  _tickHint(t) {
-    if (!this._hintRing || !this._points) return;
-    const show = this._state === 'idle' && this._stateAge > 3.5;
-    if (show) {
-      this._hintRing.visible = true;
-      this._hintRing.material.opacity = 0.25 + 0.15 * Math.sin(t * 2.1);
-      this._hintRing.scale.setScalar(1 + 0.10 * Math.sin(t * 1.7));
-    } else {
-      this._hintRing.visible = false;
-    }
   }
 
   /* ════════════════════════════════════════════════════════════
@@ -792,7 +743,6 @@ class BouldScene {
     }
 
     this._physics(dt);
-    this._tickHint(t);
 
     /* Starfield */
     if (this.stars1) {
@@ -840,9 +790,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Read three model URLs from data attributes */
   const urls = [
-    canvas.dataset.model1 || null,
-    canvas.dataset.model2 || null,
-    canvas.dataset.model3 || null,
+    canvas.getAttribute('data-model-1') || null,
+    canvas.getAttribute('data-model-2') || null,
+    canvas.getAttribute('data-model-3') || null,
   ];
   console.log('[BouldScene] boot — models:', urls);
   window.__bouldScene = new BouldScene(canvas, urls);

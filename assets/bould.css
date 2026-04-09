@@ -2012,9 +2012,13 @@ body:has(.bould-page-hero) .footer-section * {
 
   .bould-hero__canvas {
     width: 100%;
-    opacity: 0.35;
+    height: 100%;
+    opacity: 0.28;
+    /* Full bleed behind text on mobile — no mask needed */
     -webkit-mask-image: none;
     mask-image: none;
+    /* Keep canvas below text so it never blocks tap targets */
+    z-index: 0;
   }
 
   .bould-section-header {

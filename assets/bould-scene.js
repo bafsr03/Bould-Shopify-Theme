@@ -3,17 +3,17 @@
  * - Three-layer starfield background (subtle space aesthetic)
  * - 3D logo loaded from GLB/OBJ, fades in
  * - Click the logo → vertex-noise distortion morph, snaps back
+ * - Fully responsive: centred on mobile, offset right on desktop
  */
 /*
- * esm.sh is used instead of cdn.jsdelivr.net because Three.js addon modules
- * use bare import specifiers ("import { ... } from 'three'") that browsers
- * reject without an import map. esm.sh rewrites them automatically.
+ * esm.sh is used because Three.js addon modules use bare import specifiers
+ * ("import { ... } from 'three'") that browsers reject without an import map.
  */
 import * as THREE from 'https://esm.sh/three@0.161.0';
-import { FontLoader }    from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry }  from 'https://esm.sh/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
-import { OBJLoader }     from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
-import { GLTFLoader }    from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+import { FontLoader }      from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry }    from 'https://esm.sh/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
+import { OBJLoader }       from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
+import { GLTFLoader }      from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'https://esm.sh/three@0.161.0/examples/jsm/environments/RoomEnvironment.js';
 
 class BouldScene {
@@ -37,13 +37,13 @@ class BouldScene {
     this._entranceMat = null;
 
     /* Distortion */
-    this._distortPhase    = 0;   // 0=idle  1=growing  2=shrinking
-    this._distortProgress = 0;   // 0 → 1 (grow) → 0 (shrink)
-    this._distortSeed     = 0;   // randomised per click
-    this._distortOrigPos  = [];  // [{ geo, orig:Float32Array }]
+    this._distortPhase    = 0;
+    this._distortProgress = 0;
+    this._distortSeed     = 0;
+    this._distortOrigPos  = [];
     this._distortMeshes   = [];
 
-    /* Raycaster for hover/click */
+    /* Raycaster */
     this._raycaster = new THREE.Raycaster();
 
     this._resize       = this._onResize.bind(this);
@@ -100,25 +100,34 @@ class BouldScene {
   /* ─── Lights ────────────────────────────────────────────────────────── */
   _setupLights() {
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
     const key = new THREE.PointLight(0xA78BFA, 150, 30);
     key.position.set(4, 4, 4);
     this.scene.add(key);
-    this.scene.add(Object.assign(new THREE.PointLight(0x4C1D95, 100, 25), { position: new THREE.Vector3(-5, 1, 2) }));
-    this.scene.add(Object.assign(new THREE.PointLight(0x6366F1,  80, 20), { position: new THREE.Vector3( 0,-4,-3) }));
-    this.scene.add(Object.assign(new THREE.PointLight(0xEC4899,  40, 15), { position: new THREE.Vector3( 2,-2, 4) }));
     this.keyLight = key;
+
+    const fill = new THREE.PointLight(0x4C1D95, 100, 25);
+    fill.position.set(-5, 1, 2);
+    this.scene.add(fill);
+
+    const rim = new THREE.PointLight(0x6366F1, 80, 20);
+    rim.position.set(0, -4, -3);
+    this.scene.add(rim);
+
+    const accent = new THREE.PointLight(0xEC4899, 40, 15);
+    accent.position.set(2, -2, 4);
+    this.scene.add(accent);
   }
 
   /* ─── Starfield ─────────────────────────────────────────────────────── */
   _createStarfield() {
     const mob = window.innerWidth < 768;
 
-    /* Helper: random positions in a flat slab spanning the full canvas */
-    const makeGeo = (n, xSpread, ySpread, zMin, zMax) => {
+    const makeGeo = (n, xW, yW, zMin, zMax) => {
       const pos = new Float32Array(n * 3);
       for (let i = 0; i < n; i++) {
-        pos[i * 3]     = (Math.random() - 0.5) * xSpread;
-        pos[i * 3 + 1] = (Math.random() - 0.5) * ySpread;
+        pos[i * 3]     = (Math.random() - 0.5) * xW;
+        pos[i * 3 + 1] = (Math.random() - 0.5) * yW;
         pos[i * 3 + 2] = zMin + Math.random() * (zMax - zMin);
       }
       const g = new THREE.BufferGeometry();
@@ -126,21 +135,21 @@ class BouldScene {
       return g;
     };
 
-    /* Layer 1 — tiny bright white stars, full canvas spread */
+    /* Layer 1 — tiny white stars across full canvas */
     this.stars1 = new THREE.Points(
       makeGeo(mob ? 900 : 2800, 28, 16, -6, -1),
       new THREE.PointsMaterial({ size: 0.011, color: 0xffffff, transparent: true, opacity: 0.45, sizeAttenuation: true })
     );
     this.scene.add(this.stars1);
 
-    /* Layer 2 — medium purple stars, brand color */
+    /* Layer 2 — medium purple stars */
     this.stars2 = new THREE.Points(
       makeGeo(mob ? 280 : 850, 26, 14, -5, -0.5),
       new THREE.PointsMaterial({ size: 0.022, color: 0x8B5CF6, transparent: true, opacity: 0.30, sizeAttenuation: true })
     );
     this.scene.add(this.stars2);
 
-    /* Layer 3 — sparse soft-glow large dots for depth */
+    /* Layer 3 — sparse large glowing dots */
     this.stars3 = new THREE.Points(
       makeGeo(mob ? 55 : 160, 24, 12, -5, -1),
       new THREE.PointsMaterial({ size: 0.055, color: 0xC4B5FD, transparent: true, opacity: 0.14, sizeAttenuation: true })
@@ -163,13 +172,14 @@ class BouldScene {
       color: 0xCCCCCC, metalness: 0.96, roughness: 0.08,
       envMapIntensity: 2.2, transparent: true, opacity: 0,
     });
-    this._entranceMat = mat;
+    this._entranceMat  = mat;
     this._distortMeshes = [];
 
     root.traverse((child) => {
       if (child.isMesh) {
-        child.material = mat;
-        child.castShadow = child.receiveShadow = false;
+        child.material      = mat;
+        child.castShadow    = false;
+        child.receiveShadow = false;
         this._distortMeshes.push(child);
       }
     });
@@ -181,7 +191,8 @@ class BouldScene {
 
     if (!maxDim || !isFinite(maxDim)) {
       console.warn('[BouldScene] No renderable geometry — falling back to font');
-      this._loadFont(); return;
+      this._loadFont();
+      return;
     }
 
     root.position.copy(center).negate();
@@ -225,14 +236,15 @@ class BouldScene {
           font, size: 2, depth: 0.45, curveSegments: 48,
           bevelEnabled: true, bevelThickness: 0.055, bevelSize: 0.04, bevelSegments: 12,
         });
-        geo.computeBoundingBox(); geo.center();
+        geo.computeBoundingBox();
+        geo.center();
         const mat = new THREE.MeshStandardMaterial({
           color: 0xCCCCCC, metalness: 0.96, roughness: 0.08,
           envMapIntensity: 2.2, transparent: true, opacity: 0,
         });
-        this._entranceMat = mat;
-        this.bMesh = new THREE.Mesh(geo, mat);
-        this._baseScale = 1;
+        this._entranceMat   = mat;
+        this.bMesh          = new THREE.Mesh(geo, mat);
+        this._baseScale     = 1;
         this._distortMeshes = [this.bMesh];
         this.scene.add(this.bMesh);
         this._storeOrigPositions();
@@ -256,11 +268,10 @@ class BouldScene {
     if (this._distortPhase !== 0) return;
     this._distortPhase    = 1;
     this._distortProgress = 0;
-    this._distortSeed     = Math.random() * 100; // randomise shape per click
-    this.canvas.style.cursor = 'default';
+    this._distortSeed     = Math.random() * 100;
   }
 
-  /* Layered deterministic noise — no time dependency so shape is consistent per click */
+  /* Layered deterministic noise */
   _noise(x, y, z) {
     return (
       Math.sin(x * 2.8 + 1.3) * Math.cos(y * 3.1 + 0.7) * Math.sin(z * 2.0 + 2.1) * 0.50 +
@@ -272,10 +283,9 @@ class BouldScene {
   _updateDistortion() {
     if (this._distortPhase === 0 || !this._distortOrigPos.length) return;
 
-    /* Speed: ~0.7s to peak, ~1.1s to return */
-    const GROW   = 0.033;
-    const SHRINK = 0.021;
-    const MAX_D  = 0.26; // max displacement in world units (subtle)
+    const GROW   = 0.033; // ~0.7s to peak
+    const SHRINK = 0.021; // ~1.1s to return
+    const MAX_D  = 0.26;
 
     if (this._distortPhase === 1) {
       this._distortProgress += GROW;
@@ -285,23 +295,20 @@ class BouldScene {
       if (this._distortProgress <= 0) { this._distortProgress = 0; this._distortPhase = 0; }
     }
 
-    /* Smooth ease-in-out curve on the progress */
-    const p = this._distortProgress;
-    const eased = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    const p      = this._distortProgress;
+    const eased  = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
     const strength = MAX_D * eased;
-    const s = this._distortSeed;
+    const s      = this._distortSeed;
 
     for (const { geo, orig } of this._distortOrigPos) {
       const attr  = geo.attributes.position;
       const arr   = attr.array;
       const count = orig.length / 3;
       for (let i = 0; i < count; i++) {
-        const ox = orig[i * 3];
-        const oy = orig[i * 3 + 1];
-        const oz = orig[i * 3 + 2];
-        arr[i * 3]     = ox + this._noise(ox + s,       oy + 1.0 + s, oz + 2.0)     * strength;
+        const ox = orig[i * 3], oy = orig[i * 3 + 1], oz = orig[i * 3 + 2];
+        arr[i * 3]     = ox + this._noise(ox + s,       oy + 1.0 + s, oz + 2.0    ) * strength;
         arr[i * 3 + 1] = oy + this._noise(ox + 3.0 + s, oy + 0.5,     oz + 1.5 + s) * strength;
-        arr[i * 3 + 2] = oz + this._noise(ox + 1.5,     oy + 2.0 + s, oz + s)       * strength;
+        arr[i * 3 + 2] = oz + this._noise(ox + 1.5,     oy + 2.0 + s, oz + s      ) * strength;
       }
       attr.needsUpdate = true;
       geo.computeBoundingSphere();
@@ -334,7 +341,8 @@ class BouldScene {
 
   _onResize() {
     if (!this.renderer) return;
-    const w = this.canvas.clientWidth, h = this.canvas.clientHeight;
+    const w = this.canvas.clientWidth;
+    const h = this.canvas.clientHeight;
     if (!w || !h) return;
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
@@ -347,7 +355,7 @@ class BouldScene {
     if (hero) this.scrollProgress = Math.max(0, Math.min(window.scrollY / hero.offsetHeight, 1));
   }
 
-  /* ─── Easing ────────────────────────────────────────────────────────── */
+  /* ─── Helpers ───────────────────────────────────────────────────────── */
   _easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
 
   /* ─── Render loop ───────────────────────────────────────────────────── */
@@ -356,7 +364,8 @@ class BouldScene {
     this.raf = requestAnimationFrame(() => this._loop());
     if (!this.renderer) return;
 
-    const t = Date.now() * 0.001;
+    const t   = Date.now() * 0.001;
+    const mob = window.innerWidth < 768;
 
     this.target.x += (this.mouse.x - this.target.x) * 0.04;
     this.target.y += (this.mouse.y - this.target.y) * 0.04;
@@ -368,24 +377,28 @@ class BouldScene {
     /* Logo */
     if (this.bMesh) {
       const ep = this._easeOutQuart(this.entranceProgress);
+
+      /* On mobile: centred + slightly smaller; desktop: offset right */
+      const targetX  = mob ? 0    : 2.2;
+      const scaleMul = mob ? 0.72 : 1.0;
+
       this.bMesh.rotation.y = t * 0.28 + this.target.x * 0.35;
       this.bMesh.rotation.x = this.target.y * 0.2;
-      this.bMesh.position.x = 2.2;
+      this.bMesh.position.x = targetX;
       this.bMesh.position.y = Math.sin(t * 0.6) * 0.12 - this.scrollProgress * 0.7;
-      this.bMesh.scale.setScalar(this._baseScale);
+      this.bMesh.scale.setScalar(this._baseScale * scaleMul);
+
       if (this._entranceMat) this._entranceMat.opacity = Math.min(1, ep);
     }
 
-    /* Distortion */
     this._updateDistortion();
 
-    /* Key light orbit */
     if (this.keyLight) {
       this.keyLight.position.x = Math.sin(t * 0.4) * 5;
       this.keyLight.position.z = Math.cos(t * 0.4) * 4;
     }
 
-    /* Stars — very slow drift + subtle twinkle via opacity pulse */
+    /* Stars — slow drift + subtle opacity twinkle */
     if (this.stars1) {
       this.stars1.rotation.y = t * 0.0025;
       this.stars1.rotation.x = t * 0.0010;

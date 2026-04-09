@@ -397,16 +397,17 @@ class BouldScene {
     const N = this._N, cur = this._cur, vel = this._vel, home = this._homes[0];
     for (let i = 0; i < N; i++) {
       const i3 = i * 3;
-      const theta = Math.random() * Math.PI * 2;
-      const phi   = Math.acos(2 * Math.random() - 1);
-      const r     = 3.5 + Math.random() * 5;
-      cur[i3]     = r * Math.sin(phi) * Math.cos(theta);
-      cur[i3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.55;
-      cur[i3 + 2] = r * Math.cos(phi) * 0.35;
-      const sp    = 0.14 + Math.random() * 0.12;
-      vel[i3]     = (home[i3]     - cur[i3])     * sp;
-      vel[i3 + 1] = (home[i3 + 1] - cur[i3 + 1]) * sp;
-      vel[i3 + 2] = (home[i3 + 2] - cur[i3 + 2]) * sp * 0.45;
+      /* All particles begin at the centre with microscopic jitter so they
+         appear to materialise from a single point and fly outward to form
+         the first shape.  An initial impulse directed toward each particle's
+         home position gives the burst its natural spread. */
+      cur[i3]     = (Math.random() - 0.5) * 0.06;
+      cur[i3 + 1] = (Math.random() - 0.5) * 0.06;
+      cur[i3 + 2] = (Math.random() - 0.5) * 0.06;
+      const sp    = 0.11 + Math.random() * 0.07;
+      vel[i3]     = home[i3]     * sp;
+      vel[i3 + 1] = home[i3 + 1] * sp;
+      vel[i3 + 2] = home[i3 + 2] * sp;
     }
   }
 
@@ -415,6 +416,11 @@ class BouldScene {
   ════════════════════════════════════════════════════════════ */
   _doMorphToNext() {
     if (!this._allLoaded || !this._points) return;
+    /* Cooldown prevents double-fire on mobile touchend / fast taps */
+    const now = performance.now();
+    if (now - (this._lastMorphTime || 0) < 500) return;
+    this._lastMorphTime = now;
+
     if (this._state === 'morphing') {
       /* Snap to current target immediately so next morph starts clean */
       const cur  = this._cur;
@@ -481,8 +487,8 @@ class BouldScene {
       const { x } = this._clientXY(e);
       const mob   = window.innerWidth < 768;
       if (mob || x / window.innerWidth > 0.28) {
-        /* Only trigger morph when particles are idle or already morphing */
-        if (this._state === 'idle' || this._state === 'morphing' || this._state === 'intro') {
+        /* Only trigger morph when idle or already morphing — not during intro */
+        if (this._state === 'idle' || this._state === 'morphing') {
           this._doMorphToNext();
         }
       }
@@ -521,7 +527,7 @@ class BouldScene {
     }
 
     if (state === 'morphing') {
-      const forceSnap = this._stateAge > 2.5; /* guarantee we never get stuck */
+      const forceSnap = this._stateAge > 4.5; /* guarantee we never get stuck — extended for mobile */
       if (this._stateAge > 0.35) {
         /* Check convergence toward target shape */
         const homeT = this._homes[this._targetShape];
@@ -579,12 +585,14 @@ class BouldScene {
 
     const doHome = state === 'intro' || state === 'morphing';
     const homeK  = state === 'intro'
-      ? HOME_K_INTRO * Math.min(this._stateAge / 1.5, 1.0)
+      ? HOME_K_INTRO * Math.min(this._stateAge * 2.5, 1.0)
       : HOME_K_MORPH * Math.min(this._stateAge * 1.5, 1.0);
 
-    /* Constant, extremely heavy drag guarantees zero bouncing. Particles just slide perfectly to their target. */
-    const drag   = state === 'morphing' 
-      ? 0.78 
+    const mob    = window.innerWidth < 768;
+    /* Constant, extremely heavy drag guarantees zero bouncing. Particles just slide perfectly to their target.
+       Mobile uses heavier morph drag to prevent overshoot at lower framerates. */
+    const drag   = state === 'morphing'
+      ? (mob ? 0.84 : 0.78)
       : (state === 'intro' ? 0.90 : VEL_DRAG_IDLE);
       
     const home   = state === 'morphing' ? this._homes[this._targetShape] : this._homes[0];
@@ -702,7 +710,7 @@ class BouldScene {
     this.raf = requestAnimationFrame(() => this._loop());
     if (!this.renderer) return;
 
-    const dt = Math.min(this.clock.getDelta(), 0.05);
+    const dt = Math.min(this.clock.getDelta(), 0.033);
     const t  = this.clock.elapsedTime;
 
     /* Smooth mouse */

@@ -1,6 +1,7 @@
 /**
  * BOULD 3D Scene — Three.js hero
- * Loads the brand logo as an OBJ (if provided) or generates a "B" via TextGeometry.
+ * Loads the brand logo as a GLB/GLTF or OBJ (auto-detected by extension),
+ * or generates a "B" via TextGeometry as a final fallback.
  *
  * - Particles + canvas are visible immediately on page load.
  * - The 3D logo springs in when the user first scrolls, OR after 1.5 s (whichever is first).
@@ -10,6 +11,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.m
 import { FontLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
 import { OBJLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/environments/RoomEnvironment.js';
 
 class BouldScene {
@@ -72,9 +74,9 @@ class BouldScene {
       this._setupLights();
       this._createParticles();
 
-      /* Load logo */
+      /* Load logo — auto-detect GLB/GLTF vs OBJ by extension */
       if (this.objUrl) {
-        this._loadOBJ();
+        this._loadModel();
       } else {
         this._loadFont();
       }
@@ -122,55 +124,93 @@ class BouldScene {
     this.keyLight = key;
   }
 
+  /* ─── Model Loader (auto-detects GLB/GLTF vs OBJ) ──────────────────── */
+  _loadModel() {
+    const url = this.objUrl;
+    const ext = url.split('?')[0].toLowerCase();
+    if (ext.endsWith('.glb') || ext.endsWith('.gltf')) {
+      this._loadGLTF(url);
+    } else {
+      this._loadOBJ(url);
+    }
+  }
+
+  /* ─── Shared mesh finaliser ─────────────────────────────────────────── */
+  _finaliseModel(root) {
+    if (!this.alive) return;
+
+    const mat = new THREE.MeshStandardMaterial({
+      color: 0xCCCCCC,
+      metalness: 0.96,
+      roughness: 0.08,
+      envMapIntensity: 2.2,
+    });
+
+    root.traverse((child) => {
+      if (child.isMesh) {
+        child.material = mat;
+        child.castShadow    = false;
+        child.receiveShadow = false;
+      }
+    });
+
+    const box    = new THREE.Box3().setFromObject(root);
+    const center = box.getCenter(new THREE.Vector3());
+    const size   = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+
+    if (!maxDim || !isFinite(maxDim)) {
+      console.warn('[BouldScene] Model has no renderable geometry — falling back to font');
+      this._loadFont();
+      return;
+    }
+
+    root.position.copy(center).negate();
+    root.scale.setScalar(1);
+
+    this._baseScale = 2 / maxDim;
+    this._baseScale = Math.min(Math.max(this._baseScale, 0.01), 20);
+
+    this.bMesh = new THREE.Group();
+    this.bMesh.add(root);
+    this.bMesh.scale.setScalar(0); // entrance animation will scale up
+    this.scene.add(this.bMesh);
+    console.log('[BouldScene] Model added to scene, baseScale:', this._baseScale);
+  }
+
+  /* ─── GLB / GLTF Loader ─────────────────────────────────────────────── */
+  _loadGLTF(url) {
+    console.log('[BouldScene] Loading GLB/GLTF from:', url);
+    const loader = new GLTFLoader();
+    loader.load(
+      url,
+      (gltf) => {
+        if (!this.alive) return;
+        console.log('[BouldScene] GLTF loaded ✓');
+        this._finaliseModel(gltf.scene);
+      },
+      (xhr) => {
+        if (xhr.total) {
+          console.log('[BouldScene] GLTF', Math.round(xhr.loaded / xhr.total * 100) + '% loaded');
+        }
+      },
+      (err) => {
+        console.warn('[BouldScene] GLTF load failed, falling back to font "B":', err);
+        this._loadFont();
+      }
+    );
+  }
+
   /* ─── OBJ Loader ────────────────────────────────────────────────────── */
-  _loadOBJ() {
-    console.log('[BouldScene] Loading OBJ from:', this.objUrl);
+  _loadOBJ(url) {
+    console.log('[BouldScene] Loading OBJ from:', url);
     const loader = new OBJLoader();
     loader.load(
-      this.objUrl,
+      url,
       (obj) => {
         if (!this.alive) return;
         console.log('[BouldScene] OBJ loaded ✓');
-
-        const mat = new THREE.MeshStandardMaterial({
-          color: 0xCCCCCC,
-          metalness: 0.96,
-          roughness: 0.08,
-          envMapIntensity: 2.2,
-        });
-
-        obj.traverse((child) => {
-          if (child.isMesh) child.material = mat;
-        });
-
-        /* Compute bounding box in the OBJ's local space */
-        const box    = new THREE.Box3().setFromObject(obj);
-        const center = box.getCenter(new THREE.Vector3());
-        const size   = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-
-        if (!maxDim || !isFinite(maxDim)) {
-          console.warn('[BouldScene] OBJ has no geometry — falling back to font');
-          this._loadFont();
-          return;
-        }
-
-        /*
-         * Center the OBJ inside a Group by shifting child in local space.
-         * The Group's scale then controls world size — this keeps centering
-         * valid regardless of the scale applied by the entrance animation.
-         */
-        obj.position.copy(center).negate();
-        obj.scale.setScalar(1); // reset any pre-baked scale from the file
-
-        this._baseScale = 2 / maxDim;   // scale Group so max dim ≈ 2 world units
-        this._baseScale = Math.min(Math.max(this._baseScale, 0.01), 20); // safety clamp
-
-        this.bMesh = new THREE.Group();
-        this.bMesh.add(obj);
-        this.bMesh.scale.setScalar(0); // entrance animation will scale up
-        this.scene.add(this.bMesh);
-        console.log('[BouldScene] OBJ added to scene, baseScale:', this._baseScale);
+        this._finaliseModel(obj);
       },
       (xhr) => {
         if (xhr.total) {

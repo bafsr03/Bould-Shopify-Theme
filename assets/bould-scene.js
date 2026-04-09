@@ -7,12 +7,18 @@
  * - The 3D logo springs in when the user first scrolls, OR after 1.5 s (whichever is first).
  * - Scroll progress drives a vertical parallax while the hero is in view.
  */
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
-import { FontLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
-import { OBJLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
-import { RoomEnvironment } from 'https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/environments/RoomEnvironment.js';
+/*
+ * esm.sh is used instead of cdn.jsdelivr.net because Three.js addon modules
+ * (GLTFLoader, OBJLoader, FontLoader, etc.) use bare import specifiers
+ * ("import { ... } from 'three'") which browsers reject without an import map.
+ * esm.sh rewrites all bare imports to full URLs automatically.
+ */
+import * as THREE from 'https://esm.sh/three@0.161.0';
+import { FontLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'https://esm.sh/three@0.161.0/examples/jsm/geometries/TextGeometry.js';
+import { OBJLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/OBJLoader.js';
+import { GLTFLoader } from 'https://esm.sh/three@0.161.0/examples/jsm/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'https://esm.sh/three@0.161.0/examples/jsm/environments/RoomEnvironment.js';
 
 class BouldScene {
   constructor(canvasEl, objUrl) {

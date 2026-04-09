@@ -372,18 +372,17 @@ class BouldScene {
 
     /* Logo mesh */
     if (this.bMesh) {
-      const epFade  = this._easeOutQuart(this.entranceProgress);  // smooth 0→1 for fade + scale
-      const epScale = this._easeOutQuart(Math.min(this.entranceProgress * 1.2, 1)); // slightly faster scale
+      const epFade = this._easeOutQuart(this.entranceProgress); // smooth 0→1
 
-      /* Continuous idle rotation + mouse tilt — no entrance slide or spin bonus */
+      /* Continuous idle rotation + mouse tilt */
       this.bMesh.rotation.y = t * 0.28 + this.target.x * 0.35;
       this.bMesh.rotation.x = this.target.y * 0.2;
-      this.bMesh.position.x = 0;
+      /* Offset to right half of the full-width canvas */
+      this.bMesh.position.x = 2.2;
       this.bMesh.position.y = Math.sin(t * 0.6) * 0.12 - this.scrollProgress * 0.7;
 
-      /* Gentle scale from 80% → 100% while fading in */
-      const scaleVal = this._baseScale * (0.8 + 0.2 * epScale);
-      this.bMesh.scale.setScalar(Math.max(0, scaleVal) * Math.min(epScale + 0.001, 1));
+      /* Full size always — pure fade-in only */
+      this.bMesh.scale.setScalar(this._baseScale);
 
       /* Opacity fade-in */
       if (this._entranceMat) {

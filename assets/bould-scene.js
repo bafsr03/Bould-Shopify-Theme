@@ -477,7 +477,7 @@ class BouldScene {
       this._dragging = true;
       if (e.cancelable) e.preventDefault();
       const rotDelta   = (deltaX / window.innerWidth) * Math.PI * 1.5;
-      this._rotYTarget = Math.max(-MAX_ROT_Y, Math.min(MAX_ROT_Y, this._dragRotY0 + rotDelta));
+      this._rotYTarget = Math.max(-Math.PI * 0.9, Math.min(Math.PI * 0.9, this._dragRotY0 + rotDelta));
     }
   }
 
@@ -732,12 +732,16 @@ class BouldScene {
       this._pointsGlow.material.opacity   = op * 0.18;
     }
 
-    /* ── Clamped rotation — no auto-spin ─── */
+    /* ── Gentle left-to-right pendulum — ~80° total sweep, never 360 ─── */
+    /* One full back-and-forth every ~90 s — very slow, always in motion */
+    const autoRotY = Math.sin(t * 0.07) * Math.PI * 0.22;
     if (!this._dragging) {
-      this._rotYTarget = this.target.x * MAX_ROT_Y * 0.78;
+      /* Mouse adds the tiniest trim so hover still feels alive */
+      this._rotYTarget = autoRotY + this.target.x * MAX_ROT_Y * 0.20;
     }
-    this._rotYTarget = Math.max(-MAX_ROT_Y, Math.min(MAX_ROT_Y, this._rotYTarget));
-    this._rotY  += (this._rotYTarget - this._rotY)  * (this._dragging ? 0.28 : 0.07);
+    this._rotYTarget = Math.max(-Math.PI * 0.9, Math.min(Math.PI * 0.9, this._rotYTarget));
+    /* Very lazy spring so the chase is silky-smooth */
+    this._rotY  += (this._rotYTarget - this._rotY)  * (this._dragging ? 0.28 : 0.03);
     this._rotXTarget = this.target.y * MAX_ROT_X;
     this._rotX  += (this._rotXTarget - this._rotX)  * 0.06;
 

@@ -167,8 +167,9 @@ class BouldScene {
       this.renderer.outputColorSpace    = THREE.SRGBColorSpace;
 
       this.scene  = new THREE.Scene();
-      this.camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-      this.camera.position.set(0, 0, 6);
+      const isMob = window.innerWidth < 768;
+      this.camera = new THREE.PerspectiveCamera(isMob ? 52 : 45, w / h, 0.1, 100);
+      this.camera.position.set(0, 0, isMob ? 4.2 : 6);
 
       const pmrem = new THREE.PMREMGenerator(this.renderer);
       pmrem.compileEquirectangularShader();
@@ -289,7 +290,7 @@ class BouldScene {
     const cx   = (mnX + mxX) / 2, cy = (mnY + mxY) / 2, cz = (mnZ + mxZ) / 2;
     const span = Math.max(mxX - mnX, mxY - mnY, mxZ - mnZ) || 1;
     const mob  = window.innerWidth < 768;
-    const sc   = (mob ? 1.65 : 2.5) / span;
+    const sc   = (mob ? 3.2 : 2.5) / span;
 
     /* 3. Jittered sampling → exactly N positions */
     const pos = new Float32Array(N * 3);

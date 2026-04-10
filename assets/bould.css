@@ -189,8 +189,8 @@ body:has(.bould-page-hero) .footer-section * {
   pointer-events: auto;
   opacity: 1;
   /* Particles bleed into text area; logo fully visible on the right */
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 30%, black 55%);
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 30%, black 55%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.15) 30%, black 55%);
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.15) 30%, black 55%);
 }
 
 /* ── Interaction hint badge ───────────────────────────────────────── */
@@ -224,13 +224,27 @@ body:has(.bould-page-hero) .footer-section * {
 }
 
 @keyframes bould-hint-appear {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes bould-hint-fade-out {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(-4px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
 
 /* Subtle pulse on the hint icon */
@@ -239,8 +253,17 @@ body:has(.bould-page-hero) .footer-section * {
 }
 
 @keyframes bould-hint-pulse {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50%       { opacity: 1;   transform: scale(1.15); }
+
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
 }
 
 .bould-hero__bg-grid {
@@ -2052,46 +2075,87 @@ body:has(.bould-page-hero) .footer-section * {
 }
 
 @media (max-width: 768px) {
-  .bould-hero__content {
-    max-width: 100%;
-    padding: 0 5vw;
+
+  /* ── Mobile hero: vertical stack, no overlap ──────────────── */
+  /* 3D canvas on top, text content below, nothing overlaps     */
+  .bould-hero {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: auto;
+    min-height: 100svh;
   }
 
+  /* Canvas is in normal flow — sits above the text */
+  .bould-hero__canvas {
+    position: relative;
+    width: 100%;
+    height: 57svh;
+    flex-shrink: 0;
+    opacity: 1;
+    -webkit-mask-image: none;
+    mask-image: none;
+    z-index: 1;
+    pointer-events: auto;
+  }
+
+  /* Text content flows below the canvas — fully readable, not overlapping */
+  .bould-hero__content {
+    position: relative;
+    z-index: 2;
+    max-width: 100%;
+    padding: 2.4rem 5vw 5rem;
+    pointer-events: auto;
+  }
+
+  /* Stats and scroll indicator don't belong in a stacked layout */
   .bould-hero__stats {
     display: none;
   }
 
-  .bould-hero__canvas {
-    width: 100%;
-    height: 100%;
-    /* Slightly transparent behind text, but stays on TOP and keeps pointer-events */
-    opacity: 0.35;
-    /* No mask on mobile — full-bleed particle field */
-    -webkit-mask-image: none;
-    mask-image: none;
-    /* Keep canvas interactive on mobile — taps reach it */
-    z-index: 2;
-    pointer-events: auto;
+  .bould-hero__scroll {
+    display: none;
   }
 
-  /* Text content sits above canvas on mobile */
-  .bould-hero__content {
-    z-index: 3;
-    pointer-events: none;   /* let taps pass through to canvas */
-  }
-
-  /* Buttons inside content need to remain tappable */
-  .bould-hero__content a,
-  .bould-hero__content button {
-    pointer-events: auto;
-  }
-
+  /* Interact hint sits at the bottom edge of the canvas area.
+     Override animation so it preserves the X centering transform. */
   .bould-hero__interact-hint {
-    right: auto;
+    position: absolute;
+    top: calc(57svh - 5rem);
     left: 50%;
-    transform: translateX(-50%);
-    bottom: 6rem;
+    right: auto;
+    bottom: auto;
+    transform: translateX(-50%) translateY(6px);
     white-space: nowrap;
+    animation: bould-hint-appear-mob 0.6s var(--b-ease) 4s both;
+  }
+
+  .bould-hero__interact-hint.is-hidden {
+    animation: bould-hint-fade-out-mob 0.4s var(--b-ease) forwards;
+  }
+
+  @keyframes bould-hint-appear-mob {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(6px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  @keyframes bould-hint-fade-out-mob {
+    from {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-4px);
+    }
   }
 
   .bould-section-header {
@@ -2188,8 +2252,8 @@ body:has(.bould-page-hero) .footer-section * {
 ══════════════════════════════════════ */
 
 /* Backdrop scrim — covers right side when drawer is open */
-header-drawer details[open] > summary::before,
-.js header-drawer details[open] > summary::before {
+header-drawer details[open]>summary::before,
+.js header-drawer details[open]>summary::before {
   background: rgba(4, 0, 12, 0.85) !important;
   backdrop-filter: blur(10px) saturate(0.6) !important;
   -webkit-backdrop-filter: blur(10px) saturate(0.6) !important;

@@ -118,7 +118,7 @@
         "work_1": {
           "type": "case_study",
           "settings": {
-            "image": "shopify://shop_images/joonlogo.jpg",
+            "image": "shopify://shop_images/joonlogo.png",
             "name": "Joon Distribution",
             "category": "3D Store + Shopify Plus",
             "year": "2025",

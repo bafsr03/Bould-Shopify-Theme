@@ -138,10 +138,11 @@
         "work_3": {
           "type": "case_study",
           "settings": {
+            "image": "shopify://shop_images/Avion_Logo_-_Final.png",
             "name": "Avion",
             "category": "Custom Development",
             "year": "2024",
-            "url": ""
+            "url": "https://avionlegacycannabis.com/"
           }
         },
         "work_4": {

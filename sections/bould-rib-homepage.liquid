@@ -1,0 +1,604 @@
+{% comment %} ── RUN IT BACK CLASSICS — Vintage & Streetwear Store (Abilene, TX) ── {% endcomment %}
+
+<style>
+/* ── Reset ── */
+.rib-wrap *, .rib-wrap *::before, .rib-wrap *::after { box-sizing: border-box; }
+.rib-wrap a { text-decoration: none; }
+.rib-wrap img { max-width: 100%; }
+
+/* ── Brand Tokens ── */
+.rib-wrap {
+  --rib-bg:           #080808;
+  --rib-fg:           #f5f4f0;
+  --rib-accent:       #a259ff;
+  --rib-accent-dark:  #7c3aed;
+  --rib-accent-rgb:   162, 89, 255;
+  --rib-gradient:     linear-gradient(90deg, #ff6b6b 0%, #ffd93d 28%, #6bcb77 52%, #4d96ff 76%, #a259ff 100%);
+  --rib-gradient-45:  linear-gradient(45deg,  #ff6b6b 0%, #ffd93d 28%, #6bcb77 52%, #4d96ff 76%, #a259ff 100%);
+}
+
+/* ── Hide Bould chrome ── */
+body:has(.rib-wrap) .header-wrapper,
+body:has(.rib-wrap) .shopify-section-group-header-group,
+body:has(.rib-wrap) .footer-section,
+body:has(.rib-wrap) .shopify-section-group-footer-group,
+body:has(.rib-wrap) #shopify-section-announcement-bar,
+body:has(.rib-wrap) .bould-cursor { display: none !important; }
+body:has(.rib-wrap) #MainContent { padding-top: 0 !important; margin-top: 0 !important; }
+
+/* ── Back bar ── */
+.rib-back-bar {
+  position: sticky; top: 0; z-index: 9999;
+  background: rgba(8,8,8,0.96);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(var(--rib-accent-rgb), 0.25);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(16px,4vw,40px); height: 48px; gap: 16px;
+}
+.rib-back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
+  font-weight: 700; color: rgba(245,244,240,.5); transition: color .2s;
+  font-family: inherit;
+}
+.rib-back-btn:hover { color: var(--rib-accent); }
+.rib-back-btn svg { transition: transform .2s; }
+.rib-back-btn:hover svg { transform: translateX(-3px); }
+.rib-back-badge {
+  font-size: .6rem; letter-spacing: .3em; text-transform: uppercase; font-weight: 700;
+  background: var(--rib-gradient); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rib-back-actions { display: flex; align-items: center; gap: 16px; }
+.rib-back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
+  font-weight: 600; color: rgba(245,244,240,.35); transition: color .2s; font-family: inherit;
+}
+.rib-back-link:hover { color: var(--rib-fg); }
+.rib-back-link--accent { color: rgba(var(--rib-accent-rgb),.7); }
+.rib-back-link--accent:hover { color: var(--rib-accent); }
+
+/* ── Header ── */
+.rib-header {
+  position: absolute; top: 48px; left: 0; right: 0; z-index: 100;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 24px clamp(16px,5vw,56px);
+}
+.rib-header__nav { display: flex; align-items: center; gap: clamp(14px,2.5vw,34px); }
+.rib-header__nav--right { justify-content: flex-end; }
+.rib-header__link {
+  font-size: .6rem; letter-spacing: .22em; text-transform: uppercase;
+  font-weight: 600; color: rgba(245,244,240,.65); transition: color .22s;
+}
+.rib-header__link:hover { color: var(--rib-accent); }
+.rib-header__logo { text-align: center; line-height: 0; }
+/* skeleton DJ icon inverted to white for the dark header */
+.rib-header__logo img { height: 40px; width: auto; object-fit: contain; filter: brightness(0) invert(1); }
+.rib-header__icons { display: flex; align-items: center; gap: 18px; }
+.rib-header__icon-btn {
+  color: rgba(245,244,240,.65); transition: color .22s;
+  background: none; border: none; cursor: pointer; padding: 0; line-height: 0;
+}
+.rib-header__icon-btn:hover { color: var(--rib-accent); }
+@media(max-width:749px) {
+  .rib-header__nav--left { display: none; }
+  .rib-header { grid-template-columns: 1fr auto; }
+}
+
+/* ── Hero ── */
+.rib-hero {
+  position: relative; min-height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden; background: var(--rib-bg);
+}
+.rib-hero__bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(to bottom,rgba(8,8,8,0.25) 0%,rgba(8,8,8,0.1) 35%,rgba(8,8,8,0.7) 75%,#080808 100%);
+}
+.rib-hero__bg-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: -1; filter: brightness(0.42) saturate(0.6);
+}
+/* subtle rainbow vignette overlay */
+.rib-hero__bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 100%, rgba(162,89,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.rib-hero__body {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 0 24px;
+  animation: rib-body-in 1s cubic-bezier(0,0,0.18,1) 0.3s both;
+}
+@keyframes rib-body-in {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/* Skeleton DJ — floats with a purple-to-rainbow glow */
+.rib-hero__icon {
+  width: min(160px,38vw); height: auto; object-fit: contain; margin-bottom: 24px;
+  filter: drop-shadow(0 0 32px rgba(var(--rib-accent-rgb),0.6))
+          drop-shadow(0 0 64px rgba(162,89,255,0.25));
+  animation: rib-float 4s ease-in-out infinite;
+}
+@keyframes rib-float {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50%      { transform: translateY(-12px) rotate(1deg); }
+}
+/* Rainbow name logo */
+.rib-hero__name-logo {
+  width: min(400px,82vw); height: auto; object-fit: contain; margin-bottom: 24px;
+  filter: drop-shadow(0 4px 24px rgba(0,0,0,0.55));
+  animation: rib-name-in 1.1s cubic-bezier(0,0,0.18,1) 0.55s both;
+}
+@keyframes rib-name-in {
+  from { opacity: 0; transform: scale(0.93) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.rib-hero__eyebrow {
+  font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(245,244,240,0.45); font-weight: 600; margin: 0 0 14px;
+}
+.rib-hero__heading {
+  font-size: clamp(2.8rem,7.5vw,7rem); font-weight: 800; line-height: .93;
+  letter-spacing: -.03em; text-transform: uppercase; color: var(--rib-fg); margin: 0 0 40px;
+}
+.rib-hero__btn {
+  display: inline-block; padding: 16px 40px; font-size: .7rem;
+  letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+  color: #fff; background: transparent;
+  border: 1px solid rgba(245,244,240,0.35); border-radius: 2px;
+  transition: background .25s ease, border-color .25s ease, transform .2s ease, box-shadow .25s ease;
+}
+.rib-hero__btn:hover {
+  background: var(--rib-accent); border-color: var(--rib-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(var(--rib-accent-rgb),0.35);
+}
+/* Scroll indicator */
+.rib-hero__scroll {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.rib-hero__scroll span {
+  font-size: .58rem; letter-spacing: .25em; text-transform: uppercase;
+  color: rgba(245,244,240,0.3);
+}
+.rib-hero__scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom,rgba(245,244,240,0.4),transparent);
+  animation: rib-scroll-drop 1.6s ease-in-out infinite;
+}
+@keyframes rib-scroll-drop {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ── Brand Statement ── */
+.rib-statement-wrap { background: var(--rib-bg); padding: 100px 24px; }
+.rib-statement { text-align: center; max-width: 1100px; margin: 0 auto; }
+.rib-statement__label {
+  display: block; font-size: .68rem; letter-spacing: .3em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 28px;
+  background: var(--rib-gradient); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rib-statement__text {
+  font-size: clamp(2rem,5.5vw,5rem); font-weight: 800; line-height: 1.06;
+  letter-spacing: -.02em; color: var(--rib-fg); margin: 0; text-transform: uppercase;
+}
+.rib-statement__text em {
+  font-style: normal; text-decoration: line-through; color: rgba(245,244,240,.38);
+}
+.rib-statement__sub {
+  margin-top: 32px; font-size: .85rem; letter-spacing: .08em;
+  color: rgba(245,244,240,.5); text-transform: uppercase;
+}
+
+/* ── Three Pillars ── */
+.rib-pillars { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; width: 100%; }
+.rib-pillar { position: relative; aspect-ratio: 3/4; overflow: hidden; background: #111; }
+.rib-pillar__img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .7s cubic-bezier(0,0,.18,1);
+  filter: brightness(.52) saturate(0.85);
+}
+.rib-pillar:hover .rib-pillar__img { transform: scale(1.06); filter: brightness(.38) saturate(0.7); }
+.rib-pillar__body {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  justify-content: flex-end; padding: 32px 28px;
+  background: linear-gradient(to top,rgba(8,8,8,.94) 0%,rgba(8,8,8,.42) 45%,transparent 100%);
+}
+/* Rainbow numbering */
+.rib-pillar__num {
+  font-size: .65rem; letter-spacing: .28em; text-transform: uppercase;
+  font-weight: 700; margin-bottom: 10px;
+  background: var(--rib-gradient); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rib-pillar__title {
+  font-size: 1.6rem; font-weight: 800; text-transform: uppercase;
+  color: var(--rib-fg); letter-spacing: .02em; margin: 0 0 10px;
+}
+.rib-pillar__desc {
+  font-size: .78rem; line-height: 1.55; color: rgba(245,244,240,.62);
+  margin: 0; max-width: 260px;
+}
+/* Accent border on pillar hover */
+.rib-pillar::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  border: 1px solid transparent;
+  transition: border-color .35s ease;
+}
+.rib-pillar:hover::after { border-color: rgba(var(--rib-accent-rgb),0.4); }
+
+/* ── Stats Strip ── */
+.rib-stats {
+  background: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: grid; grid-template-columns: repeat(3,1fr);
+  text-align: center;
+}
+.rib-stat {
+  padding: 52px 24px;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+.rib-stat:last-child { border-right: none; }
+.rib-stat__num {
+  display: block; font-size: clamp(2.4rem,5vw,4rem); font-weight: 800;
+  letter-spacing: -.03em; line-height: 1;
+  background: var(--rib-gradient); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 10px;
+}
+.rib-stat__label {
+  font-size: .65rem; letter-spacing: .24em; text-transform: uppercase;
+  color: rgba(245,244,240,.4); font-weight: 600;
+}
+@media(max-width:749px) {
+  .rib-stats { grid-template-columns: 1fr; }
+  .rib-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .rib-stat:last-child { border-bottom: none; }
+}
+
+/* ── Newsletter ── */
+.rib-newsletter-wrap { background: var(--rib-bg); padding: 100px 24px; }
+.rib-newsletter { text-align: center; max-width: 680px; margin: 0 auto; }
+.rib-newsletter__label {
+  display: block; font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(245,244,240,.5); margin-bottom: 20px;
+}
+.rib-newsletter__title {
+  font-size: clamp(2.2rem,5vw,4rem); font-weight: 800; text-transform: uppercase;
+  letter-spacing: -.01em; color: var(--rib-fg); margin: 0 0 10px;
+}
+.rib-newsletter__title span {
+  background: var(--rib-gradient); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rib-newsletter__sub {
+  font-size: .82rem; color: rgba(245,244,240,.5); letter-spacing: .06em;
+  text-transform: uppercase; margin-bottom: 40px;
+}
+.rib-newsletter__form {
+  display: flex; gap: 0; max-width: 480px; margin: 0 auto;
+  border: 1px solid rgba(245,244,240,.18); border-radius: 2px; overflow: hidden;
+  transition: border-color .25s ease;
+}
+.rib-newsletter__form:focus-within { border-color: var(--rib-accent); }
+.rib-newsletter__input {
+  flex: 1; background: transparent; border: none; color: var(--rib-fg);
+  font-size: .82rem; letter-spacing: .08em; padding: 16px 20px; outline: none; min-width: 0;
+}
+.rib-newsletter__input::placeholder { color: rgba(245,244,240,.35); text-transform: uppercase; letter-spacing: .1em; }
+.rib-newsletter__btn {
+  background: var(--rib-accent); color: #fff; border: none; font-size: .68rem;
+  letter-spacing: .18em; text-transform: uppercase; font-weight: 700;
+  padding: 16px 24px; cursor: pointer; transition: background .2s ease; white-space: nowrap;
+}
+.rib-newsletter__btn:hover { background: var(--rib-accent-dark); }
+/* Rainbow divider */
+.rib-divider-line {
+  width: 80px; height: 2px; margin: 0 auto 40px; display: block; border-radius: 1px;
+  background: var(--rib-gradient);
+}
+
+/* ── Service CTA ── */
+.rib-service { text-align: center; position: relative; overflow: hidden; }
+.rib-service__bg {
+  position: absolute; inset: 0;
+  background: url('https://images.squarespace-cdn.com/content/v1/67254c604cfda86f5e7e9edd/a87b3e81-96d8-418c-b349-067a01aa8ead/IMG_8605.jpg') center/cover no-repeat;
+  filter: brightness(.2) saturate(0.6); z-index: 0;
+}
+/* rainbow tint overlay */
+.rib-service__bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,107,107,0.06) 0%, rgba(162,89,255,0.08) 100%);
+}
+.rib-service__inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 100px 24px; }
+.rib-service__label {
+  display: block; font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+  color: rgba(245,244,240,.5); margin-bottom: 20px;
+}
+.rib-service__title {
+  font-size: clamp(2.8rem,7vw,6rem); font-weight: 800; text-transform: uppercase;
+  letter-spacing: -.02em; color: var(--rib-fg); margin: 0 0 20px; line-height: 1;
+}
+.rib-service__desc {
+  font-size: .88rem; line-height: 1.7; color: rgba(245,244,240,.6);
+  margin: 0 0 44px; max-width: 500px; margin-left: auto; margin-right: auto;
+}
+.rib-service__btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.rib-service__btn {
+  display: inline-block; padding: 14px 32px; font-size: .72rem; letter-spacing: .18em;
+  text-transform: uppercase; font-weight: 700; border-radius: 2px; transition: all .25s ease;
+}
+.rib-service__btn--primary {
+  background: var(--rib-accent); color: #fff; border: 1px solid var(--rib-accent);
+}
+.rib-service__btn--primary:hover {
+  background: var(--rib-accent-dark); border-color: var(--rib-accent-dark);
+  transform: translateY(-2px); box-shadow: 0 8px 32px rgba(var(--rib-accent-rgb),0.35);
+}
+.rib-service__btn--secondary {
+  background: transparent; color: var(--rib-fg); border: 1px solid rgba(245,244,240,.3);
+}
+.rib-service__btn--secondary:hover {
+  background: rgba(245,244,240,.08); border-color: rgba(245,244,240,.5); transform: translateY(-2px);
+}
+
+/* ── Social Bar ── */
+.rib-social-bar {
+  background: #0d0d0d; padding: 40px clamp(16px,5vw,56px);
+  display: flex; align-items: center; justify-content: center; gap: clamp(24px,5vw,56px);
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.rib-social-link {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
+  font-weight: 600; color: rgba(245,244,240,.35); transition: color .22s;
+}
+.rib-social-link:hover { color: var(--rib-fg); }
+.rib-social-link svg { opacity: .6; transition: opacity .22s; }
+.rib-social-link:hover svg { opacity: 1; }
+
+/* ── Footer ── */
+.rib-footer {
+  background: var(--rib-bg); border-top: 1px solid rgba(var(--rib-accent-rgb),0.1);
+  padding: 56px clamp(16px,5vw,56px) 40px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 32px;
+}
+.rib-footer__logo { text-align: center; }
+/* skeleton DJ white in footer */
+.rib-footer__logo img { height: 36px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: .7; }
+.rib-footer__nav { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.rib-footer__nav a {
+  font-size: .58rem; letter-spacing: .22em; text-transform: uppercase;
+  color: rgba(245,244,240,.28); font-weight: 600; transition: color .2s;
+}
+.rib-footer__nav a:hover { color: var(--rib-accent); }
+.rib-footer__copy {
+  font-size: .58rem; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(245,244,240,.18); text-align: right; line-height: 1.6;
+}
+/* rainbow bottom border */
+.rib-footer::after {
+  display: block; content: ''; height: 2px; margin-top: 40px;
+  background: var(--rib-gradient); border-radius: 1px;
+  grid-column: 1 / -1;
+}
+
+/* ── Responsive ── */
+@media(max-width:749px) {
+  .rib-pillars { grid-template-columns: 1fr; }
+  .rib-hero__heading { font-size: clamp(2.2rem,10vw,3.8rem); }
+  .rib-hero__icon { width: min(110px,34vw); }
+  .rib-hero__name-logo { width: min(300px,78vw); }
+  .rib-footer { grid-template-columns: 1fr; text-align: center; }
+  .rib-footer__copy { text-align: center; }
+}
+</style>
+
+<div class="rib-wrap" style="background:#080808;font-family:'Inter',sans-serif;color:#f5f4f0">
+
+  {%- comment -%} ── BACK BAR ── {%- endcomment -%}
+  <div class="rib-back-bar">
+    <a href="{{ section.settings.back_url | default: '/pages/build' }}" class="rib-back-btn">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M11 7H3M3 7L7 3M3 7L7 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {{ section.settings.back_label | default: 'Back to Build' }}
+    </a>
+    <span class="rib-back-badge">Run it Back Classics — Est. 2020</span>
+    <div class="rib-back-actions">
+      {%- if section.settings.next_version_url != blank -%}
+        <a href="{{ section.settings.next_version_url }}" class="rib-back-link rib-back-link--accent">
+          Next Version &rarr;
+        </a>
+      {%- endif -%}
+      <a href="https://www.runitbackclassics.com" target="_blank" rel="noopener noreferrer" class="rib-back-link">
+        Live Store
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M1 9L9 1M9 1H3.5M9 1V6.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} ── HEADER ── {%- endcomment -%}
+  <header class="rib-header">
+    <nav class="rib-header__nav rib-header__nav--left">
+      <a href="#" class="rib-header__link">Vintage Tees</a>
+      <a href="#" class="rib-header__link">Sneakers</a>
+      <a href="#" class="rib-header__link">Streetwear</a>
+    </nav>
+    <div class="rib-header__logo">
+      <img src="{{ 'rib-icon.png' | asset_url }}" alt="Run it Back Classics" width="44" height="44" loading="eager">
+    </div>
+    <nav class="rib-header__nav rib-header__nav--right">
+      <a href="#" class="rib-header__link">About</a>
+      <div class="rib-header__icons">
+        <button class="rib-header__icon-btn" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="7.5" cy="7.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M11.5 11.5L15.5 15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
+        <button class="rib-header__icon-btn" aria-label="Cart">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 2h2l2 8h7l2-6H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="14" r="1" fill="currentColor"/><circle cx="13" cy="14" r="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  {%- comment -%} ── HERO ── {%- endcomment -%}
+  <div class="rib-hero">
+    <div class="rib-hero__bg">
+      <img src="https://images.squarespace-cdn.com/content/v1/67254c604cfda86f5e7e9edd/03a809fa-9e4b-473d-9add-51d0a31461a1/3FA8A252-0DBB-42F1-BC13-F505F0229EEE.jpg" alt="" class="rib-hero__bg-img" loading="eager" fetchpriority="high">
+    </div>
+    <div class="rib-hero__body">
+      <img src="{{ 'rib-icon.png' | asset_url }}" alt="" aria-hidden="true" class="rib-hero__icon" width="320" height="320" loading="eager">
+      <img src="{{ 'rib-name.png' | asset_url }}" alt="Run it Back Classics" class="rib-hero__name-logo" width="800" height="220" loading="eager">
+      <p class="rib-hero__eyebrow">Curated With Love In Abilene, Texas</p>
+      <h1 class="rib-hero__heading">Vintage Tees,<br>Sneakers &amp; More!</h1>
+      <a href="https://www.runitbackclassics.com" target="_blank" rel="noopener noreferrer" class="rib-hero__btn">Shop the Collection</a>
+    </div>
+    <div class="rib-hero__scroll" aria-hidden="true">
+      <span>Scroll</span>
+      <div class="rib-hero__scroll-line"></div>
+    </div>
+  </div>
+
+  {%- comment -%} ── BRAND STATEMENT ── {%- endcomment -%}
+  <div class="rib-statement-wrap">
+    <div class="rib-statement">
+      <span class="rib-statement__label">Our Mission</span>
+      <p class="rib-statement__text">
+        WE TAKE PRIDE IN <em>HONEST</em><br>
+        AND LOYAL BUSINESS.<br>
+        WE ARE HERE TO GET<br>
+        YOU <em>RIGHT</em>.
+      </p>
+      <p class="rib-statement__sub">Run it Back Classics &mdash; Abilene, TX &mdash; Est. 2020</p>
+    </div>
+  </div>
+
+  {%- comment -%} ── THREE PILLARS ── {%- endcomment -%}
+  <div class="rib-pillars">
+    <div class="rib-pillar">
+      <img src="https://images.squarespace-cdn.com/content/v1/67254c604cfda86f5e7e9edd/182406ef-7784-4fc3-aa6d-bad9b32fa9f3/IMG_3168.jpg" alt="The Dig" class="rib-pillar__img" loading="lazy">
+      <div class="rib-pillar__body">
+        <span class="rib-pillar__num">01</span>
+        <h3 class="rib-pillar__title">The Dig</h3>
+        <p class="rib-pillar__desc">We crate-dig through thrift stores, estate sales, and garages across Texas to surface the pieces worth saving.</p>
+      </div>
+    </div>
+    <div class="rib-pillar">
+      <img src="https://images.squarespace-cdn.com/content/v1/67254c604cfda86f5e7e9edd/8148ba49-a598-4d2a-83e8-ec9ac13afb52/IMG_6406.JPG" alt="The Curate" class="rib-pillar__img" loading="lazy">
+      <div class="rib-pillar__body">
+        <span class="rib-pillar__num">02</span>
+        <h3 class="rib-pillar__title">The Curate</h3>
+        <p class="rib-pillar__desc">Every vintage tee, sneaker, and streetwear piece is hand-picked and inspected — quality and authenticity, always.</p>
+      </div>
+    </div>
+    <div class="rib-pillar">
+      <img src="https://images.squarespace-cdn.com/content/v1/67254c604cfda86f5e7e9edd/3660ae71-ee92-47d4-a776-f7a6a036e4ec/IMG_8158.jpg" alt="The Drop" class="rib-pillar__img" loading="lazy">
+      <div class="rib-pillar__body">
+        <span class="rib-pillar__num">03</span>
+        <h3 class="rib-pillar__title">The Drop</h3>
+        <p class="rib-pillar__desc">Your wardrobe gets an upgrade. One-of-a-kind classics, curated with love, shipped straight from Abilene.</p>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ── STATS STRIP ── {%- endcomment -%}
+  <div class="rib-stats">
+    <div class="rib-stat">
+      <span class="rib-stat__num">1000+</span>
+      <span class="rib-stat__label">Transactions Completed</span>
+    </div>
+    <div class="rib-stat">
+      <span class="rib-stat__num">2020</span>
+      <span class="rib-stat__label">Est. in Abilene, TX</span>
+    </div>
+    <div class="rib-stat">
+      <span class="rib-stat__num">100%</span>
+      <span class="rib-stat__label">Honest &amp; Loyal</span>
+    </div>
+  </div>
+
+  {%- comment -%} ── NEWSLETTER ── {%- endcomment -%}
+  <div class="rib-newsletter-wrap">
+    <div class="rib-newsletter">
+      <span class="rib-newsletter__label">Stay in the loop</span>
+      <h2 class="rib-newsletter__title">RUN IT <span>BACK</span></h2>
+      <p class="rib-newsletter__sub">New drops. Rare finds. Abilene love.</p>
+      <span class="rib-divider-line"></span>
+      <form class="rib-newsletter__form" action="#" method="post">
+        <input class="rib-newsletter__input" type="email" placeholder="Your email address" required>
+        <button class="rib-newsletter__btn" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+
+  {%- comment -%} ── SERVICE CTA ── {%- endcomment -%}
+  <div class="rib-service">
+    <div class="rib-service__bg"></div>
+    <div class="rib-service__inner">
+      <span class="rib-service__label">Looking for something specific?</span>
+      <h2 class="rib-service__title">WE GOT<br>YOU RIGHT</h2>
+      <p class="rib-service__desc">Personal sourcing. Custom requests. We've built thousands of relationships with customers and store owners across the US — whatever you're hunting, we'll find it.</p>
+      <div class="rib-service__btns">
+        <a href="https://www.runitbackclassics.com" target="_blank" rel="noopener noreferrer" class="rib-service__btn rib-service__btn--primary">Shop Now</a>
+        <a href="https://www.instagram.com/runitbackclassicsllc/" target="_blank" rel="noopener noreferrer" class="rib-service__btn rib-service__btn--secondary">Follow Us</a>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ── SOCIAL BAR ── {%- endcomment -%}
+  <div class="rib-social-bar">
+    <a href="https://www.instagram.com/runitbackclassicsllc/" target="_blank" rel="noopener noreferrer" class="rib-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor" stroke="none"/></svg>
+      @runitbackclassicsllc
+    </a>
+    <a href="https://www.tiktok.com/@runitbackclassicsllc" target="_blank" rel="noopener noreferrer" class="rib-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.32 6.32 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.19 8.19 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06Z"/></svg>
+      @runitbackclassicsllc
+    </a>
+    <a href="https://www.facebook.com/runitbackclassics/" target="_blank" rel="noopener noreferrer" class="rib-social-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      runitbackclassics
+    </a>
+  </div>
+
+  {%- comment -%} ── FOOTER ── {%- endcomment -%}
+  <footer class="rib-footer">
+    <nav class="rib-footer__nav">
+      <a href="#">Vintage Tees</a>
+      <a href="#">Sneakers</a>
+      <a href="#">Streetwear</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="rib-footer__logo">
+      <img src="{{ 'rib-icon.png' | asset_url }}" alt="Run it Back Classics" width="40" height="40" loading="lazy">
+    </div>
+    <p class="rib-footer__copy">&copy; {{ 'now' | date: '%Y' }} Run it Back Classics<br>Abilene, TX</p>
+  </footer>
+
+</div>
+
+{% schema %}
+{
+  "name": "Run it Back Classics",
+  "tag": "div",
+  "class": "rib-section-wrap",
+  "settings": [
+    { "type": "url",  "id": "back_url",        "label": "Back button URL" },
+    { "type": "text", "id": "back_label",       "label": "Back button label",  "default": "Back to Build" },
+    { "type": "url",  "id": "next_version_url", "label": "Next version URL" }
+  ],
+  "presets": [{ "name": "Run it Back Classics" }]
+}
+{% endschema %}

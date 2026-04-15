@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "bould-rib-homepage",
+      "settings": {
+        "back_label": "Back to Build",
+        "back_url": "/pages/build"
+      }
+    }
+  },
+  "order": ["main"]
+}

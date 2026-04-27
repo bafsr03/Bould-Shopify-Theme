@@ -98,12 +98,12 @@
         },
         "theme3": {
           "type": "theme_card",
+          "disabled": true,
           "settings": {
             "name": "Run it Back Classics",
             "badge": "New",
             "description": "A vibrant vintage & streetwear store from Abilene, TX — dark editorial layout with rainbow brand identity, built for culture-first retail.",
             "tags": "Shopify, Vintage, Streetwear, Texas",
-            "image": "shopify://shop_images/logoname.png",
             "asset_image": "bould-preview-rib-classics.png",
             "preview_url": "/pages/run-it-back-classics",
             "store_url": ""

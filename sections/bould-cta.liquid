@@ -28,15 +28,10 @@
     <div class="bould-hero__actions" style="justify-content: center; opacity:1; transform:none;">
       <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary">
         {{- section.settings.cta_label | default: 'Start a Project' -}}
+        <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </a>
-      {% if section.settings.secondary_label != blank %}
-        <a href="{{ section.settings.secondary_url | default: 'mailto:hello@bould.co' }}" class="bould-btn bould-btn--ghost">
-          {{ section.settings.secondary_label }}
-          <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      {% endif %}
     </div>
   {% endif %}
 </section>

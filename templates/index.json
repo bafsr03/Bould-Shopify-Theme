@@ -46,7 +46,7 @@
         "headline_line3": "Of Commerce.",
         "body": "High-performance Shopify stores. Immersive 3D experiences. Virtual try-on technology. End-to-end digital commerce for brands that refuse to settle.",
         "cta_primary": "Start a Project",
-        "cta_primary_url": "",
+        "cta_primary_url": "/pages/contact",
         "cta_secondary": "View Our Work",
         "cta_secondary_url": "",
         "obj_url_1": "https://cdn.shopify.com/3d/models/b50b9bacc30bd85a/b.glb",
@@ -353,8 +353,8 @@
         "submit_label": "Get in Touch",
         "form_action": "",
         "cta_label": "Start a Project",
-        "cta_url": "",
-        "secondary_label": "Email Us",
+        "cta_url": "/pages/contact",
+        "secondary_label": "",
         "secondary_url": ""
       }
     }

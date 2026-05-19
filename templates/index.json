@@ -115,6 +115,24 @@
     "bould_work": {
       "type": "bould-work",
       "blocks": {
+        "work_adophies": {
+          "type": "case_study",
+          "settings": {
+            "name": "Adophies",
+            "category": "Shopify Plus",
+            "year": "2025",
+            "url": "https://adophies.com/"
+          }
+        },
+        "work_rib": {
+          "type": "case_study",
+          "settings": {
+            "name": "Run it Back Classics",
+            "category": "Shopify Plus",
+            "year": "2025",
+            "url": "https://run-it-back-classics.myshopify.com/"
+          }
+        },
         "work_1": {
           "type": "case_study",
           "settings": {
@@ -177,6 +195,8 @@
         }
       },
       "block_order": [
+        "work_adophies",
+        "work_rib",
         "work_1",
         "work_2",
         "work_3",

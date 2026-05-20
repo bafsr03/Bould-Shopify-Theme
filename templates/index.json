@@ -167,11 +167,11 @@
         },
         "work_4": {
           "type": "case_study",
-          "disabled": true,
           "settings": {
-            "name": "Brand 2",
-            "category": "AR Try-On + Shopify",
-            "year": "2024",
+            "image": "shopify://shop_images/title.png",
+            "name": "JCKApproved",
+            "category": "Shopify Plus",
+            "year": "2026",
             "url": ""
           }
         },
@@ -182,6 +182,16 @@
             "name": "Brand 3",
             "category": "Headless Commerce",
             "year": "2024",
+            "url": ""
+          }
+        },
+        "case_study_Q8FF9m": {
+          "type": "case_study",
+          "disabled": true,
+          "settings": {
+            "name": "Brand Name",
+            "category": "Shopify Plus",
+            "year": "2025",
             "url": ""
           }
         },
@@ -204,10 +214,11 @@
         "work_3",
         "work_4",
         "work_5",
+        "case_study_Q8FF9m",
         "work_6"
       ],
       "settings": {
-        "label": "Selected Work",
+        "label": "JCKApproved",
         "title_line1": "Brands we've",
         "title_line2": "helped grow.",
         "cta_label": "View All Projects",

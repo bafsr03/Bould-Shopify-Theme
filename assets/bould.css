@@ -685,8 +685,9 @@ body:has(.bould-page-hero) .footer-section * {
 }
 
 .bould-work__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 2rem;
   margin-top: clamp(5rem, 8vw, 9rem);
 }
@@ -700,6 +701,7 @@ body:has(.bould-page-hero) .footer-section * {
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  flex: 0 1 calc((100% - 4rem) / 3);
   transition: transform 0.35s var(--b-ease), border-color 0.35s var(--b-ease), box-shadow 0.35s var(--b-ease);
 }
 
@@ -2024,7 +2026,11 @@ body:has(.bould-page-hero) .footer-section * {
   }
 
   .bould-work__grid {
-    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+  }
+
+  .bould-work-card {
+    flex: 0 1 calc((100% - 2rem) / 2);
   }
 
   .bould-capabilities__inner {
@@ -2172,8 +2178,8 @@ body:has(.bould-page-hero) .footer-section * {
     display: none;
   }
 
-  .bould-work-card:nth-child(n) {
-    grid-column: span 12;
+  .bould-work-card {
+    flex: 1 1 100%;
   }
 
   .bould-stats__grid {

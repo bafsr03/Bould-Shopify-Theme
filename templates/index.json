@@ -161,7 +161,7 @@
             "image": "shopify://shop_images/Asset_2.png",
             "name": "Avion",
             "category": "Custom Development",
-            "year": "2024",
+            "year": "2025",
             "url": "https://avionlegacycannabis.com/"
           }
         },
@@ -170,7 +170,7 @@
           "settings": {
             "image": "shopify://shop_images/title.png",
             "name": "JCKApproved",
-            "category": "Shopify Plus",
+            "category": "AR Try-On + Shopify",
             "year": "2026",
             "url": ""
           }
@@ -182,16 +182,6 @@
             "name": "Brand 3",
             "category": "Headless Commerce",
             "year": "2024",
-            "url": ""
-          }
-        },
-        "case_study_Q8FF9m": {
-          "type": "case_study",
-          "disabled": true,
-          "settings": {
-            "name": "Brand Name",
-            "category": "Shopify Plus",
-            "year": "2025",
             "url": ""
           }
         },
@@ -214,11 +204,10 @@
         "work_3",
         "work_4",
         "work_5",
-        "case_study_Q8FF9m",
         "work_6"
       ],
       "settings": {
-        "label": "JCKApproved",
+        "label": "Selected Work",
         "title_line1": "Brands we've",
         "title_line2": "helped grow.",
         "cta_label": "View All Projects",

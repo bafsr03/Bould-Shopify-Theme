@@ -15,7 +15,7 @@
         "stat_1": {
           "type": "stat",
           "settings": {
-            "number": "5+",
+            "number": "7+",
             "label": "Brands Launched"
           }
         },

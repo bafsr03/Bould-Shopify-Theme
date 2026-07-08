@@ -115,6 +115,16 @@
     "bould_work": {
       "type": "bould-work",
       "blocks": {
+        "work_rubio": {
+          "type": "case_study",
+          "settings": {
+            "image_asset": "rubio-brothers-concrete-logo.png",
+            "name": "Rubio Brothers Concrete",
+            "category": "Web Design + Local SEO",
+            "year": "2026",
+            "url": "https://rubiobrothersconcrete.com/"
+          }
+        },
         "work_adophies": {
           "type": "case_study",
           "settings": {
@@ -161,18 +171,18 @@
             "image": "shopify://shop_images/Asset_2.png",
             "name": "Avion",
             "category": "Custom Development",
-            "year": "2025",
+            "year": "2024",
             "url": "https://avionlegacycannabis.com/"
           }
         },
         "work_4": {
           "type": "case_study",
+          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/title.png",
-            "name": "JCKApproved",
+            "name": "Brand 2",
             "category": "AR Try-On + Shopify",
-            "year": "2026",
-            "url": "https://jckapproved.com/"
+            "year": "2024",
+            "url": ""
           }
         },
         "work_5": {
@@ -197,6 +207,7 @@
         }
       },
       "block_order": [
+        "work_rubio",
         "work_adophies",
         "work_rib",
         "work_1",

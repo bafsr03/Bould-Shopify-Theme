@@ -39,6 +39,15 @@
               class: 'bould-work-card__logo-img',
               alt: block.settings.name
             }}
+          {% elsif block.settings.image_asset != blank %}
+            <img
+              class="bould-work-card__logo-img"
+              src="{{ block.settings.image_asset | asset_url }}"
+              alt="{{ block.settings.name }}"
+              width="600"
+              height="600"
+              loading="lazy"
+            >
           {% else %}
             <span class="bould-work-card__initials">{{ block.settings.name | upcase | slice: 0, 2 }}</span>
           {% endif %}
@@ -82,6 +91,7 @@
       "name": "Case Study",
       "settings": [
         { "type": "image_picker", "id": "image", "label": "Project image" },
+        { "type": "text", "id": "image_asset", "label": "Logo asset filename", "info": "Optional. Theme asset filename (e.g. rubio-brothers-concrete-logo.png) used when no Project image is set." },
         { "type": "text", "id": "name", "label": "Brand name", "default": "Brand Name" },
         { "type": "text", "id": "category", "label": "Category", "default": "Shopify Plus" },
         { "type": "text", "id": "year", "label": "Year", "default": "2025" },

@@ -129,7 +129,7 @@
         "work_jck": {
           "type": "case_study",
           "settings": {
-            "image": "",
+            "image": "shopify://shop_images/title.png",
             "image_asset": "",
             "name": "JCK Approved",
             "category": "Custom Shopify Build",

@@ -31,7 +31,8 @@
 
 /* Force dark body background on all Bould pages (homepage + inner pages) */
 body:has(.bould-hero),
-body:has(.bould-page-hero) {
+body:has(.bould-page-hero),
+body:has(.bould-policy-wrap) {
   background-color: var(--b-black) !important;
 }
 
@@ -72,14 +73,16 @@ body:has(.bould-page-hero) .header-wrapper {
 
 /* Footer dark treatment */
 body:has(.bould-hero) .footer-section,
-body:has(.bould-page-hero) .footer-section {
+body:has(.bould-page-hero) .footer-section,
+body:has(.bould-policy-wrap) .footer-section {
   background: var(--b-dark);
   border-top: 1px solid var(--b-border);
   color: var(--b-muted2);
 }
 
 body:has(.bould-hero) .footer-section *,
-body:has(.bould-page-hero) .footer-section * {
+body:has(.bould-page-hero) .footer-section *,
+body:has(.bould-policy-wrap) .footer-section * {
   color: var(--b-muted2);
 }
 

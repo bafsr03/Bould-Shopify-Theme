@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Shopify theme dev",
+      "type": "shell",
+      "command": "shopify theme dev --store bould-try-on.myshopify.com --port 9292",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "group": "opsconsole",
+        "reveal": "always",
+        "focus": false,
+        "echo": true,
+        "clear": true
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Claude",
+      "type": "shell",
+      "command": "claude",
+      "isBackground": false,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "group": "opsconsole",
+        "reveal": "always",
+        "focus": false,
+        "echo": true,
+        "clear": true
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

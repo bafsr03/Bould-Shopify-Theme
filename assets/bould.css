@@ -1521,13 +1521,12 @@ body:has(.bould-page-hero) .footer-section * {
 
 .bould-policy-wrap .shopify-policy__container {
   font-family: var(--b-font);
-  padding: clamp(8rem, 14vw, 14rem) 6vw clamp(8rem, 12vw, 14rem);
+  padding: clamp(8rem, 14vw, 14rem) 0 clamp(8rem, 12vw, 14rem);
   border-bottom: 1px solid var(--b-border);
 }
 
 .bould-policy-wrap .shopify-policy__title {
-  max-width: 76ch;
-  margin: 0 auto 3.2rem;
+  margin: 0 0 3.2rem;
 }
 
 .bould-policy-wrap .shopify-policy__title::before {
@@ -1553,8 +1552,7 @@ body:has(.bould-page-hero) .footer-section * {
 }
 
 .bould-policy-wrap .shopify-policy__body {
-  max-width: 76ch;
-  margin: 0 auto;
+  width: 100%;
 }
 
 .bould-policy-wrap .shopify-policy__body .rte {

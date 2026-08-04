@@ -115,10 +115,33 @@
     "bould_work": {
       "type": "bould-work",
       "blocks": {
+        "work_rubio": {
+          "type": "case_study",
+          "settings": {
+            "image": "shopify://shop_images/7040B2C3-33B0-46F3-9C35-CDC35D46B527_7dc73b53-b48c-470b-a251-c24d1b973c6f.png",
+            "image_asset": "rubio-brothers-concrete-logo.png",
+            "name": "Rubio Brothers Concrete",
+            "category": "Web Design + Local SEO",
+            "year": "2026",
+            "url": "https://rubiobrothersconcrete.com/"
+          }
+        },
+        "work_jck": {
+          "type": "case_study",
+          "settings": {
+            "image": "",
+            "image_asset": "",
+            "name": "JCK Approved",
+            "category": "Custom Shopify Build",
+            "year": "2026",
+            "url": "https://jckapproved.com/"
+          }
+        },
         "work_adophies": {
           "type": "case_study",
           "settings": {
             "image": "shopify://shop_images/Screenshot_2026-05-07_at_5.51.47_PM-Photoroom.png",
+            "image_asset": "",
             "name": "Adophies",
             "category": "Shopify Plus",
             "year": "2025",
@@ -129,6 +152,7 @@
           "type": "case_study",
           "settings": {
             "image": "shopify://shop_images/runitback_classics_arc_design_no_texture.png",
+            "image_asset": "",
             "name": "Run it Back Classics",
             "category": "Shopify Plus",
             "year": "2025",
@@ -139,6 +163,7 @@
           "type": "case_study",
           "settings": {
             "image": "shopify://shop_images/joonlogo.png",
+            "image_asset": "",
             "name": "Joon Distribution",
             "category": "3D Store + Shopify Plus",
             "year": "2025",
@@ -149,6 +174,7 @@
           "type": "case_study",
           "settings": {
             "image": "shopify://shop_images/dummiez.png",
+            "image_asset": "",
             "name": "Dummiez",
             "category": "3D Store + Shopify Plus",
             "year": "2025",
@@ -159,6 +185,7 @@
           "type": "case_study",
           "settings": {
             "image": "shopify://shop_images/Asset_2.png",
+            "image_asset": "",
             "name": "Avion",
             "category": "Custom Development",
             "year": "2024",
@@ -169,6 +196,7 @@
           "type": "case_study",
           "disabled": true,
           "settings": {
+            "image_asset": "",
             "name": "Brand 2",
             "category": "AR Try-On + Shopify",
             "year": "2024",
@@ -179,6 +207,7 @@
           "type": "case_study",
           "disabled": true,
           "settings": {
+            "image_asset": "",
             "name": "Brand 3",
             "category": "Headless Commerce",
             "year": "2024",
@@ -189,6 +218,7 @@
           "type": "case_study",
           "disabled": true,
           "settings": {
+            "image_asset": "",
             "name": "Brand 4",
             "category": "Shopify Plus Migration",
             "year": "2023",
@@ -197,6 +227,8 @@
         }
       },
       "block_order": [
+        "work_rubio",
+        "work_jck",
         "work_adophies",
         "work_rib",
         "work_1",

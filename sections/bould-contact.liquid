@@ -20,14 +20,14 @@
       </p>
 
       <a
-        href="mailto:{{ section.settings.contact_email | default: 'garrett@bouldhq.com' }}"
+        href="mailto:{{ section.settings.contact_email | default: 'jake@bouldhq.com' }}"
         class="bould-contact__email"
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.25"/>
           <path d="M1.5 5L8 9.5L14.5 5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/>
         </svg>
-        {{ section.settings.contact_email | default: 'garrett@bouldhq.com' }}
+        {{ section.settings.contact_email | default: 'jake@bouldhq.com' }}
       </a>
 
       <ol class="bould-contact__process" aria-label="What happens next">
@@ -108,17 +108,30 @@
               >
             </div>
             <div class="bould-contact__field">
-              <label class="bould-contact__label" for="BC-type">Project Type</label>
-              <select id="BC-type" name="contact[Project Type]" class="bould-contact__select">
-                <option value="" disabled selected>Select a service</option>
-                <option value="Shopify / Shopify Plus Store">Shopify / Shopify Plus Store</option>
-                <option value="Custom App Development">Custom App Development</option>
-                <option value="Immersive 3D Store">Immersive 3D Store</option>
-                <option value="Virtual Try-On / AR">Virtual Try-On / AR</option>
-                <option value="Shopify Plus Migration">Shopify Plus Migration</option>
-                <option value="Other / Not Sure Yet">Other / Not Sure Yet</option>
-              </select>
+              <label class="bould-contact__label" for="BC-phone">Phone Number</label>
+              <input
+                type="tel"
+                id="BC-phone"
+                name="contact[phone]"
+                class="bould-contact__input"
+                placeholder="(555) 555-5555"
+                value="{{ form.phone }}"
+                autocomplete="tel"
+              >
             </div>
+          </div>
+
+          <div class="bould-contact__field">
+            <label class="bould-contact__label" for="BC-type">Project Type</label>
+            <select id="BC-type" name="contact[Project Type]" class="bould-contact__select">
+              <option value="" disabled selected>Select a service</option>
+              <option value="Shopify / Shopify Plus Store">Shopify / Shopify Plus Store</option>
+              <option value="Custom App Development">Custom App Development</option>
+              <option value="Immersive 3D Store">Immersive 3D Store</option>
+              <option value="Virtual Try-On / AR">Virtual Try-On / AR</option>
+              <option value="Shopify Plus Migration">Shopify Plus Migration</option>
+              <option value="Other / Not Sure Yet">Other / Not Sure Yet</option>
+            </select>
           </div>
 
           <div class="bould-contact__field">
@@ -130,6 +143,47 @@
               placeholder="What are you building? What's your timeline? Any context helps."
               rows="5"
             >{{- form.body -}}</textarea>
+          </div>
+
+          <div class="bould-contact__consent">
+            <input
+              type="checkbox"
+              id="BC-consent-privacy"
+              name="contact[Privacy Policy Consent]"
+              class="bould-contact__checkbox"
+              value="yes"
+            >
+            <label class="bould-contact__consent-label" for="BC-consent-privacy">
+              By submitting this form you agree to the
+              <a href="{{ shop.privacy_policy.url }}" target="_blank" rel="noopener">Privacy Policy</a>.
+            </label>
+          </div>
+
+          <div class="bould-contact__consent">
+            <input
+              type="checkbox"
+              id="BC-consent-terms"
+              name="contact[Terms and Conditions Consent]"
+              class="bould-contact__checkbox"
+              value="yes"
+            >
+            <label class="bould-contact__consent-label" for="BC-consent-terms">
+              By submitting this form you agree to the
+              <a href="{{ shop.terms_of_service.url }}" target="_blank" rel="noopener">Terms and Conditions</a>.
+            </label>
+          </div>
+
+          <div class="bould-contact__consent">
+            <input
+              type="checkbox"
+              id="BC-consent-sms"
+              name="contact[SMS Consent]"
+              class="bould-contact__checkbox"
+              value="yes"
+            >
+            <label class="bould-contact__consent-label" for="BC-consent-sms">
+              Yes, I agree to receive Customer Care messages from Bould Inc at the phone number provided above. I understand that message frequency varies based on your inquiry and account activity, message and data rates may apply, and consent is not a condition of purchase or service. You can unsubscribe at any time by replying STOP. Reply HELP for assistance. By checking this box, I provide my express written consent to receive automated text messages.
+            </label>
           </div>
 
           <button type="submit" class="bould-btn bould-btn--primary bould-contact__submit">
@@ -202,8 +256,8 @@
       "type": "text",
       "id": "contact_email",
       "label": "Contact email (display only)",
-      "default": "garrett@bouldhq.com",
-      "info": "IMPORTANT: To receive form submissions at this address, go to Shopify Admin → Settings → Store details and set the Contact email to garrett@bouldhq.com."
+      "default": "jake@bouldhq.com",
+      "info": "IMPORTANT: To receive form submissions at this address, go to Shopify Admin → Settings → Store details and set the Contact email to jake@bouldhq.com."
     }
   ],
   "presets": [

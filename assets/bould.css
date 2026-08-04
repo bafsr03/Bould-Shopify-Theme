@@ -1510,6 +1510,136 @@ body:has(.bould-page-hero) .footer-section * {
   max-width: 52ch;
 }
 
+/* ══════════════════════════════════════
+   POLICY PAGES — Privacy Policy, Terms of Service, etc.
+   (Shopify renders these via a fixed .shopify-policy__* structure that
+   can't be swapped out — restyle it in place to match the Bould look.)
+══════════════════════════════════════ */
+.bould-policy-wrap {
+  background: var(--b-black);
+}
+
+.bould-policy-wrap .shopify-policy__container {
+  font-family: var(--b-font);
+  padding: clamp(8rem, 14vw, 14rem) 6vw clamp(8rem, 12vw, 14rem);
+  border-bottom: 1px solid var(--b-border);
+}
+
+.bould-policy-wrap .shopify-policy__title {
+  max-width: 76ch;
+  margin: 0 auto 3.2rem;
+}
+
+.bould-policy-wrap .shopify-policy__title::before {
+  content: 'Legal';
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--b-purple);
+  margin-bottom: 1.6rem;
+}
+
+.bould-policy-wrap .shopify-policy__title h1 {
+  font-size: clamp(3.2rem, 5vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--b-white);
+  margin: 0;
+}
+
+.bould-policy-wrap .shopify-policy__body {
+  max-width: 76ch;
+  margin: 0 auto;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte {
+  font-family: var(--b-font);
+  color: var(--b-muted2);
+  font-size: 1.5rem;
+  line-height: 1.75;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte h1,
+.bould-policy-wrap .shopify-policy__body .rte h2,
+.bould-policy-wrap .shopify-policy__body .rte h3,
+.bould-policy-wrap .shopify-policy__body .rte h4 {
+  color: var(--b-white);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 3.2rem 0 1.2rem;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte h1 { font-size: 2.6rem; }
+.bould-policy-wrap .shopify-policy__body .rte h2 { font-size: 2.1rem; }
+.bould-policy-wrap .shopify-policy__body .rte h3 { font-size: 1.8rem; }
+.bould-policy-wrap .shopify-policy__body .rte h4 { font-size: 1.6rem; }
+
+.bould-policy-wrap .shopify-policy__body .rte > *:first-child {
+  margin-top: 0;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte p,
+.bould-policy-wrap .shopify-policy__body .rte ul,
+.bould-policy-wrap .shopify-policy__body .rte ol {
+  margin: 0 0 1.8rem;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte ul,
+.bould-policy-wrap .shopify-policy__body .rte ol {
+  padding-left: 2.2rem;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte li {
+  margin-bottom: 0.6rem;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte a {
+  color: var(--b-white);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte a:hover {
+  color: var(--b-purple);
+}
+
+.bould-policy-wrap .shopify-policy__body .rte strong {
+  color: var(--b-white);
+  font-weight: 600;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte hr {
+  border: none;
+  border-top: 1px solid var(--b-border2);
+  margin: 3.2rem 0;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte blockquote {
+  border-left: 2px solid var(--b-purple);
+  padding-left: 2rem;
+  margin: 0 0 1.8rem;
+  font-style: italic;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.8rem;
+}
+
+.bould-policy-wrap .shopify-policy__body .rte table td,
+.bould-policy-wrap .shopify-policy__body .rte table th {
+  border: 1px solid var(--b-border2);
+  padding: 1rem 1.2rem;
+  text-align: left;
+}
+
 /* Shared page CTA strip */
 .bould-page-cta {
   padding: clamp(8rem, 12vw, 14rem) 6vw;
@@ -2984,6 +3114,38 @@ body:has(.bould-theme-preview-wrap) .footer-section * {
   min-height: 130px;
   resize: vertical;
   line-height: 1.55;
+}
+
+.bould-contact__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.bould-contact__checkbox {
+  flex-shrink: 0;
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-top: 0.2rem;
+  accent-color: var(--b-purple);
+  cursor: pointer;
+}
+
+.bould-contact__consent-label {
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--b-muted);
+  cursor: pointer;
+}
+
+.bould-contact__consent-label a {
+  color: var(--b-white);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bould-contact__consent-label a:hover {
+  color: var(--b-purple);
 }
 
 .bould-contact__submit {

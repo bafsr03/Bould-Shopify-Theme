@@ -318,7 +318,13 @@
     {% sections 'header-group' %}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-      {{ content_for_layout }}
+      {%- if request.path contains '/policies/' -%}
+        <div class="bould-policy-wrap">
+          {{ content_for_layout }}
+        </div>
+      {%- else -%}
+        {{ content_for_layout }}
+      {%- endif -%}
     </main>
 
     {% sections 'footer-group' %}

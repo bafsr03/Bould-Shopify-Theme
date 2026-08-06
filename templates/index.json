@@ -200,7 +200,7 @@
             "name": "ROSN by O's",
             "category": "Custom Shopify Build",
             "year": "2026",
-            "url": ""
+            "url": "https://0arzjm-d5.myshopify.com/"
           }
         },
         "work_5": {
@@ -224,6 +224,17 @@
             "year": "2023",
             "url": ""
           }
+        },
+        "case_study_yAbEax": {
+          "type": "case_study",
+          "disabled": true,
+          "settings": {
+            "image_asset": "",
+            "name": "Brand Name",
+            "category": "Shopify Plus",
+            "year": "2025",
+            "url": ""
+          }
         }
       },
       "block_order": [
@@ -236,7 +247,8 @@
         "work_3",
         "work_4",
         "work_5",
-        "work_6"
+        "work_6",
+        "case_study_yAbEax"
       ],
       "settings": {
         "label": "Selected Work",
@@ -397,6 +409,7 @@
     },
     "bould_cta": {
       "type": "bould-cta",
+      "disabled": true,
       "settings": {
         "eyebrow": "Let's Work Together",
         "title_line1": "Ready to",

@@ -24,7 +24,11 @@
     </div>
 
     <div class="bould-capabilities__visual bould-reveal-right">
-      <div class="bould-capabilities__visual-inner">B</div>
+      {% if section.settings.visual_image %}
+        {{ section.settings.visual_image | image_url: width: 1200 | image_tag: loading: 'lazy', alt: section.settings.visual_image.alt, style: 'width:100%;height:100%;object-fit:cover;' }}
+      {% else %}
+        <div class="bould-capabilities__visual-inner">B</div>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -38,7 +42,8 @@
     { "type": "text", "id": "title_line1", "label": "Title — line 1", "default": "Powered by" },
     { "type": "text", "id": "title_line2", "label": "Title — line 2", "default": "the best" },
     { "type": "text", "id": "title_line3", "label": "Title — line 3", "default": "in commerce." },
-    { "type": "textarea", "id": "body", "label": "Body text" }
+    { "type": "textarea", "id": "body", "label": "Body text" },
+    { "type": "image_picker", "id": "visual_image", "label": "Visual image", "info": "Replaces the large 'B' placeholder graphic" }
   ],
   "blocks": [
     {

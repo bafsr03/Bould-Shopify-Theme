@@ -206,10 +206,11 @@
         "work_5": {
           "type": "case_study",
           "settings": {
+            "image": "shopify://shop_images/Logo-Photoroom.avif",
             "image_asset": "",
-            "name": "Brand 3",
-            "category": "Headless Commerce",
-            "year": "2024",
+            "name": "Kilowash",
+            "category": "Web Design + Local SEO",
+            "year": "2026",
             "url": ""
           }
         },

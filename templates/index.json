@@ -194,18 +194,17 @@
         },
         "work_4": {
           "type": "case_study",
-          "disabled": true,
           "settings": {
+            "image": "shopify://shop_images/rosn_by_os_-Photoroom.png",
             "image_asset": "",
-            "name": "Brand 2",
-            "category": "AR Try-On + Shopify",
-            "year": "2024",
+            "name": "ROSN by O's",
+            "category": "Custom Shopify Build",
+            "year": "2026",
             "url": ""
           }
         },
         "work_5": {
           "type": "case_study",
-          "disabled": true,
           "settings": {
             "image_asset": "",
             "name": "Brand 3",

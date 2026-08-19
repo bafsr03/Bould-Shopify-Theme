@@ -1,3 +1,4 @@
+<script src="{{ 'bould-form-guard.js' | asset_url }}" defer="defer"></script>
 <section class="bould-cta" id="contact" aria-label="Contact">
   <span class="bould-cta__eyebrow bould-reveal">{{ section.settings.eyebrow | default: "Let's Work Together" }}</span>
 
@@ -11,19 +12,39 @@
   </p>
 
   {% if section.settings.show_form %}
-    <form class="bould-cta__form" action="{{ section.settings.form_action | default: '/contact#ContactForm' }}" method="post">
-      <input
-        type="email"
-        name="contact[email]"
-        class="bould-cta__input"
-        placeholder="{{ section.settings.input_placeholder | default: 'your@email.com' }}"
-        required
-        autocomplete="email"
-      >
-      <button type="submit" class="bould-btn bould-btn--primary">
-        {{- section.settings.submit_label | default: 'Get in Touch' -}}
-      </button>
-    </form>
+    {%- comment -%}
+      Uses the Liquid {% form %} tag rather than a hand-written POST, so the form
+      carries Shopify's authenticity token and is covered by the built-in spam
+      protection (Settings > Checkout > Spam protection).
+    {%- endcomment -%}
+    {%- form 'customer', class: 'bould-cta__form', data-form-guard: '' -%}
+      {%- render 'form-guard-fields', min_seconds: 1 -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p class="bould-cta__form-note" role="status">Thanks — we'll be in touch.</p>
+      {%- else -%}
+        <input
+          type="email"
+          name="contact[email]"
+          class="bould-cta__input"
+          placeholder="{{ section.settings.input_placeholder | default: 'your@email.com' }}"
+          value="{{ form.email }}"
+          aria-label="{{ section.settings.input_placeholder | default: 'Email address' }}"
+          required
+          autocomplete="email"
+          {% if form.errors %}aria-invalid="true"{% endif %}
+        >
+        <button type="submit" class="bould-btn bould-btn--primary">
+          {{- section.settings.submit_label | default: 'Get in Touch' -}}
+        </button>
+        {%- if form.errors -%}
+          <small class="bould-cta__form-note" role="alert">
+            {{- form.errors.translated_fields.email | capitalize }}
+            {{ form.errors.messages.email -}}
+          </small>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endform -%}
   {% else %}
     <div class="bould-hero__actions" style="justify-content: center; opacity:1; transform:none;">
       <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary">
@@ -54,7 +75,7 @@
     },
     { "type": "text", "id": "input_placeholder", "label": "Input placeholder", "default": "your@email.com" },
     { "type": "text", "id": "submit_label", "label": "Submit button label", "default": "Get in Touch" },
-    { "type": "url", "id": "form_action", "label": "Form action URL" },
+    { "type": "url", "id": "form_action", "label": "Form action URL", "info": "No longer used — the form posts to Shopify directly and subscribes the email." },
     { "type": "text", "id": "cta_label", "label": "Primary button label", "default": "Start a Project" },
     { "type": "url", "id": "cta_url", "label": "Primary button URL" },
     { "type": "text", "id": "secondary_label", "label": "Secondary button label", "default": "Email Us" },

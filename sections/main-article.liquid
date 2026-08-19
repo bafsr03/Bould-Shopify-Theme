@@ -1,3 +1,4 @@
+<script src="{{ 'bould-form-guard.js' | asset_url }}" defer="defer"></script>
 {{ 'section-blog-post.css' | asset_url | stylesheet_tag }}
 
 <article class="article-template">
@@ -130,7 +131,8 @@
             </div>
           {% endpaginate %}
         {%- endif -%}
-        {% form 'new_comment', article %}
+        {% form 'new_comment', article, data-form-guard: '' %}
+          {%- render 'form-guard-fields' -%}
           {%- liquid
             assign post_message = 'blogs.article.success'
             if blog.moderated? and comment.status == 'unapproved'

@@ -1090,6 +1090,16 @@ body:has(.bould-policy-wrap) .footer-section * {
   justify-content: center;
 }
 
+/* Success / error message for the CTA email capture form. */
+.bould-cta__form-note {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0.85;
+}
+
 .bould-cta__input {
   flex: 1;
   min-width: 260px;

@@ -1,0 +1,38 @@
+{%- comment -%}
+  Invisible anti-spam fields. Render immediately inside a {% form %} block and add
+  `data-form-guard` to that form tag. Enforcement lives in assets/bould-form-guard.js.
+
+  IMPORTANT: these inputs are deliberately NOT named `contact[...]`. Shopify copies
+  every contact[*] field into the notification email, so a contact[]-prefixed field
+  would show up in every real submission.
+
+  The honeypot carries no id/label on purpose: {% render %} has an isolated scope, so
+  there is no reliable per-form value here to build a unique id from, and duplicate ids
+  across forms would be worse than none. The field is off-screen and aria-hidden, so
+  assistive tech never reaches it.
+
+  Accepts:
+  - min_seconds: {Number} minimum seconds a human is assumed to need (default 3)
+
+  Usage:
+  {%- form 'contact', data-form-guard: '' -%}
+    {%- render 'form-guard-fields' -%}
+  {%- endform -%}
+{%- endcomment -%}
+
+{%- assign guard_min_seconds = min_seconds | default: 3 -%}
+
+<div
+  aria-hidden="true"
+  style="position:absolute!important;left:-9999px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important;"
+>
+  <input
+    type="text"
+    name="bould_website_url"
+    value=""
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+  >
+</div>
+<input type="hidden" name="bould_ts" value="" data-guard-min-seconds="{{ guard_min_seconds }}">

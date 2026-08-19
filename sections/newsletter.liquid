@@ -1,3 +1,4 @@
+<script src="{{ 'bould-form-guard.js' | asset_url }}" defer="defer"></script>
 {{ 'component-newsletter.css' | asset_url | stylesheet_tag }}
 {{ 'newsletter-section.css' | asset_url | stylesheet_tag }}
 
@@ -45,7 +46,8 @@
           </div>
         {%- when 'email_form' -%}
           <div {{ block.shopify_attributes }}>
-            {% form 'customer', class: 'newsletter-form' %}
+            {% form 'customer', class: 'newsletter-form', data-form-guard: '' %}
+              {%- render 'form-guard-fields', min_seconds: 1 -%}
               <input type="hidden" name="contact[tags]" value="newsletter">
               <div
                 class="newsletter-form__field-wrapper{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"

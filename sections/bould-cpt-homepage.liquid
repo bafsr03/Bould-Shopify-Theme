@@ -1,3 +1,4 @@
+<script src="{{ 'bould-form-guard.js' | asset_url }}" defer="defer"></script>
 {% comment %} ── CHARLIE PIKE TOBACCO — Current Era Homepage ── {% endcomment %}
 
 {%- assign back_url   = section.settings.back_url   | default: '/pages/build' -%}
@@ -138,6 +139,7 @@ body:has(.cpt-wrap) #MainContent { padding-top: 0 !important; margin-top: 0 !imp
 .cp-newsletter__sub{font-size:.8rem;color:rgba(245,244,240,.48);letter-spacing:.08em;text-transform:uppercase;margin-bottom:40px}
 .cp-newsletter__form{display:flex;gap:0;max-width:500px;margin:0 auto;border:1px solid rgba(245,244,240,.18);border-radius:2px;overflow:hidden;transition:border-color .25s ease}
 .cp-newsletter__form:focus-within{border-color:#C97A1A}
+.cp-newsletter__note{flex:1 1 100%;padding:14px 16px;font-size:13px;line-height:1.4;color:#F5F4F0;text-align:center}
 .cp-newsletter__input{flex:1;background:transparent;border:none;color:#f5f4f0;font-size:.82rem;letter-spacing:.07em;padding:16px 22px;outline:none;min-width:0}
 .cp-newsletter__input::placeholder{color:rgba(245,244,240,.3);text-transform:uppercase;letter-spacing:.1em}
 .cp-newsletter__btn{background:#C97A1A;color:#fff;border:none;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:16px 26px;cursor:pointer;transition:background .22s ease;white-space:nowrap}
@@ -307,13 +309,38 @@ body:has(.cpt-wrap) #MainContent { padding-top: 0 !important; margin-top: 0 !imp
       <h2 class="cp-newsletter__title">JOIN THE <span>PIKE</span></h2>
       <p class="cp-newsletter__sub">New arrivals. Deals. First access to drops.</p>
       <span class="cp-divider"></span>
-      <form class="cp-newsletter__form" action="/contact#contact_form" method="post" accept-charset="UTF-8">
-        <input type="hidden" name="form_type" value="customer">
-        <input type="hidden" name="utf8" value="&#x2713;">
+      {%- comment -%}
+        Uses the Liquid {% form %} tag rather than hand-written HTML so Shopify's
+        built-in spam protection (Settings > Checkout > Spam protection) applies.
+      {%- endcomment -%}
+      {%- form 'customer', class: 'cp-newsletter__form', data-form-guard: '' -%}
+        {%- render 'form-guard-fields', min_seconds: 1 -%}
         <input type="hidden" name="contact[tags]" value="newsletter">
-        <input class="cp-newsletter__input" type="email" name="contact[email]" placeholder="Your email address" required>
-        <button class="cp-newsletter__btn" type="submit">Subscribe</button>
-      </form>
+        {%- if form.posted_successfully? -%}
+          <p class="cp-newsletter__note" role="status">Thanks for subscribing.</p>
+        {%- else -%}
+          <input
+            class="cp-newsletter__input"
+            type="email"
+            name="contact[email]"
+            placeholder="Your email address"
+            value="{{ form.email }}"
+            aria-label="Email address"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            required
+            {% if form.errors %}aria-invalid="true"{% endif %}
+          >
+          <button class="cp-newsletter__btn" type="submit">Subscribe</button>
+          {%- if form.errors -%}
+            <small class="cp-newsletter__note" role="alert">
+              {{- form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email -}}
+            </small>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
     </div>
   </div>
 

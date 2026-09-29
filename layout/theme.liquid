@@ -16,18 +16,14 @@
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
 
-    <title>
-      {{ page_title }}
-      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
-      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
-    </title>
-
-    {% if page_description %}
-      <meta name="description" content="{{ page_description | escape }}">
-    {% endif %}
+    {% comment %}
+      Emits both <title> and <meta name="description">. Admin-set values win;
+      the snippet only fills the gap. See snippets/seo-meta.liquid.
+    {% endcomment %}
+    {% render 'seo-meta' %}
 
     {% render 'meta-tags' %}
+    {% render 'analytics-tags' %}
 
     <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
@@ -43,9 +39,24 @@
     {{ content_for_header }}
 
     {{ 'bould.css' | asset_url | stylesheet_tag }}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="{{ 'bould-animations.js' | asset_url }}" defer></script>
+
+    {% comment %}
+      Third-party origins used below the fold: GSAP (cdnjs) and the Three.js
+      ES module graph (esm.sh, imported by bould-scene.js). Warming the
+      connections here removes a cold DNS+TLS handshake from the critical path.
+    {% endcomment %}
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://esm.sh" crossorigin>
+    <link rel="dns-prefetch" href="https://esm.sh">
+
+    {% comment %}
+      All three are deferred: deferred scripts keep document order, so
+      bould-animations.js still sees gsap and ScrollTrigger, but none of them
+      block the parser before the hero H1 (the LCP element) is reached.
+    {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer="defer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer="defer"></script>
+    <script src="{{ 'bould-animations.js' | asset_url }}" defer="defer"></script>
 
     {%- liquid
       assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'

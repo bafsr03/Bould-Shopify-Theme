@@ -1,0 +1,149 @@
+{%- comment -%}
+  SEO title + meta description.
+
+  Emits BOTH tags because Liquid's `render` is scoped — a variable assigned in a
+  snippet cannot leak back to the layout, so the snippet has to output the tags
+  itself. Rendered unconditionally by layout/theme.liquid, replacing the stock
+  Dawn <title> block.
+
+  Precedence: an explicit value set in the Shopify admin (Search engine listing)
+  always wins. The fallbacks below only fill the gap when that field is blank —
+  on the homepage `page_title` is just the shop name, which is no ranking signal
+  at all, so that case is treated as blank.
+{%- endcomment -%}
+
+{%- liquid
+  assign brand = 'Bould'
+  assign tagline = 'Shopify Development & 3D Commerce Agency'
+
+  comment
+  # ── TITLE ──
+  endcomment
+  comment
+  # `page_title` is NOT proof of an admin override: when the SEO title field is
+  # empty Shopify falls back to the resource's own title. So compare against
+  # that natural fallback — only a value that differs from it (and from the bare
+  # shop name) is a real, deliberate admin title worth deferring to.
+  endcomment
+  assign admin_title = page_title | default: '' | strip
+
+  case template.name
+    when 'page'
+      assign natural_title = page.title
+    when 'product'
+      assign natural_title = product.title
+    when 'collection'
+      assign natural_title = collection.title
+    when 'article'
+      assign natural_title = article.title
+    when 'blog'
+      assign natural_title = blog.title
+    else
+      assign natural_title = shop.name
+  endcase
+
+  assign has_admin_title = true
+  if admin_title == blank or admin_title == shop.name or admin_title == natural_title
+    assign has_admin_title = false
+  endif
+
+  case template.name
+    when 'index'
+      assign seo_title = brand | append: ' — ' | append: tagline
+    when 'page'
+      if page.template_suffix == '3d-store'
+        assign seo_title = '3D Shopify Stores — Immersive 3D Commerce | ' | append: brand
+      elsif page.template_suffix contains 'case-study'
+        assign seo_title = page.title | append: ' — Case Study | ' | append: brand
+      elsif page.template_suffix == 'demo'
+        assign seo_title = 'Live Demo Store | ' | append: brand
+      elsif page.template_suffix == 'contact'
+        assign seo_title = 'Book a Discovery Call | ' | append: brand
+      elsif has_admin_title
+        assign seo_title = admin_title | append: ' | ' | append: brand
+      else
+        assign seo_title = page.title | append: ' | ' | append: brand
+      endif
+    when 'product'
+      assign seo_title = product.title | append: ' | ' | append: brand
+    when 'collection'
+      assign seo_title = collection.title | append: ' | ' | append: brand
+    when 'blog'
+      assign seo_title = blog.title | append: ' | ' | append: brand
+    when 'article'
+      assign seo_title = article.title | append: ' | ' | append: brand
+    when 'search'
+      assign seo_title = 'Search | ' | append: brand
+    when '404'
+      assign seo_title = 'Page Not Found | ' | append: brand
+    else
+      if has_admin_title
+        assign seo_title = admin_title | append: ' | ' | append: brand
+      else
+        assign seo_title = brand | append: ' — ' | append: tagline
+      endif
+  endcase
+
+  comment
+  # An explicit admin title always wins, on every template including the
+  # homepage. `has_admin_title` is already false when the field is blank or is
+  # merely the shop name, which is the case the fallbacks above exist for.
+  endcomment
+  if has_admin_title
+    if admin_title contains brand
+      assign seo_title = admin_title
+    else
+      assign seo_title = admin_title | append: ' | ' | append: brand
+    endif
+  endif
+
+  if current_page != 1
+    assign seo_title = seo_title | append: ' — Page ' | append: current_page
+  endif
+
+  comment
+  # ── DESCRIPTION ──
+  endcomment
+  case template.name
+    when 'index'
+      assign seo_description = 'Bould is a retail technology agency building Shopify storefronts, immersive 3D commerce experiences, and virtual try-on technology. 9 brands launched.'
+    when 'page'
+      if page.template_suffix == '3d-store'
+        assign seo_description = 'Turn your Shopify store into an immersive 3D showroom. Bould builds real-time 3D commerce experiences that let customers inspect products before they buy. Book a call.'
+      elsif page.template_suffix contains 'case-study'
+        assign seo_description = 'How Bould built ' | append: page.title | append: ' — the problem, the build, and the result. Shopify development and 3D commerce case study.'
+      elsif page.template_suffix == 'demo'
+        assign seo_description = 'A live demo storefront showing Bould&rsquo;s Shopify build quality, 3D product presentation, and virtual try-on technology in action.'
+      elsif page.template_suffix == 'contact'
+        assign seo_description = 'Book a discovery call with Bould to scope your Shopify build, 3D store, or virtual try-on project.'
+      else
+        assign seo_description = page.content | strip_html | truncate: 155
+      endif
+    when 'product'
+      if product.description != blank
+        assign seo_description = product.description | strip_html | truncate: 155
+      else
+        assign seo_description = product.title | append: ' — available at ' | append: brand | append: '.'
+      endif
+    when 'collection'
+      if collection.description != blank
+        assign seo_description = collection.description | strip_html | truncate: 155
+      else
+        assign seo_description = collection.title | append: ' collection | ' | append: brand | append: ' — ' | append: tagline | append: '.'
+      endif
+    when 'article'
+      assign seo_description = article.excerpt_or_content | strip_html | truncate: 155
+    else
+      assign seo_description = brand | append: ' — ' | append: tagline | append: '.'
+  endcase
+
+  if page_description != blank
+    assign seo_description = page_description
+  endif
+  if seo_description == blank
+    assign seo_description = brand | append: ' — ' | append: tagline | append: '.'
+  endif
+-%}
+
+<title>{{ seo_title | strip_html | escape }}</title>
+<meta name="description" content="{{ seo_description | strip_html | escape }}">

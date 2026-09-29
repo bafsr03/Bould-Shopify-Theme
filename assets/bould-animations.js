@@ -3,7 +3,14 @@
  * Loaded after GSAP CDN script.
  */
 (function () {
-  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  /* The hero eyebrow/body/actions and every .bould-reveal start at opacity:0 and
+     rely on the timelines below to become visible. If the GSAP CDN failed, this
+     script would previously just bail and leave that copy invisible forever.
+     Flag the document instead so CSS can force the final state. */
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    document.documentElement.classList.add('bould-anim-fallback');
+    return;
+  }
 
   gsap.registerPlugin(ScrollTrigger);
 

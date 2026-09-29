@@ -1,0 +1,19 @@
+{
+  "sections": {
+    "bould_products": {
+      "type": "bould-products",
+      "settings": {
+        "label": "The Collection",
+        "title_line1": "Explore the",
+        "title_line2": "full range.",
+        "collection": "",
+        "product_limit": 8,
+        "cta_label": "Find My Perfect Size",
+        "view_all_label": "View All Products"
+      }
+    }
+  },
+  "order": [
+    "bould_products"
+  ]
+}

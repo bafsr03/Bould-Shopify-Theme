@@ -1,0 +1,41 @@
+{%- comment -%}
+  Analytics & Tracking tags.
+  Renders GA4, Google Ads, Meta Pixel, and Google Site Verification
+  when their IDs are configured in Theme Settings > Analytics & Tracking.
+{%- endcomment -%}
+
+{%- if settings.google_site_verification != blank -%}
+  <meta name="google-site-verification" content="{{ settings.google_site_verification }}">
+{%- endif -%}
+
+{%- if settings.ga4_measurement_id != blank or settings.google_ads_id != blank -%}
+  {%- assign gtag_id = settings.ga4_measurement_id | default: settings.google_ads_id -%}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ gtag_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    {%- if settings.ga4_measurement_id != blank -%}
+      gtag('config', {{ settings.ga4_measurement_id | json }});
+    {%- endif -%}
+    {%- if settings.google_ads_id != blank -%}
+      gtag('config', {{ settings.google_ads_id | json }});
+    {%- endif -%}
+  </script>
+{%- endif -%}
+
+{%- if settings.meta_pixel_id != blank -%}
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', {{ settings.meta_pixel_id | json }});
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ settings.meta_pixel_id | url_encode }}&ev=PageView&noscript=1" alt=""></noscript>
+{%- endif -%}

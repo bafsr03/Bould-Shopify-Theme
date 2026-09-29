@@ -98,6 +98,13 @@ class BouldScene {
     this.alive = true;
     this.clock = new THREE.Clock();
 
+    /* Respect the user's motion preference — gates all continuous animation
+       in _loop(). The CSS block in bould.css only silences the text
+       choreography, not this scene. */
+    this.reducedMotion = window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false;
+
     /* Entrance */
     this.revealed         = false;
     this.entranceProgress = 0;
@@ -147,6 +154,7 @@ class BouldScene {
     this._onPtrDown   = this._handlePtrDown.bind(this);
     this._onPtrMove   = this._handlePtrMove.bind(this);
     this._onPtrUp     = this._handlePtrUp.bind(this);
+    this._onHeroRevealed = () => this._triggerReveal();
 
     this._init();
   }
@@ -199,10 +207,26 @@ class BouldScene {
       this.canvas.addEventListener('touchmove',  this._onPtrMove,  { passive: false });
       this.canvas.addEventListener('touchend',   this._onPtrUp,    { passive: true });
 
-      this._revealTimer = setTimeout(() => this._triggerReveal(), 900);
+      /* Reveal handshake with bould-hero-choreography.js.
+         Order-independent: whichever script runs first, the reveal still fires.
+         The latch covers the case where the FLIP finished before this rAF ran;
+         the event covers the normal case where the scene is ready first. */
+      if (window.__bouldHeroRevealed) {
+        this._triggerReveal();
+      } else {
+        document.addEventListener('bould:hero-revealed', this._onHeroRevealed, { once: true });
+      }
+      /* Last-resort fallback only — the choreography handoff is the primary path. */
+      this._revealTimer = setTimeout(() => {
+        console.warn('[BouldScene] reveal via 3s fallback — choreography handoff did not fire');
+        this._triggerReveal();
+      }, 3000);
       this._loop();
     });
   }
+
+  /* Public: called by the choreography script / event handshake. */
+  reveal() { this._triggerReveal(); }
 
   _triggerReveal() {
     if (this.revealed) return;
@@ -712,15 +736,22 @@ class BouldScene {
     if (!this.renderer) return;
 
     const dt = Math.min(this.clock.getDelta(), 0.033);
-    const t  = this.clock.elapsedTime;
+    /* Reduced motion: freeze the animation clock so every sin()-driven term
+       below resolves to a constant. Physics still uses dt, so the particles
+       settle into the shape and then stop. */
+    const t  = this.reducedMotion ? 0 : this.clock.elapsedTime;
 
-    /* Smooth mouse */
-    this.target.x += (this.mouse.x - this.target.x) * 0.05;
-    this.target.y += (this.mouse.y - this.target.y) * 0.05;
+    /* Smooth mouse — no parallax chase under reduced motion */
+    if (!this.reducedMotion) {
+      this.target.x += (this.mouse.x - this.target.x) * 0.05;
+      this.target.y += (this.mouse.y - this.target.y) * 0.05;
+    }
 
     /* Entrance fade-in */
     if (this.revealed && this.entranceProgress < 1) {
-      this.entranceProgress = Math.min(this.entranceProgress + dt * 0.50, 1);
+      this.entranceProgress = this.reducedMotion
+        ? 1
+        : Math.min(this.entranceProgress + dt * 0.50, 1);
     }
 
     /* Opacity (waits for models to load) */
@@ -734,7 +765,7 @@ class BouldScene {
 
     /* ── Gentle left-to-right pendulum — ~80° total sweep, never 360 ─── */
     /* One full back-and-forth every ~90 s — very slow, always in motion */
-    const autoRotY = Math.sin(t * 0.07) * Math.PI * 0.22;
+    const autoRotY = this.reducedMotion ? 0 : Math.sin(t * 0.07) * Math.PI * 0.22;
     if (!this._dragging) {
       /* Mouse adds the tiniest trim so hover still feels alive */
       this._rotYTarget = autoRotY + this.target.x * MAX_ROT_Y * 0.20;
@@ -748,7 +779,8 @@ class BouldScene {
     if (this._group && this._points) {
       const mob    = window.innerWidth < 768;
       const ox     = mob ? 0 : 2.2;
-      const floatY = Math.sin(t * 0.40) * 0.065 - this.scrollProgress * 0.5;
+      const floatY = (this.reducedMotion ? 0 : Math.sin(t * 0.40) * 0.065)
+                     - this.scrollProgress * 0.5;
       this._group.position.x = ox;
       this._group.position.y = floatY;
       this._group.rotation.y = this._rotY;
@@ -758,6 +790,8 @@ class BouldScene {
     this._physics(dt);
 
     /* Starfield */
+    /* Under reduced motion t is frozen at 0, so these resolve to a fixed
+       rotation and a steady opacity — the starfield renders, but never drifts. */
     if (this.stars1) {
       this.stars1.rotation.y = t * 0.0016;
       this.stars1.rotation.x = t * 0.0008;
@@ -783,6 +817,7 @@ class BouldScene {
     this.alive = false;
     if (this._revealTimer) clearTimeout(this._revealTimer);
     cancelAnimationFrame(this.raf);
+    document.removeEventListener('bould:hero-revealed', this._onHeroRevealed);
     window.removeEventListener('mousemove', this._onMouseMove);
     window.removeEventListener('resize',    this._onResize);
     window.removeEventListener('scroll',    this._onScroll);

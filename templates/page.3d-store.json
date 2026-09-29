@@ -1,0 +1,149 @@
+{
+  "sections": {
+    "bould_hero": {
+      "type": "bould-hero",
+      "blocks": {
+        "stat_1": {
+          "type": "stat",
+          "settings": {
+            "number": "9",
+            "label": "Brands Launched"
+          }
+        },
+        "stat_2": {
+          "type": "stat",
+          "settings": {
+            "number": "Shopify Plus",
+            "label": "Partner"
+          }
+        },
+        "stat_3": {
+          "type": "stat",
+          "settings": {
+            "number": "3D",
+            "label": "Commerce Pioneers"
+          }
+        }
+      },
+      "block_order": [
+        "stat_1",
+        "stat_2",
+        "stat_3"
+      ],
+      "settings": {
+        "eyebrow": "3D Shopify Stores",
+        "headline_line1": "Immersive",
+        "headline_line2": "3D Shopping",
+        "headline_line3": "Experiences.",
+        "body": "Drop your customers inside your brand world. Fully interactive 3D storefronts built on Shopify — powered by Three.js, WebGL, and our proprietary commerce engine.",
+        "cta_primary": "Start Your 3D Store",
+        "cta_primary_url": "/pages/contact",
+        "cta_secondary": "See 3D Projects",
+        "cta_secondary_url": ""
+      }
+    },
+    "bould_services": {
+      "type": "bould-services",
+      "blocks": {
+        "svc_1": {
+          "type": "service",
+          "settings": {
+            "name": "Immersive 3D Stores",
+            "description": "Fully interactive 3D shopping environments that drop customers inside your brand world."
+          }
+        },
+        "svc_2": {
+          "type": "service",
+          "settings": {
+            "name": "Virtual Try-On Technology",
+            "description": "AR-powered try-on that reduces returns and dramatically increases purchase confidence."
+          }
+        },
+        "svc_3": {
+          "type": "service",
+          "settings": {
+            "name": "3D Product Configurators",
+            "description": "Let customers customize and visualize products in real-time 3D before purchasing."
+          }
+        }
+      },
+      "block_order": [
+        "svc_1",
+        "svc_2",
+        "svc_3"
+      ],
+      "settings": {
+        "label": "3D Capabilities",
+        "title_line1": "Beyond flat",
+        "title_line2": "product pages.",
+        "title_line3": "",
+        "subtitle": "We build 3D commerce experiences that convert — from interactive storefronts to AR try-on and product configurators."
+      }
+    },
+    "bould_work": {
+      "type": "bould-work",
+      "blocks": {
+        "work_1": {
+          "type": "case_study",
+          "settings": {
+            "image": "shopify://shop_images/joonlogo.png",
+            "image_asset": "",
+            "name": "Joon Distribution",
+            "category": "3D Store + Shopify Plus",
+            "year": "2026",
+            "url": "/pages/joon-distribution"
+          }
+        },
+        "work_2": {
+          "type": "case_study",
+          "settings": {
+            "image": "shopify://shop_images/dummiez.png",
+            "image_asset": "",
+            "name": "Dummiez",
+            "category": "3D Store + Shopify Plus",
+            "year": "2026",
+            "url": "/pages/dummiez"
+          }
+        }
+      },
+      "block_order": [
+        "work_1",
+        "work_2"
+      ],
+      "settings": {
+        "label": "3D Projects",
+        "title_line1": "3D stores",
+        "title_line2": "we've built.",
+        "cta_label": "View All Projects",
+        "cta_url": "/pages/work"
+      }
+    },
+    "bould_scheduler": {
+      "type": "bould-scheduler",
+      "settings": {
+        "calendly_url": "",
+        "eyebrow": "Ready to Go 3D?",
+        "title": "Book a Discovery Call"
+      }
+    },
+    "bould_cta": {
+      "type": "bould-cta",
+      "settings": {
+        "eyebrow": "Let's Build in 3D",
+        "title_line1": "Ready for",
+        "title_line2": "3D Commerce?",
+        "body": "Tell us about your brand. We'll show you what an immersive 3D Shopify store can do for your conversion rates.",
+        "show_form": false,
+        "cta_label": "Start Your 3D Store",
+        "cta_url": "/pages/contact"
+      }
+    }
+  },
+  "order": [
+    "bould_hero",
+    "bould_services",
+    "bould_work",
+    "bould_scheduler",
+    "bould_cta"
+  ]
+}

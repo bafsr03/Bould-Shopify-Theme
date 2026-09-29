@@ -10,9 +10,18 @@
         "body": "Tell us about your project. We'll personally review your submission and reach back within 24 hours to schedule a discovery call.",
         "contact_email": "jake@bouldhq.com"
       }
+    },
+    "bould_scheduler": {
+      "type": "bould-scheduler",
+      "settings": {
+        "calendly_url": "",
+        "eyebrow": "Prefer to Schedule Directly?",
+        "title": "Book a Discovery Call"
+      }
     }
   },
   "order": [
-    "bould_contact"
+    "bould_contact",
+    "bould_scheduler"
   ]
 }

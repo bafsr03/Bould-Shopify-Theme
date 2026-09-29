@@ -1,0 +1,192 @@
+{%- liquid
+  assign eyebrow   = section.settings.eyebrow   | default: 'Case Study'
+  assign client    = section.settings.client     | default: 'Client Name'
+  assign category  = section.settings.category   | default: 'Shopify Plus'
+  assign year      = section.settings.year       | default: '2026'
+  assign cta_label = section.settings.cta_label  | default: "Let's build something."
+  assign cta_btn   = section.settings.cta_btn    | default: 'Start a Project'
+-%}
+
+{%- comment -%} ── PAGE HERO ── {%- endcomment -%}
+<div class="bould-page-hero">
+  <div class="bould-hero__bg-grid" aria-hidden="true"></div>
+  <span class="bould-page-hero__ghost" aria-hidden="true">{{ eyebrow | upcase }}</span>
+  <div class="bould-page-hero__inner">
+    <p class="bould-section-label bould-reveal">{{ eyebrow }}</p>
+    <h1 class="bould-page-hero__title">
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ client }}</span></span>
+    </h1>
+    <div class="bould-cs-meta bould-reveal">
+      <span class="bould-tag">{{ category }}</span>
+      <span class="bould-cs-meta__year">{{ year }}</span>
+      {%- if section.settings.live_url != blank -%}
+        <a class="bould-cs-meta__live" href="{{ section.settings.live_url }}" target="_blank" rel="noopener">
+          Visit live site
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%} ── HERO IMAGE ── {%- endcomment -%}
+{%- if section.settings.hero_image != blank -%}
+  {%- assign hero_h = 1600 | times: section.settings.hero_image.height | divided_by: section.settings.hero_image.width -%}
+  <div class="bould-cs-hero-img bould-reveal">
+    <img
+      src="{{ section.settings.hero_image | image_url: width: 1600 }}"
+      alt="{{ client }} project hero"
+      loading="eager"
+      fetchpriority="high"
+      width="1600"
+      height="{{ hero_h }}"
+      class="bould-cs-hero-img__media"
+    >
+  </div>
+{%- endif -%}
+
+{%- comment -%} ── CONTENT BLOCKS ── {%- endcomment -%}
+<div class="bould-cs-body">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+
+      {%- when 'problem' -%}
+        <div class="bould-cs-block bould-cs-block--text bould-reveal" {{ block.shopify_attributes }}>
+          <h2 class="bould-cs-block__heading">{{ block.settings.heading | default: 'The Challenge' }}</h2>
+          <div class="bould-cs-block__body rte">{{ block.settings.body }}</div>
+        </div>
+
+      {%- when 'build' -%}
+        <div class="bould-cs-block bould-cs-block--text bould-reveal" {{ block.shopify_attributes }}>
+          <h2 class="bould-cs-block__heading">{{ block.settings.heading | default: 'What We Built' }}</h2>
+          <div class="bould-cs-block__body rte">{{ block.settings.body }}</div>
+        </div>
+
+      {%- when 'metric' -%}
+        {%- if block.settings.number != blank -%}
+          <div class="bould-cs-block bould-cs-block--metric bould-reveal" {{ block.shopify_attributes }}>
+            <span class="bould-stat__number">{{ block.settings.number }}</span>
+            <span class="bould-stat__label">{{ block.settings.label }}</span>
+          </div>
+        {%- endif -%}
+
+      {%- when 'quote' -%}
+        {%- if block.settings.quote != blank -%}
+          <blockquote class="bould-cs-block bould-cs-block--quote bould-reveal" {{ block.shopify_attributes }}>
+            <p class="bould-cs-quote__text">&ldquo;{{ block.settings.quote }}&rdquo;</p>
+            {%- if block.settings.attribution != blank -%}
+              <cite class="bould-cs-quote__attr">{{ block.settings.attribution }}</cite>
+            {%- endif -%}
+          </blockquote>
+        {%- endif -%}
+
+      {%- when 'image' -%}
+        {%- if block.settings.image != blank -%}
+          <div class="bould-cs-block bould-cs-block--image bould-reveal" {{ block.shopify_attributes }}>
+            {%- assign blk_h = 1200 | times: block.settings.image.height | divided_by: block.settings.image.width -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 1200 }}"
+              alt="{{ block.settings.caption | default: client }}"
+              loading="lazy"
+              width="1200"
+              height="{{ blk_h }}"
+              class="bould-cs-block__img"
+            >
+            {%- if block.settings.caption != blank -%}
+              <p class="bould-cs-block__caption">{{ block.settings.caption }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+    {%- endcase -%}
+  {%- endfor -%}
+</div>
+
+{%- comment -%} ── CTA ── {%- endcomment -%}
+<div class="bould-page-cta">
+  <div class="bould-page-cta__inner">
+    <h2 class="bould-page-cta__label">
+      <span class="bould-line-reveal"><span class="bould-line-reveal-inner">{{ cta_label }}</span></span>
+    </h2>
+    <a href="{{ section.settings.cta_url | default: '/pages/contact' }}" class="bould-btn bould-btn--primary bould-page-cta__btn bould-reveal">
+      {{ cta_btn }}
+      <svg class="bould-btn__arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bould — Case Study",
+  "tag": "div",
+  "class": "bould-page-wrap",
+  "settings": [
+    { "type": "text",         "id": "eyebrow",    "label": "Eyebrow",         "default": "Case Study" },
+    { "type": "text",         "id": "client",     "label": "Client name",     "default": "Client Name" },
+    { "type": "text",         "id": "category",   "label": "Category",        "default": "Shopify Plus" },
+    { "type": "text",         "id": "year",       "label": "Year",            "default": "2026" },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
+    { "type": "text",         "id": "cta_label",  "label": "CTA heading",     "default": "Let's build something." },
+    { "type": "url",          "id": "cta_url",    "label": "CTA link" },
+    { "type": "url",          "id": "live_url",   "label": "Live site URL", "info": "Shown as \u201cVisit live site\u201d in the header." },
+    { "type": "text",         "id": "cta_btn",    "label": "CTA button text", "default": "Start a Project" }
+  ],
+  "blocks": [
+    {
+      "type": "problem",
+      "name": "Problem / Challenge",
+      "settings": [
+        { "type": "text",     "id": "heading", "label": "Heading", "default": "The Challenge" },
+        { "type": "richtext", "id": "body",    "label": "Body" }
+      ]
+    },
+    {
+      "type": "build",
+      "name": "What We Built",
+      "settings": [
+        { "type": "text",     "id": "heading", "label": "Heading", "default": "What We Built" },
+        { "type": "richtext", "id": "body",    "label": "Body" }
+      ]
+    },
+    {
+      "type": "metric",
+      "name": "Result Metric",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number", "info": "Must be a real, attributable client result." },
+        { "type": "text", "id": "label",  "label": "Label" }
+      ]
+    },
+    {
+      "type": "quote",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "textarea", "id": "quote",       "label": "Quote", "info": "Use the client\u2019s real words." },
+        { "type": "text",     "id": "attribution", "label": "Attribution" }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Project Image",
+      "settings": [
+        { "type": "image_picker", "id": "image",   "label": "Image" },
+        { "type": "text",         "id": "caption", "label": "Caption" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Case Study",
+      "blocks": [
+        { "type": "problem", "settings": { "heading": "The Challenge" } },
+        { "type": "build",   "settings": { "heading": "What We Built" } },
+        { "type": "metric",  "settings": {} },
+        { "type": "quote",   "settings": {} }
+      ]
+    }
+  ]
+}
+{% endschema %}

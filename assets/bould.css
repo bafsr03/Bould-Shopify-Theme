@@ -281,13 +281,29 @@ body:has(.bould-policy-wrap) .footer-section * {
 }
 
 .bould-hero__content {
-  position: relative;
+  position: absolute;
   z-index: 2;
   padding: 0 6vw;
   max-width: 56%;
   display: flex;
   flex-direction: column;
   gap: 2.4rem;
+  /* Start centered — FLIP JS will animate to left-aligned final state */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  align-items: center;
+}
+
+/* After choreography completes, switch to final left-aligned layout */
+.bould-hero__content.is-final {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  text-align: left;
+  align-items: flex-start;
 }
 
 .bould-hero__eyebrow {
@@ -330,8 +346,9 @@ body:has(.bould-policy-wrap) .footer-section * {
 
 .bould-hero__headline .line-inner {
   display: block;
-  transform: translateY(100%);
+  transform: translateY(0);
 }
+
 
 .bould-hero__headline .line--accent {
   color: var(--b-purple);
@@ -467,6 +484,41 @@ body:has(.bould-policy-wrap) .footer-section * {
   text-transform: uppercase;
   color: var(--b-muted);
   margin-top: 0.2rem;
+}
+
+/* ── FLIP choreography: canvas cross-fade ── */
+.bould-hero__canvas {
+  transition: opacity 0.8s ease;
+}
+
+.bould-hero__canvas.is-hidden {
+  opacity: 0;
+}
+
+/* ── Reduced motion: skip all choreography ── */
+@media (prefers-reduced-motion: reduce) {
+  .bould-hero__content {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .bould-hero__headline .line-inner,
+  .bould-hero--gsap-pending .bould-hero__headline .line-inner {
+    transform: none !important;
+  }
+
+  .bould-hero__eyebrow,
+  .bould-hero__body,
+  .bould-hero__actions,
+  .bould-hero__scroll,
+  .bould-hero__stats {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* ══════════════════════════════════════
@@ -2250,6 +2302,12 @@ body:has(.bould-policy-wrap) .footer-section * {
     max-width: 100%;
     padding: 2.4rem 5vw 5rem;
     pointer-events: auto;
+    /* Override FLIP centered start — mobile is already stacked */
+    left: auto;
+    top: auto;
+    transform: none;
+    text-align: center;
+    align-items: center;
   }
 
   /* Stats and scroll indicator don't belong in a stacked layout */
@@ -3242,4 +3300,232 @@ body:has(.bould-theme-preview-wrap) .footer-section * {
   .bould-contact__form-wrap {
     padding: 2.8rem 2rem;
   }
+}
+
+/* ══════════════════════════════════════
+   CASE STUDY
+══════════════════════════════════════ */
+.bould-cs-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-top: 1.6rem;
+}
+
+.bould-cs-meta__year {
+  font-family: var(--b-font);
+  font-size: 1.3rem;
+  color: var(--b-muted2);
+  letter-spacing: 0.05em;
+}
+
+.bould-cs-hero-img {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5vw 6rem;
+}
+
+.bould-cs-hero-img__media {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  display: block;
+}
+
+.bould-cs-body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 5vw 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+.bould-cs-block__heading {
+  font-family: var(--b-font);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 700;
+  color: var(--b-white);
+  margin: 0 0 1.6rem;
+  letter-spacing: -0.02em;
+}
+
+.bould-cs-block__body {
+  font-family: var(--b-font);
+  font-size: 1.6rem;
+  line-height: 1.7;
+  color: var(--b-muted2);
+}
+
+.bould-cs-block__body p {
+  margin: 0 0 1.2rem;
+}
+
+.bould-cs-block--metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--b-card);
+  border: 1px solid var(--b-border);
+  border-radius: 16px;
+}
+
+.bould-stat__number {
+  font-family: var(--b-font);
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 700;
+  color: var(--b-purple);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.bould-stat__label {
+  font-family: var(--b-font);
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--b-muted2);
+  margin-top: 0.8rem;
+}
+
+.bould-cs-block--quote {
+  border: none;
+  margin: 0;
+  padding: 4rem 3rem;
+  background: var(--b-card);
+  border-left: 3px solid var(--b-purple);
+  border-radius: 0 16px 16px 0;
+}
+
+.bould-cs-quote__text {
+  font-family: var(--b-font);
+  font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--b-white);
+  margin: 0 0 1.6rem;
+}
+
+.bould-cs-quote__attr {
+  font-family: var(--b-font);
+  font-size: 1.3rem;
+  color: var(--b-muted2);
+  font-style: normal;
+  letter-spacing: 0.05em;
+}
+
+.bould-cs-block--image {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.bould-cs-block__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+
+.bould-cs-block__caption {
+  font-family: var(--b-font);
+  font-size: 1.3rem;
+  color: var(--b-muted);
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════
+   SCHEDULER
+══════════════════════════════════════ */
+.bould-scheduler {
+  background: var(--b-black);
+  padding: 8rem 0;
+}
+
+.bould-scheduler__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 5vw;
+}
+
+.bould-scheduler__header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.bould-scheduler__header .bould-section-title {
+  color: var(--b-white);
+}
+
+.bould-scheduler__embed {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.bould-scheduler__placeholder {
+  text-align: center;
+  padding: 6rem 2rem;
+  border: 1px dashed var(--b-border2);
+  border-radius: 12px;
+  color: var(--b-muted);
+  font-family: var(--b-font);
+  font-size: 1.4rem;
+}
+
+/* ══════════════════════════════════════
+   CASE STUDY — block layout
+   (base + text modifier were referenced by
+   sections/bould-case-study.liquid but never defined)
+══════════════════════════════════════ */
+.bould-cs-block {
+  width: 100%;
+  margin: 0;
+}
+
+.bould-cs-block--text {
+  display: block;
+  max-width: 68ch;
+}
+
+.bould-cs-meta__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--b-font);
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  color: var(--b-purple);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease, opacity 0.25s ease;
+}
+
+.bould-cs-meta__live:hover {
+  border-bottom-color: currentColor;
+}
+
+.bould-page-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  align-self: center;
+}
+
+/* ══════════════════════════════════════
+   ANIMATION SAFETY NET
+   The hero eyebrow/body/actions start at opacity:0 and are revealed by GSAP.
+   If the GSAP CDN fails, bould-animations.js bails and that copy would stay
+   invisible forever. bould-animations.js adds this class on a timeout so the
+   hero always ends up readable.
+══════════════════════════════════════ */
+.bould-anim-fallback .bould-hero__eyebrow,
+.bould-anim-fallback .bould-hero__body,
+.bould-anim-fallback .bould-hero__actions,
+.bould-anim-fallback .bould-reveal {
+  opacity: 1 !important;
+  transform: none !important;
 }

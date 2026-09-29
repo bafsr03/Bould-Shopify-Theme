@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "bould_case_study": {
+      "type": "bould-case-study",
+      "blocks": {
+        "problem": {
+          "type": "problem",
+          "settings": {
+            "heading": "The Challenge",
+            "body": "<p>Dummiez is a design-led brand whose products are the whole pitch, but a conventional Shopify theme flattened them into thumbnails. The brand read as generic in the first five seconds, and the storefront did nothing to communicate the craft behind the product.</p>"
+          }
+        },
+        "build": {
+          "type": "build",
+          "settings": {
+            "heading": "What We Built",
+            "body": "<p>We built a custom Shopify Plus storefront around a real-time 3D stage, so the product is the interface rather than a picture of the product. The build pairs a bespoke theme with a WebGL scene that respects reduced-motion preferences and degrades to static imagery where WebGL is unavailable.</p>"
+          }
+        },
+        "metric": {
+          "type": "metric",
+          "settings": {
+            "number": "[FILL] metric",
+            "label": "[FILL] what it measures"
+          }
+        },
+        "quote": {
+          "type": "quote",
+          "settings": {
+            "quote": "[FILL] real client quote goes here.",
+            "attribution": "[FILL] Name, Title, Dummiez"
+          }
+        }
+      },
+      "block_order": [
+        "problem",
+        "build",
+        "metric",
+        "quote"
+      ],
+      "settings": {
+        "eyebrow": "Case Study",
+        "client": "Dummiez",
+        "category": "3D Store + Shopify Plus",
+        "year": "2026",
+        "hero_image": "shopify://shop_images/dummiez.png",
+        "live_url": "https://www.dummiez.co/",
+        "cta_label": "Let's build something.",
+        "cta_url": "/pages/contact",
+        "cta_btn": "Start a Project"
+      }
+    }
+  },
+  "order": [
+    "bould_case_study"
+  ]
+}

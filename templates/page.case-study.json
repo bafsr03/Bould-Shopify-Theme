@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "bould_case_study": {
+      "type": "bould-case-study",
+      "settings": {}
+    }
+  },
+  "order": [
+    "bould_case_study"
+  ]
+}

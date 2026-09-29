@@ -63,7 +63,7 @@
   </div>
 
   {% comment %} Quick stats bottom-right {% endcomment %}
-  <div class="bould-hero__stats" aria-hidden="true">
+  <div class="bould-hero__stats">
     {% for block in section.blocks %}
       {% if block.type == 'stat' %}
         <div class="bould-hero__stat">
@@ -116,6 +116,9 @@
   canvas.addEventListener('touchend', onUp, { passive: true });
 })();
 </script>
+
+{% comment %} FLIP choreography — runs before Three.js to set up initial position {% endcomment %}
+<script src="{{ 'bould-hero-choreography.js' | asset_url }}" defer="defer"></script>
 
 {% comment %} Three.js scene (ES module) {% endcomment %}
 <script type="module" src="{{ 'bould-scene.js' | asset_url }}"></script>
@@ -207,7 +210,7 @@
           "type": "text",
           "id": "number",
           "label": "Number",
-          "default": "3+"
+          "default": "9"
         },
         {
           "type": "text",
@@ -222,8 +225,8 @@
     {
       "name": "Bould — Hero",
       "blocks": [
-        { "type": "stat", "settings": { "number": "5+", "label": "Brands Launched" } },
-        { "type": "stat", "settings": { "number": "300%", "label": "Avg Revenue Growth" } },
+        { "type": "stat", "settings": { "number": "9", "label": "Brands Launched" } },
+        { "type": "stat", "settings": { "number": "Shopify Plus", "label": "Partner" } },
         { "type": "stat", "settings": { "number": "3D", "label": "Commerce Pioneers" } }
       ]
     }

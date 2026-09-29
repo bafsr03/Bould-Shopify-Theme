@@ -1,0 +1,129 @@
+{%- liquid
+  assign calendly_url = section.settings.calendly_url
+  assign eyebrow     = section.settings.eyebrow   | default: 'Schedule a Call'
+  assign title       = section.settings.title      | default: 'Book a Discovery Call'
+  assign min_height  = section.settings.min_height | default: 700
+-%}
+
+<div class="bould-scheduler" id="bould-scheduler">
+  <div class="bould-scheduler__inner">
+    {%- if eyebrow != blank or title != blank -%}
+      <div class="bould-scheduler__header">
+        {%- if eyebrow != blank -%}
+          <p class="bould-section-label bould-reveal">{{ eyebrow }}</p>
+        {%- endif -%}
+        {%- if title != blank -%}
+          <h2 class="bould-section-title bould-reveal">{{ title }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if calendly_url != blank -%}
+      <div
+        class="calendly-inline-widget bould-scheduler__embed"
+        data-url="{{ calendly_url }}"
+        style="min-height: {{ min_height }}px; width: 100%;"
+      ></div>
+      <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+      {% comment %}
+        Booked call = the primary conversion. Calendly reports scheduling back to
+        the parent page via postMessage; translate that into a conversion event
+        for every tag we may have. Each sink is feature-detected, so this is a
+        safe no-op until the analytics IDs are entered in Theme Settings.
+      {% endcomment %}
+      <script>
+      (function () {
+        var fired = false;
+
+        function isCalendlyEvent(e) {
+          return e.origin
+            && e.origin.indexOf('calendly.com') !== -1
+            && e.data
+            && typeof e.data.event === 'string'
+            && e.data.event.indexOf('calendly.') === 0;
+        }
+
+        window.addEventListener('message', function (e) {
+          if (!isCalendlyEvent(e)) return;
+          if (e.data.event !== 'calendly.event_scheduled') return;
+          if (fired) return;          // Calendly can emit more than once
+          fired = true;
+
+          var payload = {
+            event_category: 'conversion',
+            event_label: 'Calendly booked call',
+            page_path: window.location.pathname
+          };
+
+          // GA4 / Google Ads
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'book_call', payload);
+            {%- if settings.google_ads_conversion_label != blank and settings.google_ads_id != blank -%}
+              window.gtag('event', 'conversion', {
+                send_to: {{ settings.google_ads_id | append: '/' | append: settings.google_ads_conversion_label | json }}
+              });
+            {%- endif -%}
+          }
+
+          // Meta Pixel — Schedule is the standard event for a booked appointment
+          if (typeof window.fbq === 'function') {
+            window.fbq('track', 'Schedule');
+          }
+
+          // Tag Manager / server-side, available regardless of the tags above
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({ event: 'book_call', conversion_source: 'calendly' });
+        }, false);
+      })();
+      </script>
+    {%- else -%}
+      <div class="bould-scheduler__placeholder">
+        <p>Add your Calendly URL in theme settings to display the scheduler.</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bould — Scheduler",
+  "tag": "div",
+  "class": "bould-page-wrap",
+  "settings": [
+    {
+      "type": "text",
+      "id": "calendly_url",
+      "label": "Calendly URL",
+      "info": "e.g. https://calendly.com/bould/30min"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Schedule a Call"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Book a Discovery Call"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 500,
+      "max": 900,
+      "step": 50,
+      "default": 700,
+      "unit": "px",
+      "label": "Minimum embed height"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bould — Scheduler"
+    }
+  ]
+}
+{% endschema %}

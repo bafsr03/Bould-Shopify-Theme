@@ -1,8 +1,26 @@
 {%- liquid
-  assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: request.origin
   assign og_type = 'website'
+
+  comment
+  # Keep OG in step with the <title>/<meta description> emitted by
+  # snippets/seo-meta.liquid. Without this the homepage shares as a bare
+  # shop name while its meta description says something else entirely.
+  endcomment
+  assign og_title = page_title | default: shop.name
   assign og_description = page_description | default: shop.description | default: shop.name
+
+  if request.page_type == 'index'
+    assign og_title = 'Bould — Shopify Development & 3D Commerce Agency'
+    if page_description == blank
+      assign og_description = 'Bould is a retail technology agency building Shopify storefronts, immersive 3D commerce experiences, and virtual try-on technology. 9 brands launched.'
+    endif
+  endif
+
+  comment
+  # Fall back to the theme's default share image so every page has an og:image.
+  endcomment
+  assign og_image = page_image | default: settings.social_share_image
 
   if request.page_type == 'product'
     assign og_type = 'product'
@@ -19,11 +37,12 @@
 <meta property="og:type" content="{{ og_type }}">
 <meta property="og:description" content="{{ og_description | escape }}">
 
-{%- if page_image -%}
-  <meta property="og:image" content="http:{{ page_image | image_url }}">
-  <meta property="og:image:secure_url" content="https:{{ page_image | image_url }}">
-  <meta property="og:image:width" content="{{ page_image.width }}">
-  <meta property="og:image:height" content="{{ page_image.height }}">
+{%- if og_image -%}
+  <meta property="og:image" content="http:{{ og_image | image_url }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image | image_url }}">
+  <meta property="og:image:width" content="{{ og_image.width }}">
+  <meta property="og:image:height" content="{{ og_image.height }}">
+  <meta name="twitter:image" content="https:{{ og_image | image_url }}">
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}

@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "bould_case_study": {
+      "type": "bould-case-study",
+      "blocks": {
+        "problem": {
+          "type": "problem",
+          "settings": {
+            "heading": "The Challenge",
+            "body": "<p>Adophies had outgrown its original storefront. The catalogue had expanded faster than the theme's navigation and merchandising could handle, leaving customers unable to find products and the team unable to change the site without a developer.</p>"
+          }
+        },
+        "build": {
+          "type": "build",
+          "settings": {
+            "heading": "What We Built",
+            "body": "<p>We migrated Adophies onto Shopify Plus with a custom theme built around editor-configurable sections, so the team can restructure pages without touching code. Navigation, collection merchandising, and the product template were rebuilt around how customers actually browse the catalogue.</p>"
+          }
+        },
+        "metric": {
+          "type": "metric",
+          "settings": {
+            "number": "[FILL] metric",
+            "label": "[FILL] what it measures"
+          }
+        },
+        "quote": {
+          "type": "quote",
+          "settings": {
+            "quote": "[FILL] real client quote goes here.",
+            "attribution": "[FILL] Name, Title, Adophies"
+          }
+        }
+      },
+      "block_order": [
+        "problem",
+        "build",
+        "metric",
+        "quote"
+      ],
+      "settings": {
+        "eyebrow": "Case Study",
+        "client": "Adophies",
+        "category": "Shopify Plus",
+        "year": "2025",
+        "hero_image": "shopify://shop_images/Screenshot_2026-05-07_at_5.51.47_PM-Photoroom.png",
+        "live_url": "https://adophies.com/",
+        "cta_label": "Let's build something.",
+        "cta_url": "/pages/contact",
+        "cta_btn": "Start a Project"
+      }
+    }
+  },
+  "order": [
+    "bould_case_study"
+  ]
+}

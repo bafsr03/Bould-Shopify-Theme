@@ -15,15 +15,15 @@
         "stat_1": {
           "type": "stat",
           "settings": {
-            "number": "7+",
+            "number": "9",
             "label": "Brands Launched"
           }
         },
         "stat_2": {
           "type": "stat",
           "settings": {
-            "number": "300%",
-            "label": "Avg Revenue Growth"
+            "number": "Shopify Plus",
+            "label": "Partner"
           }
         },
         "stat_3": {
@@ -145,7 +145,7 @@
             "name": "Adophies",
             "category": "Shopify Plus",
             "year": "2025",
-            "url": "https://adophies.com/"
+            "url": "/pages/adophies"
           }
         },
         "work_rib": {
@@ -167,7 +167,7 @@
             "name": "Joon Distribution",
             "category": "3D Store + Shopify Plus",
             "year": "2026",
-            "url": "https://joondistro.com/"
+            "url": "/pages/joon-distribution"
           }
         },
         "work_2": {
@@ -178,7 +178,7 @@
             "name": "Dummiez",
             "category": "3D Store + Shopify Plus",
             "year": "2026",
-            "url": "https://www.dummiez.co/"
+            "url": "/pages/dummiez"
           }
         },
         "work_3": {
@@ -255,19 +255,7 @@
         "title_line1": "Brands we've",
         "title_line2": "helped grow.",
         "cta_label": "View All Projects",
-        "cta_url": ""
-      }
-    },
-    "bould_products": {
-      "type": "bould-products",
-      "settings": {
-        "label": "The Collection",
-        "title_line1": "Explore the",
-        "title_line2": "full range.",
-        "collection": "",
-        "product_limit": 8,
-        "cta_label": "Find My Perfect Size",
-        "view_all_label": "View All Products"
+        "cta_url": "/pages/work"
       }
     },
     "bould_capabilities": {
@@ -348,68 +336,9 @@
         "body": ""
       }
     },
-    "bould_stats": {
-      "type": "bould-stats",
-      "blocks": {
-        "s1": {
-          "type": "stat",
-          "settings": {
-            "number": "5+",
-            "label": "Brands Launched",
-            "animated": true,
-            "count_value": "5",
-            "suffix": "+",
-            "prefix": ""
-          }
-        },
-        "s2": {
-          "type": "stat",
-          "settings": {
-            "number": "40%+",
-            "label": "Avg Conversion Lift",
-            "animated": true,
-            "count_value": "40",
-            "suffix": "%+",
-            "prefix": ""
-          }
-        },
-        "s3": {
-          "type": "stat",
-          "settings": {
-            "number": "2x",
-            "label": "Avg Add-to-Cart Rate",
-            "animated": false,
-            "count_value": "150",
-            "suffix": "+",
-            "prefix": ""
-          }
-        },
-        "s4": {
-          "type": "stat",
-          "settings": {
-            "number": "98%",
-            "label": "Client Retention",
-            "animated": true,
-            "count_value": "98",
-            "suffix": "%",
-            "prefix": ""
-          }
-        }
-      },
-      "block_order": [
-        "s1",
-        "s2",
-        "s3",
-        "s4"
-      ],
-      "settings": {
-        "headline": "Results that speak.",
-        "headline_dim": "Numbers that prove it."
-      }
-    },
     "bould_cta": {
       "type": "bould-cta",
-      "disabled": true,
+      "disabled": false,
       "settings": {
         "eyebrow": "Let's Work Together",
         "title_line1": "Ready to",
@@ -431,9 +360,7 @@
     "bould_marquee",
     "bould_services",
     "bould_work",
-    "bould_products",
     "bould_capabilities",
-    "bould_stats",
     "bould_cta"
   ]
 }

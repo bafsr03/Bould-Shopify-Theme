@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "bould_case_study": {
+      "type": "bould-case-study",
+      "blocks": {
+        "problem": {
+          "type": "problem",
+          "settings": {
+            "heading": "The Challenge",
+            "body": "<p>Joon Distribution sells a catalogue that buyers need to inspect closely before committing. A flat product grid gave wholesale customers no way to judge scale, finish, or detail, so the sales conversation kept moving off the site and into email threads.</p>"
+          }
+        },
+        "build": {
+          "type": "build",
+          "settings": {
+            "heading": "What We Built",
+            "body": "<p>We rebuilt the storefront on Shopify Plus and layered an immersive 3D commerce experience over the catalogue. Products are presented as interactive 3D models a buyer can rotate and inspect at real scale, running on a WebGL pipeline tuned to load progressively so the page stays fast on mobile.</p>"
+          }
+        },
+        "metric": {
+          "type": "metric",
+          "settings": {
+            "number": "[FILL] metric",
+            "label": "[FILL] what it measures"
+          }
+        },
+        "quote": {
+          "type": "quote",
+          "settings": {
+            "quote": "[FILL] real client quote goes here.",
+            "attribution": "[FILL] Name, Title, Joon Distribution"
+          }
+        }
+      },
+      "block_order": [
+        "problem",
+        "build",
+        "metric",
+        "quote"
+      ],
+      "settings": {
+        "eyebrow": "Case Study",
+        "client": "Joon Distribution",
+        "category": "3D Store + Shopify Plus",
+        "year": "2026",
+        "hero_image": "shopify://shop_images/joonlogo.png",
+        "live_url": "https://joondistro.com/",
+        "cta_label": "Let's build something.",
+        "cta_url": "/pages/contact",
+        "cta_btn": "Start a Project"
+      }
+    }
+  },
+  "order": [
+    "bould_case_study"
+  ]
+}

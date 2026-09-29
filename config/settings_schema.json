@@ -1451,5 +1451,51 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "Social sharing",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "social_share_image",
+        "label": "Default share image",
+        "info": "Used for og:image when a page has no image of its own \u2014 including the homepage. 1200\u00d7630 recommended."
+      }
+    ]
+  },
+  {
+    "name": "Analytics & Tracking",
+    "settings": [
+      {
+        "type": "text",
+        "id": "ga4_measurement_id",
+        "label": "GA4 Measurement ID",
+        "info": "Starts with G- (e.g. G-XXXXXXXXXX)"
+      },
+      {
+        "type": "text",
+        "id": "google_ads_id",
+        "label": "Google Ads ID",
+        "info": "Starts with AW- (e.g. AW-XXXXXXXXXX)"
+      },
+      {
+        "type": "text",
+        "id": "google_ads_conversion_label",
+        "label": "Google Ads conversion label",
+        "info": "Label only (the part after the slash) for the booked-call conversion action."
+      },
+      {
+        "type": "text",
+        "id": "meta_pixel_id",
+        "label": "Meta Pixel ID",
+        "info": "Numeric ID from Meta Events Manager"
+      },
+      {
+        "type": "text",
+        "id": "google_site_verification",
+        "label": "Google Site Verification",
+        "info": "Content value from Google Search Console meta tag"
+      }
+    ]
   }
 ]
